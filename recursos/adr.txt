@@ -1,0 +1,76 @@
+ADR-001: Adopción de Arquitectura de Monolito Modular vs Microservicios
+Estado: Aceptada
+
+Fecha: 2026-06-06
+
+Contexto: El sistema consta de 7 áreas de negocio complejas (Auth, Admin, Catalog, Business, UGC, Recommendations, Notifications). Implementar microservicios desde el día 1 introduce sobrecarga operacional, latencia de red, consistencia eventual obligatoria y complejidad en el despliegue para un equipo pequeño con tiempo limitado (4 semanas).
+
+Decisión: Adoptamos una arquitectura de Monolito Modular. Todo el código backend se ejecuta en un solo proceso (o grupo de procesos idénticos balanceados), pero el código fuente y las responsabilidades están estrictamente aisladas en carpetas (/modules/auth, /modules/catalog) con interfaces públicas claras.
+
+Consecuencias: + Despliegue único y simple vía Docker Compose.
+
++ Consultas en memoria entre módulos sin latencia de red (in-process calls).
+
+- Requiere disciplina estricta: los desarrolladores no pueden saltarse las interfaces para hacer JOINs SQL cruzados entre módulos.
+
+ADR-002: Aislamiento de Bases de Datos y Esquemas por Módulo
+Estado: Aceptada
+
+Fecha: 2026-06-06
+
+Contexto: Manejar información personal (RGPD) como fechas de nacimiento, contraseñas e emails junto con datos operativos de negocio es un riesgo de seguridad crítico. Además, queremos preparar el sistema para una futura extracción a microservicios si el proyecto escala.
+
+Decisión: 1. Separación Física: Usaremos dos contenedores separados. AuthDB (puerto 5433) exclusiva para Auth, y BusinessDB (puerto 5432) para el resto del negocio.
+
+2. Separación Lógica: Dentro de BusinessDB, usaremos esquemas de PostgreSQL aislados (catalog.*, business.*, audit.*).
+
+Consecuencias: + Cumplimiento riguroso de normativas de protección de datos. Si BusinessDB es comprometida, las credenciales están a salvo.
+
++ Migraciones independientes por módulo.
+
+- user_id se maneja como un valor escalar (UUID) en el módulo Business, obligando a manejar la integridad referencial lógicamente en lugar de usar Foreign Keys físicas.
+
+ADR-003: Stack del Módulo Auth y Validación Estricta
+Estado: Aceptada
+
+Fecha: 2026-06-06
+
+Contexto: Necesitamos un módulo de autenticación robusto, asíncrono, que genere tokens JWT, soporte OAuth 2.0 y aplique reglas de negocio ineludibles (validación de mayoría de edad >= 18 años y límite de 3 dispositivos). Django Auth es demasiado acoplado a su propio sistema, y Flask no es nativamente asíncrono.
+
+Decisión: Elegimos FastAPI + python-jose (JWT) + bcrypt + Authlib para el módulo Auth. Las validaciones de fecha de nacimiento se ejecutarán a nivel del Controller (Pydantic) y del Service.
+
+Consecuencias: + FastAPI y Pydantic aseguran validaciones de tipos y formato (como fechas de nacimiento) automáticamente.
+
++ Excelente rendimiento asíncrono.
+
+- Los administradores de Django Admin requerirán un puente (middleware) para validar su JWT contra los usuarios creados en FastAPI.
+
+ADR-004: Frontend con React, Arquitectura FSD y CSS BEM
+Estado: Aceptada
+
+Fecha: 2026-06-06
+
+Contexto: El cliente requiere alta interactividad (mapas de butacas en tiempo real SVG, carruseles, validación Luhn instantánea sin peticiones al backend). Vanilla JS sería inmanejable y propenso a errores para este nivel de estado mutante. La rúbrica obliga al uso de metodologías claras.
+
+Decisión: Se utilizará React 18 + TypeScript + Vite. Para la gestión de estado global (auth, carrito) usaremos Zustand. La arquitectura de carpetas seguirá el patrón FSD (Feature-Sliced Design). Todo el estilizado se hará con CSS puro bajo metodología estricta BEM (bloque__elemento--modificador).
+
+Consecuencias: + El mapa de butacas (SVG interactivo) será trivial de implementar en React.
+
++ BEM garantiza la no colisión de estilos sin requerir CSS-in-JS.
+
+- Curva de aprendizaje inicial para FSD, aplicaremos linters (eslint-plugin-boundaries) para forzar la arquitectura.
+
+ADR-005: Eliminación de Sentry y Enfoque Privacy-First (RGPD)
+Estado: Aceptada
+
+Fecha: 2026-06-06
+
+Contexto: Las herramientas de monitoreo en la nube (como Sentry) pueden capturar accidentalmente Información Personal Identificable (PII), lo que viola el Reglamento de Protección de Datos si no se configura adecuadamente. Los datos de ClickHouse también representan un riesgo si incluyen IDs rastreables.
+
+Decisión: Eliminamos Sentry del stack tecnológico. En su lugar, el monitoreo se realizará on-premise mediante structlog (Python) configurado para hacer Data Masking (enmascaramiento automático de emails, IPs y números de tarjeta). Todos los eventos analíticos enviados a Kafka -> ClickHouse serán anonimizados.
+
+Consecuencias: + Cumplimiento nativo de protección de datos y privacidad desde el diseño (Privacy by Design).
+
++ No hay dependencia de servicios de terceros para el monitoreo.
+
+- Pierde la conveniencia de la interfaz web de Sentry; requiere revisar logs estructurados en el servidor directamente o implementar ELK/Grafana en el futuro.

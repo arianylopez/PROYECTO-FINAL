@@ -1,0 +1,101 @@
+x-common-env: &common-env
+  POSTGRES_USER: ${DB_USER}
+  POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+services:
+  auth-db:
+    image: postgres:16-alpine
+    container_name: cinemaplus_auth_db
+    ports:
+      - "5433:5432"
+    environment:
+      <<: *common-env
+      POSTGRES_DB: auth_db
+    volumes:
+      - auth_db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  business-db:
+    image: postgres:16-alpine
+    container_name: cinemaplus_business_db
+    ports:
+      - "5432:5432"
+    environment:
+      <<: *common-env
+      POSTGRES_DB: business_db
+    volumes:
+      - business_db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: cinemaplus_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:7.0
+    container_name: cinemaplus_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  kafka:
+    image: confluentinc/confluent-local:7.6.0
+    container_name: cinemaplus_kafka
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    restart: unless-stopped
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:24-alpine
+    container_name: cinemaplus_clickhouse
+    ports:
+      - "8123:8123"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    container_name: cinemaplus_elastic
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cinemaplus_backend
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - auth-db
+      - business-db
+      - redis
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  auth_db_data:
+  business_db_data:
+  redis_data:
+  mongo_data:
+  elastic_data:
+  clickhouse_data:
+  kafka_data:
