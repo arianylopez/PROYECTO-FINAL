@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate, Link } from 'react-router-dom';
+import { useGoogleLogin } from '@react-oauth/google';
 import { apiClient } from '../../shared/api/apiClient';
 import { useAuthStore } from '../../shared/store/authStore';
 import './RegisterForm.css';
@@ -24,10 +25,29 @@ export const LoginForm = () => {
     resolver: zodResolver(loginSchema),
   });
 
+  // Utilidad para decodificar JWT base64 en el cliente
+  const decodeJWT = (token: string) => {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+    return JSON.parse(jsonPayload);
+  };
+
+  const processSuccessfulLogin = (token: string, fallbackName: string, fallbackEmail: string) => {
+    const decodedUser = decodeJWT(token);
+    loginAction({
+      id: decodedUser.sub,
+      name: fallbackName, 
+      email: fallbackEmail,
+      role: decodedUser.role
+    }, token);
+    navigate('/home');
+  };
+
+  // --- LOGIN TRADICIONAL ---
   const onSubmit = async (data: LoginFormData) => {
     try {
       setServerError(null);
-      
       const payload = {
         email: data.email,
         password: data.password,
@@ -36,24 +56,8 @@ export const LoginForm = () => {
       };
 
       const response = await apiClient.post('/auth/login', payload);
+      processSuccessfulLogin(response.data.access_token, response.data.user?.name || data.email.split('@')[0], data.email);
 
-      const token = response.data.access_token;
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      
-      const decodedUser = JSON.parse(jsonPayload);
-      
-      loginAction({
-        id: decodedUser.sub,
-        name: response.data.user?.name || data.email.split('@')[0], 
-        email: data.email,
-        role: decodedUser.role
-      }, token);
-
-      navigate('/home');
     } catch (error: any) {
       if (error.response?.status === 401) {
         setServerError('Correo o contraseña incorrectos'); 
@@ -65,11 +69,35 @@ export const LoginForm = () => {
     }
   };
 
+  // --- LOGIN CON GOOGLE OAUTH ---
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        setServerError(null);
+        const response = await apiClient.post('/auth/google', { 
+          token: tokenResponse.access_token, 
+          device_fingerprint: navigator.userAgent,
+          device_name: "Navegador Web"
+        });
+        processSuccessfulLogin(response.data.access_token, response.data.user.name, response.data.user.email);
+      } catch (error: any) {
+        if (error.response?.status === 404) {
+          setServerError('Tu cuenta de Google no está registrada. Ve a Sign Up para completar tu fecha de nacimiento.');
+        } else if (error.response?.status === 403 && error.response.data.devices) {
+          setDevicesLimit(error.response.data.devices);
+        } else {
+          setServerError('Error al autenticar con Google');
+        }
+      }
+    },
+  });
+
+  // --- REVOCAR DISPOSITIVO ---
   const handleRevoke = async (deviceId: string) => {
     try {
       await apiClient.post(`/auth/devices/${deviceId}/revoke`);
-      setDevicesLimit([]); 
-      handleSubmit(onSubmit)(); 
+      setDevicesLimit([]); // Cierra el modal
+      handleSubmit(onSubmit)(); // Reintenta el login tradicional
     } catch (error) {
       setServerError('No se pudo revocar el dispositivo.');
     }
@@ -77,6 +105,7 @@ export const LoginForm = () => {
 
   return (
     <div className="auth-layout">
+      {/* Columna Izquierda: Formulario */}
       <div className="auth-layout__sidebar">
         <form className="register-form" onSubmit={handleSubmit(onSubmit)}>
           
@@ -107,20 +136,17 @@ export const LoginForm = () => {
 
           <div className="register-form__field">
             <label className="register-form__label">Password</label>
-            <div style={{ position: 'relative' }}>
-              <input 
-                className="register-form__input" 
-                type="password" 
-                placeholder="Enter your password"
-                style={{ width: '100%' }}
-                {...register('password')} 
-              />
-            </div>
+            <input 
+              className="register-form__input" 
+              type="password" 
+              placeholder="Enter your password"
+              {...register('password')} 
+            />
             {errors.password && <span className="register-form__error">{errors.password.message}</span>}
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <a href="#" className="register-form__link" style={{ fontSize: '0.8rem' }}>¿Olvidaste tu contraseña?</a>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '-0.5rem' }}>
+            <Link to="/forgot-password" className="register-form__link" style={{ fontSize: '0.8rem' }}>¿Olvidaste tu contraseña?</Link>
           </div>
 
           <button className="register-form__submit" type="submit" disabled={isSubmitting}>
@@ -129,7 +155,7 @@ export const LoginForm = () => {
 
           <div className="register-form__divider">OR</div>
 
-          <button type="button" className="register-form__google">
+          <button type="button" className="register-form__google" onClick={() => loginWithGoogle()}>
             <svg width="18" height="18" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -149,7 +175,6 @@ export const LoginForm = () => {
 
       <div className="auth-layout__cover"></div>
 
-      {/* Modal de Límite de Dispositivos */}
       {devicesLimit.length > 0 && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100 }}>
           <div style={{ backgroundColor: '#16181f', padding: '2rem', borderRadius: '8px', maxWidth: '400px', color: 'white', width: '90%' }}>

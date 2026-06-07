@@ -14,3 +14,4 @@ Django==5.0.6
 pytest
 httpx
 pytest-env
+google-auth==2.30.0

@@ -6,6 +6,8 @@ import bcrypt
 from jose import jwt, JWTError
 from uuid import UUID
 import json
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
 
 from core.database import get_auth_db
 from core.config import settings
@@ -54,10 +56,29 @@ class UserRegisterRequest(BaseModel):
         return v
 
 class LoginRequest(BaseModel):
-    email: str
+    email: EmailStr
     password: str
     device_fingerprint: str
     device_name: str = "Navegador Web"
+
+class GoogleLoginRequest(BaseModel):
+    token: str
+    device_fingerprint: str
+    device_name: str = "Navegador Web"
+
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+
+class PasswordResetConfirm(BaseModel):
+    token: str
+    new_password: str
+
+    @field_validator('new_password')
+    @classmethod
+    def validate_password(cls, v):
+        if len(v) < 8:
+            raise ValueError('La contraseña debe tener al menos 8 caracteres')
+        return v
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
@@ -103,13 +124,43 @@ def login(request: LoginRequest, response: Response, db: Session = Depends(get_a
     db.commit()
 
     access_token, refresh_token = create_tokens(user)
-    
     response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, max_age=7*24*60*60, samesite="lax")
     
-    return {
-        "access_token": access_token, 
-        "user": {"id": str(user.id), "name": user.name, "email": user.email, "role": user.role}
-    }
+    return {"access_token": access_token, "user": {"id": str(user.id), "name": user.name, "email": user.email, "role": user.role}}
+
+@router.post("/google")
+def google_auth(request: GoogleLoginRequest, response: Response, db: Session = Depends(get_auth_db)):
+    try:
+        idinfo = id_token.verify_oauth2_token(request.token, google_requests.Request(), settings.GOOGLE_CLIENT_ID)
+        email = idinfo['email']
+        name = idinfo.get('name', 'Usuario')
+        
+        user = db.query(User).filter(User.email == email).first()
+        
+        if not user:
+            raise HTTPException(status_code=404, detail="Cuenta de Google no registrada. Por favor completa tu registro con tu fecha de nacimiento.")
+        
+        active_devices = db.query(Device).filter(Device.user_id == user.id, Device.is_active == True).all()
+        known_device = next((d for d in active_devices if d.device_fingerprint == request.device_fingerprint), None)
+
+        if not known_device and len(active_devices) >= 3:
+            devices_list = [{"id": str(d.id), "name": d.device_name, "last_seen": d.last_seen.isoformat()} for d in active_devices]
+            return Response(status_code=403, content=json.dumps({"detail": "Límite de dispositivos alcanzado (3/3)", "devices": devices_list}))
+
+        if not known_device:
+            known_device = Device(user_id=user.id, device_fingerprint=request.device_fingerprint, device_name=request.device_name)
+            db.add(known_device)
+        else:
+            known_device.last_seen = datetime.now(timezone.utc)
+        db.commit()
+
+        access_token, refresh_token = create_tokens(user)
+        response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, max_age=7*24*60*60, samesite="lax")
+        
+        return {"access_token": access_token, "user": {"id": str(user.id), "name": user.name, "email": user.email, "role": user.role}}
+
+    except ValueError:
+        raise HTTPException(status_code=401, detail="Token de Google inválido")
 
 @router.post("/devices/{device_id}/revoke")
 def revoke_device(device_id: UUID, db: Session = Depends(get_auth_db)):
@@ -117,7 +168,7 @@ def revoke_device(device_id: UUID, db: Session = Depends(get_auth_db)):
     if device:
         device.is_active = False
         db.commit()
-    return {"message": "Dispositivo revocado"}
+    return {"message": "Dispositivo revocado exitosamente"}
 
 @router.post("/refresh")
 def refresh_token(request: Request, response: Response, db: Session = Depends(get_auth_db)):
@@ -137,3 +188,33 @@ def refresh_token(request: Request, response: Response, db: Session = Depends(ge
 def logout(response: Response):
     response.delete_cookie("refresh_token")
     return {"message": "Cierre de sesión exitoso"}
+
+@router.post("/password-reset-request")
+def request_password_reset(request: PasswordResetRequest, db: Session = Depends(get_auth_db)):
+    user = db.query(User).filter(User.email == request.email).first()
+    success_message = {"message": "Si ese correo existe en nuestro sistema, recibirás un enlace en los próximos minutos"}
+    
+    if user:
+        expire = datetime.now(timezone.utc) + timedelta(hours=1)
+        reset_token = jwt.encode({"sub": str(user.id), "type": "reset", "exp": expire}, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+        reset_link = f"http://localhost:5173/reset-password?token={reset_token}"
+        print(f"\n[EMAIL SIMULADO] Para: {user.email} -> Enlace de recuperación: {reset_link}\n")
+
+    return success_message
+
+@router.post("/password-reset")
+def confirm_password_reset(request: PasswordResetConfirm, db: Session = Depends(get_auth_db)):
+    try:
+        payload = jwt.decode(request.token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        if payload.get("type") != "reset":
+            raise HTTPException(status_code=400, detail="Token inválido")
+            
+        user = db.query(User).filter(User.id == payload.get("sub")).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+        user.password_hash = get_password_hash(request.new_password)
+        db.commit()
+        return {"message": "Contraseña actualizada correctamente"}
+    except JWTError:
+        raise HTTPException(status_code=400, detail="Este enlace ya no es válido. Solicitá uno nuevo.")

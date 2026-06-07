@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     ENVIRONMENT: str
     SECRET_KEY: str
     ALGORITHM: str
+    GOOGLE_CLIENT_ID: str = "" 
 
     class Config:
         env_file = "../.env" 
