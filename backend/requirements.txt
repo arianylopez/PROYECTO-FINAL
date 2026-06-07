@@ -11,3 +11,6 @@ python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 structlog==24.2.0
 Django==5.0.6
+pytest
+httpx
+pytest-env
