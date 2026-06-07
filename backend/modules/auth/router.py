@@ -1,38 +1,47 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, EmailStr, field_validator
-from datetime import date
-import bcrypt  
-from uuid import UUID
-from core.database import get_auth_db
-from modules.auth.models import User
 from datetime import datetime, timedelta, timezone
-from jose import jwt
+import bcrypt
+from jose import jwt, JWTError
+from uuid import UUID
+import json
+
+from core.database import get_auth_db
 from core.config import settings
+from modules.auth.models import User, Device
 
 router = APIRouter(prefix="/auth", tags=["Autenticación"])
 
 def get_password_hash(password: str) -> str:
-    pwd_bytes = password.encode('utf-8')
-    salt = bcrypt.gensalt(rounds=12)
-    hashed_bytes = bcrypt.hashpw(pwd_bytes, salt)
-    return hashed_bytes.decode('utf-8')
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(12)).decode('utf-8')
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+
+def create_tokens(user: User):
+    access_expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+    access_token = jwt.encode({"sub": str(user.id), "role": user.role, "exp": access_expire}, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    
+    refresh_expire = datetime.now(timezone.utc) + timedelta(days=7)
+    refresh_token = jwt.encode({"sub": str(user.id), "type": "refresh", "exp": refresh_expire}, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    
+    return access_token, refresh_token
 
 class UserRegisterRequest(BaseModel):
     name: str
     email: EmailStr
     password: str
-    birth_date: date
+    birth_date: str 
     device_fingerprint: str
+    device_name: str = "Navegador Web"
 
     @field_validator('birth_date')
     @classmethod
     def validate_age(cls, v):
-        today = date.today()
-        age = today.year - v.year - ((today.month, today.day) < (v.month, v.day))
+        birth = datetime.strptime(v, "%Y-%m-%d").date()
+        today = datetime.today().date()
+        age = today.year - birth.year - ((today.month, today.day) < (birth.month, birth.day))
         if age < 18:
             raise ValueError('Debes ser mayor de 18 años para registrarte en CinemaPlus')
         return v
@@ -44,44 +53,87 @@ class UserRegisterRequest(BaseModel):
             raise ValueError('La contraseña debe tener al menos 8 caracteres')
         return v
 
-class UserResponse(BaseModel):
-    id: UUID  
-    name: str
+class LoginRequest(BaseModel):
     email: str
-    role: str
+    password: str
+    device_fingerprint: str
+    device_name: str = "Navegador Web"
 
-    class Config:
-        from_attributes = True
 
-@router.post("/register", status_code=status.HTTP_201_CREATED, response_model=UserResponse)
-def register_user(request: UserRegisterRequest, db: Session = Depends(get_auth_db)):
-    existing_user = db.query(User).filter(User.email == request.email).first()
-    if existing_user:
-        raise HTTPException(status_code=409, detail="Este correo electrónico ya está registrado")
-
-    hashed_password = get_password_hash(request.password)
+@router.post("/register", status_code=status.HTTP_201_CREATED)
+def register_user(request: UserRegisterRequest, response: Response, db: Session = Depends(get_auth_db)):
+    if db.query(User).filter(User.email == request.email).first():
+        raise HTTPException(status_code=409, detail="Este correo electrónico ya está registrado. Ingresa a tu cuenta o recupera tu contraseña.")
 
     new_user = User(
         name=request.name,
         email=request.email,
-        password_hash=hashed_password,
-        birth_date=request.birth_date
+        password_hash=get_password_hash(request.password),
+        birth_date=datetime.strptime(request.birth_date, "%Y-%m-%d").date()
     )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    
-    return new_user
+
+    new_device = Device(user_id=new_user.id, device_fingerprint=request.device_fingerprint, device_name=request.device_name)
+    db.add(new_device)
+    db.commit()
+
+    return {"message": "Usuario creado exitosamente", "redirect": "/onboarding"}
 
 @router.post("/login")
-def login(request: UserRegisterRequest, db: Session = Depends(get_auth_db)):
+def login(request: LoginRequest, response: Response, db: Session = Depends(get_auth_db)):
     user = db.query(User).filter(User.email == request.email).first()
     
     if not user or not verify_password(request.password, user.password_hash):
-        raise HTTPException(status_code=401, detail="Credenciales incorrectas")
+        raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
 
-    expire = datetime.now(timezone.utc) + timedelta(hours=2)
-    to_encode = {"sub": str(user.id), "role": user.role, "exp": expire}
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    active_devices = db.query(Device).filter(Device.user_id == user.id, Device.is_active == True).all()
+    known_device = next((d for d in active_devices if d.device_fingerprint == request.device_fingerprint), None)
+
+    if not known_device and len(active_devices) >= 3:
+        devices_list = [{"id": str(d.id), "name": d.device_name, "last_seen": d.last_seen.isoformat()} for d in active_devices]
+        return Response(status_code=403, content=json.dumps({"detail": "Límite de dispositivos alcanzado (3/3)", "devices": devices_list}))
+
+    if not known_device:
+        known_device = Device(user_id=user.id, device_fingerprint=request.device_fingerprint, device_name=request.device_name)
+        db.add(known_device)
+    else:
+        known_device.last_seen = datetime.now(timezone.utc)
+    db.commit()
+
+    access_token, refresh_token = create_tokens(user)
     
-    return {"access_token": encoded_jwt, "token_type": "bearer"}
+    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, max_age=7*24*60*60, samesite="lax")
+    
+    return {
+        "access_token": access_token, 
+        "user": {"id": str(user.id), "name": user.name, "email": user.email, "role": user.role}
+    }
+
+@router.post("/devices/{device_id}/revoke")
+def revoke_device(device_id: UUID, db: Session = Depends(get_auth_db)):
+    device = db.query(Device).filter(Device.id == device_id).first()
+    if device:
+        device.is_active = False
+        db.commit()
+    return {"message": "Dispositivo revocado"}
+
+@router.post("/refresh")
+def refresh_token(request: Request, response: Response, db: Session = Depends(get_auth_db)):
+    token = request.cookies.get("refresh_token")
+    if not token:
+        raise HTTPException(status_code=401, detail="No refresh token")
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        user = db.query(User).filter(User.id == payload.get("sub")).first()
+        access_token, new_refresh_token = create_tokens(user)
+        response.set_cookie(key="refresh_token", value=new_refresh_token, httponly=True, max_age=7*24*60*60, samesite="lax")
+        return {"access_token": access_token}
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Token inválido")
+
+@router.post("/logout")
+def logout(response: Response):
+    response.delete_cookie("refresh_token")
+    return {"message": "Cierre de sesión exitoso"}

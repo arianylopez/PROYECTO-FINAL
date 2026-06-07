@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { Link } from 'react-router-dom';
 import { apiClient } from '../../shared/api/apiClient';
 import './RegisterForm.css';
 
@@ -25,7 +26,6 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 
 export const RegisterForm = () => {
   const [serverError, setServerError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -34,33 +34,32 @@ export const RegisterForm = () => {
   const onSubmit = async (data: RegisterFormData) => {
     try {
       setServerError(null);
-      setSuccessMessage(null);
       
       const payload = {
         ...data,
         device_fingerprint: navigator.userAgent,
+        device_name: "Navegador Web"
       };
 
       await apiClient.post('/auth/register', payload);
-      setSuccessMessage('¡Registro exitoso! Ya puedes iniciar sesión.');
+      
+      window.location.href = '/onboarding';
     } catch (error: any) {
       if (error.response?.status === 409) {
-        setServerError('Este correo ya está registrado.');
+        setServerError('Este correo electrónico ya está registrado. Ingresa a tu cuenta o recupera tu contraseña.');
       } else {
-        setServerError('Ocurrió un error en el servidor. Intenta más tarde.');
+        setServerError(error.response?.data?.detail || 'Ocurrió un error en el servidor. Intenta más tarde.');
       }
     }
   };
 
   return (
     <div className="auth-layout">
-      {/* Columna Izquierda: Formulario */}
       <div className="auth-layout__sidebar">
         <form className="register-form" onSubmit={handleSubmit(onSubmit)}>
           
           <div className="register-form__header">
             <div className="register-form__logo">
-              {/* Ícono de ticket simulado */}
               <svg className="register-form__logo-icon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M22 10V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v4c1.1 0 2 .9 2 2s-.9 2-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4c-1.1 0-2-.9-2-2s.9-2 2-2z"/>
               </svg>
@@ -72,7 +71,6 @@ export const RegisterForm = () => {
           <p className="register-form__subtitle">Necesitas registrarte para completar tu compra</p>
 
           {serverError && <div className="register-form__alert register-form__alert--error">{serverError}</div>}
-          {successMessage && <div className="register-form__alert register-form__alert--success">{successMessage}</div>}
 
           <div className="register-form__field">
             <label className="register-form__label">Nombre completo</label>
@@ -135,13 +133,11 @@ export const RegisterForm = () => {
 
           <div className="register-form__footer">
             Already have an account? 
-            <a href="/login" className="register-form__link">Sign In</a>
+            <Link to="/login" className="register-form__link">Sign In</Link>
           </div>
 
         </form>
       </div>
-
-      {/* Columna Derecha: Imagen de fondo*/}
       <div className="auth-layout__cover"></div>
     </div>
   );
