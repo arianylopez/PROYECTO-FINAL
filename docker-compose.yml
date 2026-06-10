@@ -92,6 +92,30 @@ services:
       - redis
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
+  nginx:
+    image: nginx:alpine
+    container_name: cinemaplus_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - django_static:/app/staticfiles
+    depends_on:
+      - backend
+      - frontend
+
+  frontend:
+    build: 
+      context: ./frontend-react
+    container_name: cinemaplus_frontend
+    volumes:
+      - ./frontend-react:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
 volumes:
   auth_db_data:
   business_db_data:
@@ -100,3 +124,4 @@ volumes:
   elastic_data:
   clickhouse_data:
   kafka_data:
+  django_static:
