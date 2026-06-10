@@ -11,21 +11,26 @@ const forgotSchema = z.object({
 });
 
 export const ForgotPasswordForm = () => {
-  const [message, setMessage] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false); 
+  const [message] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [demoLink, setDemoLink] = useState<string | null>(null); 
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(forgotSchema),
   });
 
   const onSubmit = async (data: { email: string }) => {
-    setIsLoading(true); 
+    setIsLoading(true);
+    setDemoLink(null);
     try {
-      await apiClient.post('/auth/password-reset-request', data);
+      const response = await apiClient.post('/auth/password-reset-request', data);
+      
+      if (response.data && response.data.demo_link) {
+        setDemoLink(response.data.demo_link);
+      }
     } catch (error) {
     } finally {
       setIsLoading(false);
-      setMessage('Si ese correo existe en nuestro sistema, recibirás un enlace en los próximos minutos');
     }
   };
 
@@ -49,6 +54,15 @@ export const ForgotPasswordForm = () => {
           <button className="register-form__submit" type="submit" disabled={isLoading}>
             {isLoading ? 'Enviando...' : 'Enviar enlace'}
           </button>
+
+          {demoLink && (
+            <div style={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#1a1d24', border: '1px dashed #4285F4', borderRadius: '8px', textAlign: 'center' }}>
+              <p style={{ fontSize: '0.8rem', color: '#a0a0a0', marginBottom: '0.5rem', marginTop: 0 }}></p>
+              <a href={demoLink} className="register-form__submit" style={{ display: 'block', textDecoration: 'none', backgroundColor: '#4285F4', color: 'white' }}>
+                Hacer clic para recuperar contraseña 
+              </a>
+            </div>
+          )}
 
           <div className="register-form__footer">
             <Link to="/login" className="register-form__link">Volver al Login</Link>
