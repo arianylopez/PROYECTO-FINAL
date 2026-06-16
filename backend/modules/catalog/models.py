@@ -1,11 +1,12 @@
 from django.db import models
+from django.contrib.auth.models import User as DjangoUser 
 import uuid
 
 class Genre(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name="Nombre")
 
     class Meta:
-        db_table = 'catalog_genres' # Especificamos el esquema lógico
+        db_table = 'catalog_genres'
         verbose_name = "Género"
         verbose_name_plural = "Géneros"
 
@@ -71,3 +72,28 @@ class Screening(models.Model):
 
     def __str__(self):
         return f"{self.movie.title} - {self.room.name} ({self.start_time.strftime('%Y-%m-%d %H:%M')})"
+    
+class AuditLog(models.Model):
+    ACTION_CHOICES = [
+        ('CREATE', 'Create'),
+        ('UPDATE', 'Update'),
+        ('DELETE', 'Soft Delete'),
+    ]
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    admin_user = models.ForeignKey(DjangoUser, on_delete=models.SET_NULL, null=True, verbose_name="Administrador")
+    action = models.CharField(max_length=10, choices=ACTION_CHOICES, verbose_name="Acción")
+    table_name = models.CharField(max_length=50, verbose_name="Tabla Afectada")
+    record_id = models.CharField(max_length=50, verbose_name="ID del Registro")
+    snapshot_before = models.JSONField(null=True, blank=True, verbose_name="Snapshot Antes")
+    snapshot_after = models.JSONField(null=True, blank=True, verbose_name="Snapshot Después")
+    timestamp = models.DateTimeField(auto_now_add=True, verbose_name="Fecha y Hora")
+
+    class Meta:
+        db_table = 'audit_logs'
+        verbose_name = "Log de Auditoría"
+        verbose_name_plural = "Logs de Auditoría"
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        return f"{self.action} on {self.table_name} by {self.admin_user} at {self.timestamp}"

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 
 export const apiClient = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: 'http://localhost',
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true 
 });
@@ -14,7 +14,7 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry && originalRequest.url !== '/auth/login') {
       originalRequest._retry = true;
       try {
-        const res = await axios.post('http://localhost:8000/auth/refresh', {}, { withCredentials: true });
+        const res = await axios.post('http://localhost/auth/refresh', {}, { withCredentials: true });
         const newToken = res.data.access_token;
         useAuthStore.getState().updateToken(newToken);
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
