@@ -16,3 +16,4 @@ httpx
 pytest-env
 google-auth==2.30.0
 requests==2.31.0
+django-cors-headers==4.3.1
