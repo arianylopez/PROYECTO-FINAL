@@ -13,6 +13,9 @@ def create_audit_log(request, action, obj, snapshot_before=None):
     if snapshot_after and 'genres' in snapshot_after:
         snapshot_after['genres'] = list(obj.genres.values_list('name', flat=True))
         
+    if snapshot_before and 'genres' in snapshot_before:
+        snapshot_before['genres'] = [str(g) for g in snapshot_before['genres']]
+        
     if snapshot_after:
         snapshot_after = json.loads(json.dumps(snapshot_after, cls=DjangoJSONEncoder))
     if snapshot_before:
