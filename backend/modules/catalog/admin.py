@@ -4,15 +4,27 @@ from django.utils.html import format_html
 from django.forms.models import model_to_dict
 from django.utils.timezone import now
 from .models import Genre, Movie, Room, Screening, TicketOrder, AuditLog
+import json
+from django.core.serializers.json import DjangoJSONEncoder
 
 def create_audit_log(request, action, obj, snapshot_before=None):
     snapshot_after = model_to_dict(obj) if action != 'DELETE' else None
+    
     if snapshot_after and 'genres' in snapshot_after:
         snapshot_after['genres'] = list(obj.genres.values_list('name', flat=True))
         
+    if snapshot_after:
+        snapshot_after = json.loads(json.dumps(snapshot_after, cls=DjangoJSONEncoder))
+    if snapshot_before:
+        snapshot_before = json.loads(json.dumps(snapshot_before, cls=DjangoJSONEncoder))
+        
     AuditLog.objects.create(
-        admin_user=request.user, action=action, table_name=obj._meta.model_name,
-        record_id=str(obj.pk), snapshot_before=snapshot_before, snapshot_after=snapshot_after
+        admin_user=request.user, 
+        action=action, 
+        table_name=obj._meta.model_name,
+        record_id=str(obj.pk), 
+        snapshot_before=snapshot_before, 
+        snapshot_after=snapshot_after
     )
 
 class MovieForm(forms.ModelForm):
