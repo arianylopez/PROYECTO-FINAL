@@ -3,8 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware 
 from core.database import auth_engine, AuthBase
 from modules.auth.router import router as auth_router
-from modules.auth.router import router as auth_router
-from modules.catalog.public_router import router as catalog_public_router
+from modules.catalog.public_router import router as catalog_public_router 
 
 AuthBase.metadata.create_all(bind=auth_engine)
 
