@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User as DjangoUser
+from django.utils import timezone
 from datetime import timedelta
 import uuid
 import string
@@ -73,23 +74,45 @@ class Screening(models.Model):
     cancellation_reason = models.CharField(max_length=255, blank=True, null=True, verbose_name="Motivo de Cancelación")
 
     def clean(self):
-        if self.start_time and getattr(self, 'movie', None):
-            self.end_time = self.start_time + timedelta(minutes=self.movie.duration_minutes + 30)
-            overlaps = Screening.objects.filter(
-                room=self.room,
-                is_active=True,
-                start_time__lt=self.end_time,
-                end_time__gt=self.start_time
-            ).exclude(pk=self.pk)
-            if overlaps.exists():
-                raise ValidationError("La sala ya tiene una función programada en ese horario.")
+        if not self.start_time or not getattr(self, 'movie', None) or not getattr(self, 'room', None):
+            return
+
+        if (self._state.adding or self.__original_start_time != self.start_time):
+            if self.start_time <= timezone.now():
+                raise ValidationError({'start_time': "La fecha y hora de la función debe ser futura."})
+
+        if not self.movie.is_active:
+            raise ValidationError({'movie': "No se puede programar una función para una película inactiva."})
+
+        self.end_time = self.start_time + timedelta(minutes=self.movie.duration_minutes + 30)
+        
+        overlaps = Screening.objects.filter(
+            room=self.room,
+            is_active=True,
+            start_time__lt=self.end_time,
+            end_time__gt=self.start_time
+        ).exclude(pk=self.pk)
+        
+        if overlaps.exists():
+            raise ValidationError("La sala ya tiene una función programada en ese horario.")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__original_start_time = self.start_time
 
     def save(self, *args, **kwargs):
         self.clean()
         super().save(*args, **kwargs)
 
-    def __str__(self): return f"{self.movie.title} - {self.start_time.strftime('%d/%m/%Y %H:%M')}"
-    class Meta: verbose_name = "Función"; verbose_name_plural = "Funciones"
+    def __str__(self): 
+        start_formatted = getattr(self, 'start_time', None)
+        if start_formatted:
+            return f"{self.movie.title} - {self.start_time.strftime('%d/%m/%Y %H:%M')}"
+        return f"{self.movie.title} - (Sin fecha)"
+        
+    class Meta: 
+        verbose_name = "Función"
+        verbose_name_plural = "Funciones"
 
 class TicketOrder(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -109,3 +132,47 @@ class AuditLog(models.Model):
     snapshot_before = models.JSONField(null=True, blank=True)
     snapshot_after = models.JSONField(null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+class Format(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=50, unique=True, verbose_name="Formato (Ej. 2D, 3D, IMAX)")
+    price_modifier = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0.00, 
+        verbose_name="Recargo por formato (Bs.)",
+        help_text="Monto extra que se suma al precio base del ticket."
+    )
+    is_active = models.BooleanField(default=True, verbose_name="Activo")
+
+    def __str__(self):
+        return f"{self.name} (+Bs. {self.price_modifier})" if self.price_modifier > 0 else self.name
+
+    class Meta:
+        verbose_name = "Formato de Proyección"
+        verbose_name_plural = "Formatos de Proyección"
+
+
+class Language(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=50, unique=True, verbose_name="Idioma / Versión")
+    is_active = models.BooleanField(default=True, verbose_name="Activa")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Versión de Idioma"
+        verbose_name_plural = "Versiones de Idioma"
+
+
+class TicketType(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=50, unique=True, verbose_name="Tipo de Entrada")
+    base_price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name="Precio Base (Bs.)")
+    is_active = models.BooleanField(default=True, verbose_name="Activa")
+
+    def __str__(self):
+        return f"{self.name} (Bs. {self.base_price})"
+
+    class Meta:
+        verbose_name = "Tipo de Ticket"
+        verbose_name_plural = "Tipos de Ticket"

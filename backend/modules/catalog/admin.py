@@ -6,7 +6,7 @@ from django.utils.timezone import now
 from django.core.exceptions import PermissionDenied 
 import json
 from django.core.serializers.json import DjangoJSONEncoder
-from .models import Genre, Movie, Room, Screening, TicketOrder, AuditLog
+from .models import Genre, Movie, Room, Screening, TicketOrder, AuditLog, Format, Language, TicketType
 
 def create_audit_log(request, action, obj, snapshot_before=None):
     snapshot_after = model_to_dict(obj) if action != 'DELETE' else None
@@ -121,3 +121,21 @@ class AuditLogAdmin(admin.ModelAdmin):
 
 admin.site.register(Genre)
 admin.site.register(TicketOrder) 
+
+@admin.register(Format)
+class FormatAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price_modifier', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('name',)
+
+@admin.register(Language)
+class LanguageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('name',)
+
+@admin.register(TicketType)
+class TicketTypeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'base_price', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('name',)
