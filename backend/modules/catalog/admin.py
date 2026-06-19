@@ -3,9 +3,10 @@ from django import forms
 from django.utils.html import format_html
 from django.forms.models import model_to_dict
 from django.utils.timezone import now
-from .models import Genre, Movie, Room, Screening, TicketOrder, AuditLog
+from django.core.exceptions import PermissionDenied 
 import json
 from django.core.serializers.json import DjangoJSONEncoder
+from .models import Genre, Movie, Room, Screening, TicketOrder, AuditLog
 
 def create_audit_log(request, action, obj, snapshot_before=None):
     snapshot_after = model_to_dict(obj) if action != 'DELETE' else None
@@ -56,22 +57,35 @@ class MovieAdmin(admin.ModelAdmin):
         return "-"
     poster_preview.short_description = 'Afiche'
 
+    def add_view(self, request, form_url='', extra_context=None):
+        if request.user.groups.filter(name='Audit Admin').exists():
+            raise PermissionDenied("No tenés permiso para realizar esta acción")
+        return super().add_view(request, form_url, extra_context)
+
     def save_model(self, request, obj, form, change):
         snapshot_before = model_to_dict(Movie.objects.get(pk=obj.pk)) if change else None
         super().save_model(request, obj, form, change)
         create_audit_log(request, 'UPDATE' if change else 'CREATE', obj, snapshot_before)
 
-    @admin.action(description='Dar de baja películas (Soft Delete)')
-    def soft_delete_movies(self, request, queryset):
+    def delete_model(self, request, obj):
+        if obj.is_active:
+            snapshot_before = model_to_dict(obj)
+            obj.is_active = False
+            obj.save()
+            obj.screenings.filter(start_time__gte=now(), is_active=True).update(is_active=False)
+            create_audit_log(request, 'DELETE', obj, snapshot_before)
+
+    def delete_queryset(self, request, queryset):
         count = 0
-        for movie in queryset:
-            if movie.is_active:
-                movie.is_active = False
-                movie.save()
-                movie.screenings.filter(start_time__gte=now(), is_active=True).update(is_active=False)
-                create_audit_log(request, 'DELETE', movie, model_to_dict(movie))
+        for obj in queryset:
+            if obj.is_active:
+                self.delete_model(request, obj)
                 count += 1
-        self.message_user(request, f'{count} películas dadas de baja.')
+        self.message_user(request, f'{count} películas dadas de baja correctamente.')
+
+    @admin.action(description='Dar de baja películas seleccionadas')
+    def soft_delete_movies(self, request, queryset):
+        self.delete_queryset(request, queryset)
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
