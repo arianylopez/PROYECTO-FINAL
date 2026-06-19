@@ -4,9 +4,7 @@ import { RegisterForm } from './features/auth/RegisterForm';
 import { LoginForm } from './features/auth/LoginForm';
 import { ForgotPasswordForm } from './features/auth/ForgotPasswordForm';
 import { ResetPasswordForm } from './features/auth/ResetPasswordForm';
-
-const HomeTemp = () => <div style={{ color: 'white', padding: '2rem', textAlign: 'center' }}><h1>Cartelera Principal</h1></div>;
-const OnboardingTemp = () => <div style={{ color: 'white', padding: '2rem', textAlign: 'center' }}><h1>Elige tus géneros favoritos</h1></div>;
+import { HomePage } from './pages/HomePage';
 
 function App() {
   const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "631798098248-725ofbk4b17k45vpv3l6gsmetaukq89i.apps.googleusercontent.com";
@@ -22,8 +20,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPasswordForm />} />
           <Route path="/reset-password" element={<ResetPasswordForm />} />
           
-          <Route path="/home" element={<HomeTemp />} />
-          <Route path="/onboarding" element={<OnboardingTemp />} />
+          <Route path="/home" element={<HomePage />} />
         </Routes>
       </BrowserRouter>
     </GoogleOAuthProvider>
