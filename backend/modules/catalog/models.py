@@ -10,7 +10,9 @@ class Genre(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50, unique=True, verbose_name="Nombre")
     def __str__(self): return self.name
-    class Meta: verbose_name = "Género"; verbose_name_plural = "Géneros"
+    class Meta: 
+        verbose_name = "Género"; 
+        verbose_name_plural = "Géneros"
 
 class Movie(models.Model):
     RATING_CHOICES = [('ATP', 'ATP'), ('+13', '+13'), ('+16', '+16'), ('+18', '+18')]
@@ -28,40 +30,65 @@ class Movie(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Activa")
 
     def __str__(self): return self.title
-    class Meta: verbose_name = "Película"; verbose_name_plural = "Películas"
+    class Meta:
+        verbose_name = "Película"
+        verbose_name_plural = "Películas"
+        ordering = ['-release_date']
 
 class Room(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50, verbose_name="Nombre de la Sala")
-    capacity = models.PositiveIntegerField(verbose_name="Capacidad Total", editable=False)
-    rows = models.PositiveIntegerField(verbose_name="Cantidad de Filas")
-    columns = models.PositiveIntegerField(verbose_name="Butacas por Fila")
+    grid_rows = models.PositiveIntegerField(verbose_name="Filas (Cuadrícula)", help_text="Ej. 10")
+    grid_columns = models.PositiveIntegerField(verbose_name="Columnas (Cuadrícula)", help_text="Ej. 15")
+    cleaning_time_minutes = models.PositiveIntegerField(default=20, verbose_name="Tiempo de Limpieza (Min)", help_text="Tiempo requerido antes de la siguiente función.")
+    is_active = models.BooleanField(default=True, verbose_name="Activa")
 
     def save(self, *args, **kwargs):
         is_new = self._state.adding
-        self.capacity = self.rows * self.columns
         super().save(*args, **kwargs)
         
         if is_new:
-            letters = string.ascii_uppercase
+            alphabet = string.ascii_uppercase
             seats_to_create = []
-            for r in range(self.rows):
-                row_label = letters[r % 26]
-                for c in range(1, self.columns + 1):
-                    seats_to_create.append(Seat(room=self, row=row_label, number=c))
+            for r in range(self.grid_rows):
+                row_label = alphabet[r % 26] * (r // 26 + 1)
+                for c in range(self.grid_columns):
+                    seats_to_create.append(Seat(
+                        room=self,
+                        row_label=row_label,
+                        column_number=c + 1,
+                        seat_type='normal'
+                    ))
             Seat.objects.bulk_create(seats_to_create)
 
-    def __str__(self): return f"{self.name} ({self.capacity} asient.)"
-    class Meta: verbose_name = "Sala"; verbose_name_plural = "Salas"
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Sala"
+        verbose_name_plural = "Salas"
 
 class Seat(models.Model):
+    SEAT_TYPES = [
+        ('normal', 'Normal'),
+        ('vip', 'VIP / Preferencial'),
+        ('wheelchair', 'Silla de Ruedas'),
+        ('corridor', 'Pasillo (Vacío)'), 
+    ]
+    
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='seats')
-    row = models.CharField(max_length=2)
-    number = models.PositiveIntegerField()
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='seats', verbose_name="Sala")
+    row_label = models.CharField(max_length=5, verbose_name="Fila")
+    column_number = models.PositiveIntegerField(verbose_name="Número")
+    seat_type = models.CharField(max_length=20, choices=SEAT_TYPES, default='normal', verbose_name="Tipo de Butaca")
 
-    def __str__(self): return f"{self.row}{self.number}"
-    class Meta: unique_together = ('room', 'row', 'number')
+    def __str__(self):
+        return f"{self.row_label}{self.column_number} - {self.room.name}"
+
+    class Meta:
+        verbose_name = "Butaca"
+        verbose_name_plural = "Butacas"
+        ordering = ['room', 'row_label', 'column_number']
 
 class Screening(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -132,6 +159,10 @@ class AuditLog(models.Model):
     snapshot_before = models.JSONField(null=True, blank=True)
     snapshot_after = models.JSONField(null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta: 
+        verbose_name = "Log de Auditoría"
+        verbose_name_plural = "Logs de Auditoría"
 
 class Format(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
