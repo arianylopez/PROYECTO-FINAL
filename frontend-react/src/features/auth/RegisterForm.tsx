@@ -12,7 +12,9 @@ import './RegisterForm.css';
 const registerSchema = z.object({
   name: z.string().min(2, 'Ingresa tu nombre completo'),
   email: z.string().email('Correo electrónico inválido'),
-  password: z.string().min(8, 'Mínimo 8 caracteres'),
+  password: z.string()
+    .min(8, 'La contraseña debe tener al menos 8 caracteres')
+    .regex(/\d/, 'La contraseña debe contener al menos 1 número'),
   birth_date: z.string().refine((dateString) => {
     const today = new Date();
     const birthDate = new Date(dateString);
@@ -41,8 +43,9 @@ export const RegisterForm = () => {
 
   const loginAction = useAuthStore((state) => state.login);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormData>({
+  const { register, handleSubmit, formState: { errors, isValid, isDirty } } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
+    mode: 'onBlur', 
   });
 
   const decodeJWT = (token: string) => {
@@ -64,13 +67,21 @@ export const RegisterForm = () => {
         device_name: "Navegador Web"
       };
 
-      await apiClient.post('/auth/register', payload);
-      window.location.href = '/onboarding';
+      const response = await apiClient.post('/auth/register', payload);
+      
+      if (response.data.access_token && response.data.user) {
+        loginAction(response.data.user, response.data.access_token);
+      }
+
+      window.location.href = '/home';
     } catch (error: any) {
       if (error.response?.status === 409) {
-        setServerError('Este correo electrónico ya está registrado. Ingresa a tu cuenta o recupera tu contraseña.');
+        setServerError('Este correo electrónico ya está registrado. Ingresa a tu cuenta o usa "¿Olvidaste tu contraseña?"');
       } else {
-        setServerError(error.response?.data?.detail || 'Ocurrió un error en el servidor. Intenta más tarde.');
+        const backendError = Array.isArray(error.response?.data?.detail) 
+          ? error.response.data.detail[0].msg 
+          : error.response?.data?.detail;
+        setServerError(backendError || 'Ocurrió un error en el servidor. Intenta más tarde.');
       }
     } finally {
       setIsLoading(false); 
@@ -125,7 +136,7 @@ export const RegisterForm = () => {
     }
     setIsGoogleLoading(true);
     try {
-      await apiClient.post('/auth/register', {
+      const response = await apiClient.post('/auth/register', {
         name: pendingGoogleData.name,
         email: pendingGoogleData.email,
         password: "GAuth_Secure123!", 
@@ -133,9 +144,17 @@ export const RegisterForm = () => {
         device_fingerprint: navigator.userAgent,
         device_name: "Navegador Web"
       });
-      window.location.href = '/onboarding';
+
+      if (response.data.access_token && response.data.user) {
+        loginAction(response.data.user, response.data.access_token);
+      }
+
+      window.location.href = '/home';
     } catch (error: any) {
-      setModalError(error.response?.data?.detail || "Ocurrió un error al registrar.");
+      const backendError = Array.isArray(error.response?.data?.detail) 
+        ? error.response.data.detail[0].msg 
+        : error.response?.data?.detail;
+      setModalError(backendError || "Ocurrió un error al registrar.");
     } finally {
       setIsGoogleLoading(false);
     }
@@ -185,7 +204,11 @@ export const RegisterForm = () => {
             {errors.birth_date && <span className="register-form__error">{errors.birth_date.message}</span>}
           </div>
 
-          <button className="register-form__submit" type="submit" disabled={isLoading || isGoogleLoading}>
+          <button 
+            className="register-form__submit" 
+            type="submit" 
+            disabled={isLoading || isGoogleLoading || (!isValid && isDirty)}
+          >
             {isLoading ? 'Procesando...' : 'Sign up'}
           </button>
 

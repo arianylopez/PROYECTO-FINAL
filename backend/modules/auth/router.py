@@ -46,14 +46,14 @@ class UserRegisterRequest(BaseModel):
         today = datetime.today().date()
         age = today.year - birth.year - ((today.month, today.day) < (birth.month, birth.day))
         if age < 18:
-            raise ValueError('Debes ser mayor de 18 años para registrarte en CinemaPlus')
+            raise ValueError('Debes ser mayor de 18 años para registrarte')
         return v
 
     @field_validator('password')
     @classmethod
     def validate_password(cls, v):
-        if len(v) < 8:
-            raise ValueError('La contraseña debe tener al menos 8 caracteres')
+        if len(v) < 8 or not any(char.isdigit() for char in v):
+            raise ValueError('La contraseña debe tener al menos 8 caracteres y contener al menos 1 número')
         return v
 
 class LoginRequest(BaseModel):
@@ -85,7 +85,10 @@ class PasswordResetConfirm(BaseModel):
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 def register_user(request: UserRegisterRequest, response: Response, db: Session = Depends(get_auth_db)):
     if db.query(User).filter(User.email == request.email).first():
-        raise HTTPException(status_code=409, detail="Este correo electrónico ya está registrado. Ingresa a tu cuenta o recupera tu contraseña.")
+        raise HTTPException(
+            status_code=409, 
+            detail="Este correo electrónico ya está registrado. Ingresa a tu cuenta o usa '¿Olvidaste tu contraseña?'"
+        )
 
     new_user = User(
         name=request.name,
@@ -101,7 +104,20 @@ def register_user(request: UserRegisterRequest, response: Response, db: Session 
     db.add(new_device)
     db.commit()
 
-    return {"message": "Usuario creado exitosamente", "redirect": "/onboarding"}
+    access_token, refresh_token = create_tokens(new_user)
+    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, max_age=7*24*60*60, samesite="lax")
+
+    return {
+        "message": "Usuario creado exitosamente", 
+        "redirect": "/home",
+        "access_token": access_token,
+        "user": {
+            "id": str(new_user.id), 
+            "name": new_user.name, 
+            "email": new_user.email, 
+            "role": new_user.role
+        }
+    }
 
 @router.post("/login")
 def login(request: LoginRequest, response: Response, db: Session = Depends(get_auth_db)):
