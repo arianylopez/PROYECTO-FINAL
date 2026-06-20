@@ -6,60 +6,116 @@ export const FeaturedHero = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const getFeaturedMovie = async () => {
+    const getFeatured = async () => {
       try {
         const data = await fetchMovies(1, 1);
-        if (data.items.length > 0) {
+        if (data.items && data.items.length > 0) {
           setFeaturedMovie(data.items[0]);
         }
-      } catch (error) {
-        console.error("[Internal Log] Error fetching featured movie", error);
+      } catch (err) {
+        console.error("[Internal Log] Failure reading featured banner asset:", err);
       } finally {
         setIsLoading(false);
       }
     };
-    getFeaturedMovie();
+    getFeatured();
   }, []);
 
   if (isLoading || !featuredMovie) {
-    return <section style={{ height: '450px', backgroundColor: '#1c1f2a' }}></section>;
+    return <section style={{ height: '500px', backgroundColor: '#0f1115' }}></section>;
   }
 
   return (
     <section style={{ 
       width: '100%', 
-      height: '450px', 
-      background: `linear-gradient(to top, #16181f 0%, rgba(22,24,31,0.6) 50%, rgba(22,24,31,0.8) 100%), url(${featuredMovie.poster_url}) center/cover center`,
+      height: '550px', 
+      background: `linear-gradient(to top, #0f1115 5%, rgba(15, 17, 21, 0.4) 60%, #0f1115 95%), url(${featuredMovie.poster_url}) center/cover no-repeat`,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'flex-end',
-      padding: '0 5% 4rem'
+      padding: '0 6% 5rem'
     }}>
-      <span style={{ backgroundColor: '#ff4d4d', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '4px', width: 'fit-content', fontSize: '0.8rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-        ESTRENO RECIENTE
-      </span>
-      <h2 style={{ fontSize: '3.5rem', fontWeight: '800', margin: '0 0 0.5rem 0', textShadow: '2px 4px 10px rgba(0,0,0,0.9)' }}>
-        {featuredMovie.title.toUpperCase()}
-      </h2>
-      <p style={{ maxWidth: '600px', color: '#cbd5e1', margin: '0 0 1.5rem 0', fontSize: '1rem', lineHeight: '1.5', textShadow: '1px 2px 4px rgba(0,0,0,0.8)' }}>
-        {featuredMovie.synopsis.length > 150 
-          ? `${featuredMovie.synopsis.substring(0, 150)}...` 
-          : featuredMovie.synopsis}
-      </p>
-      <div style={{ display: 'flex', gap: '1rem' }}>
-        <button style={{ background: '#f4e951', color: 'black', border: 'none', padding: '0.8rem 2.5rem', borderRadius: '8px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 4px 12px rgba(244,233,81,0.3)' }}>
-          Reservar Ahora
-        </button>
-        {featuredMovie.trailer_url && (
-          <a 
-            href={featuredMovie.trailer_url} 
-            target="_blank" 
-            rel="noreferrer" 
-            style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.4)', padding: '0.8rem 2.5rem', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', backdropFilter: 'blur(4px)', textDecoration: 'none', display: 'flex', alignItems: 'center' }}
-          >
-            Ver Trailer
-          </a>
-        )}
+      <div style={{ maxWidth: '650px' }}>
+        <span style={{ 
+          backgroundColor: '#ff3333', 
+          color: 'white', 
+          padding: '0.3rem 0.8rem', 
+          borderRadius: '4px', 
+          fontSize: '0.75rem', 
+          fontWeight: '800', 
+          letterSpacing: '1px',
+          display: 'inline-block',
+          marginBottom: '1rem'
+        }}>
+          ESTRENO DESTACADO
+        </span>
+        
+        <h2 style={{ 
+          fontSize: '4rem', 
+          fontWeight: '900', 
+          margin: '0 0 0.75rem 0', 
+          letterSpacing: '-1.5px',
+          lineHeight: '1.1',
+          textShadow: '3px 6px 15px rgba(0,0,0,0.9)' 
+        }}>
+          {featuredMovie.title.toUpperCase()}
+        </h2>
+        
+        <p style={{ 
+          color: '#e5e7eb', 
+          margin: '0 0 2rem 0', 
+          fontSize: '1.05rem', 
+          lineHeight: '1.6', 
+          display: '-webkit-box',
+          WebkitLineClamp: 3,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+          textShadow: '1px 2px 4px rgba(0,0,0,0.8)' 
+        }}>
+          {featuredMovie.synopsis}
+        </p>
+        
+        <div style={{ display: 'flex', gap: '1.25rem' }}>
+          <button style={{ 
+            background: '#f4e951', 
+            color: '#0f1115', 
+            border: 'none', 
+            padding: '0.9rem 3rem', 
+            borderRadius: '30px', 
+            fontWeight: '800', 
+            fontSize: '0.95rem',
+            cursor: 'pointer', 
+            boxShadow: '0 5px 25px rgba(244,233,81,0.35)',
+            transition: 'all 0.2s'
+          }}>
+            Ver Funciones Disponibles
+          </button>
+          
+          {featuredMovie.trailer_url && (
+            <a 
+              href={featuredMovie.trailer_url} 
+              target="_blank" 
+              rel="noreferrer" 
+              style={{ 
+                background: 'rgba(255,255,255,0.1)', 
+                color: 'white', 
+                border: '1px solid rgba(255,255,255,0.3)', 
+                padding: '0.9rem 3rem', 
+                borderRadius: '30px', 
+                fontWeight: '700', 
+                fontSize: '0.95rem',
+                cursor: 'pointer', 
+                backdropFilter: 'blur(8px)', 
+                textDecoration: 'none', 
+                display: 'inline-flex', 
+                alignItems: 'center',
+                transition: 'all 0.2s'
+              }}
+            >
+              Ver Tráiler
+            </a>
+          )}
+        </div>
       </div>
     </section>
   );
