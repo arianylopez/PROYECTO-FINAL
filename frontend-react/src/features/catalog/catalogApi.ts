@@ -33,6 +33,12 @@ export interface MovieDetail extends Movie {
   screenings: Screening[];
 }
 
+export interface TicketType {
+  id: string;
+  name: string;
+  price: number;
+}
+
 export interface MovieScreeningsResponse {
   movie: {
     id: string;
@@ -42,6 +48,7 @@ export interface MovieScreeningsResponse {
     poster_url: string;
   };
   screenings: Screening[];
+  ticket_types: TicketType[];
 }
 
 export const fetchMovies = async (

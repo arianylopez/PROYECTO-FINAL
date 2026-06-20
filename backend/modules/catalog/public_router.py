@@ -210,6 +210,32 @@ def get_movie_screenings(movie_id: str, db: Session = Depends(get_business_db)):
                 "language": s[4]
             })
 
+        ticket_types = []
+        try:
+            tt_query = text("""
+                SELECT CAST(id AS VARCHAR), name, base_price 
+                FROM catalog_tickettype 
+                WHERE is_active = true 
+                ORDER BY base_price DESC
+            """)
+            tt_result = db.execute(tt_query).fetchall()
+            for t in tt_result:
+                ticket_types.append({
+                    "id": t[0],
+                    "name": t[1],
+                    "price": float(t[2]) 
+                })
+        except Exception as e:
+            print(f"[Warning] Error cargando TicketTypes desde DB: {e}")
+            db.rollback()
+            try:
+                tt_query_fallback = text("SELECT CAST(id AS VARCHAR), name, base_price FROM catalog_tickettype ORDER BY base_price DESC")
+                tt_result_fb = db.execute(tt_query_fallback).fetchall()
+                for t in tt_result_fb:
+                    ticket_types.append({"id": t[0], "name": t[1], "price": float(t[2])})
+            except Exception as e2:
+                print(f"[CRITICAL] Error final en TicketTypes: {e2}")
+
         return {
             "movie": {
                 "id": movie_id,
@@ -218,7 +244,8 @@ def get_movie_screenings(movie_id: str, db: Session = Depends(get_business_db)):
                 "rating_classification": movie_row[2],
                 "poster_url": movie_row[3]
             },
-            "screenings": screenings
+            "screenings": screenings,
+            "ticket_types": ticket_types  
         }
 
     except HTTPException:
