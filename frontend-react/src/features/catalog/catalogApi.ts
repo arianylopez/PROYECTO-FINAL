@@ -21,6 +21,18 @@ export interface CatalogResponse {
   pages: number;
 }
 
+export interface Screening {
+  id: string;
+  start_time: string;
+  room: string;
+  format: string;
+  language: string;
+}
+
+export interface MovieDetail extends Movie {
+  screenings: Screening[];
+}
+
 export const fetchMovies = async (
   page: number = 1, 
   size: number = 12,
@@ -44,4 +56,9 @@ export const fetchGenres = async (): Promise<string[]> => {
     console.error("Error cargando géneros dinámicos:", error);
     return []; 
   }
+};
+
+export const fetchMovieDetail = async (id: string): Promise<MovieDetail> => {
+  const response = await apiClient.get<MovieDetail>(`/api/v1/catalog/movies/${id}`);
+  return response.data;
 };

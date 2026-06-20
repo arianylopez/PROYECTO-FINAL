@@ -1,16 +1,18 @@
 import type { Movie } from '../catalogApi';
+import { useNavigate } from 'react-router-dom';
 
 interface MovieCardProps {
   movie: Movie;
 }
 
 export const MovieCard = ({ movie }: MovieCardProps) => {
+  const navigate = useNavigate();
   const hours = Math.floor(movie.duration_minutes / 60);
   const minutes = movie.duration_minutes % 60;
   const friendlyDuration = `${hours}h ${minutes}m`;
 
   return (
-    <div className="movie-card">
+    <div className="movie-card" onClick={() => navigate(`/movie/${movie.id}`)} style={{ cursor: 'pointer' }}>
       <div className="movie-card__image-wrapper">
         <div className="movie-card__badge-rating">
           {movie.rating_classification}

@@ -5,6 +5,7 @@ import { LoginForm } from './features/auth/LoginForm';
 import { ForgotPasswordForm } from './features/auth/ForgotPasswordForm';
 import { ResetPasswordForm } from './features/auth/ResetPasswordForm';
 import { HomePage } from './pages/HomePage';
+import { MovieDetailPage } from './pages/MovieDetailPage';
 
 function App() {
   const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "631798098248-725ofbk4b17k45vpv3l6gsmetaukq89i.apps.googleusercontent.com";
@@ -21,6 +22,7 @@ function App() {
           <Route path="/reset-password" element={<ResetPasswordForm />} />
           
           <Route path="/home" element={<HomePage />} />
+          <Route path="/movie/:id" element={<MovieDetailPage />} />
         </Routes>
       </BrowserRouter>
     </GoogleOAuthProvider>

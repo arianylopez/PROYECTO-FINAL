@@ -7,6 +7,7 @@ from typing import Optional
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 from core.database import get_business_db
+from datetime import datetime, timezone
 
 router = APIRouter(prefix="/catalog", tags=["Public Catalog"])
 
@@ -100,3 +101,73 @@ def get_public_genres(db: Session = Depends(get_business_db)):
     except Exception as e:
         print(f"Error al obtener géneros: {e}")
         return {"genres": []}
+    
+@router.get("/movies/{movie_id}")
+def get_movie_detail(movie_id: str, db: Session = Depends(get_business_db)):
+    try:
+        movie_query = text("""
+            SELECT CAST(id AS VARCHAR), title, synopsis, duration_minutes, rating_classification, director, 
+                   CAST(release_date AS VARCHAR), poster_url, trailer_url 
+            FROM catalog_movie 
+            WHERE id = :id AND is_active = true
+        """)
+        movie_row = db.execute(movie_query, {"id": movie_id}).fetchone()
+
+        if not movie_row:
+            raise HTTPException(status_code=404, detail="Película no encontrada o inactiva")
+
+        movie = {
+            "id": movie_row[0], "title": movie_row[1], "synopsis": movie_row[2],
+            "duration_minutes": movie_row[3], 
+            "rating_classification": movie_row[4], 
+            "director": movie_row[5], "release_date": movie_row[6],
+            "poster_url": movie_row[7], "trailer_url": movie_row[8],
+            "genres": [],
+            "screenings": []
+        }
+
+        try:
+            genres_query = text("""
+                SELECT g.name 
+                FROM catalog_genre g
+                JOIN catalog_movie_genres mg ON g.id = mg.genre_id
+                WHERE mg.movie_id = :id
+            """)
+            genres_result = db.execute(genres_query, {"id": movie_id}).fetchall()
+            movie["genres"] = [row[0] for row in genres_result]
+        except Exception:
+            pass 
+
+        now_utc = datetime.now(timezone.utc)
+        try:
+            screenings_query = text("""
+                SELECT CAST(s.id AS VARCHAR), s.start_time, r.name, f.name, l.name
+                FROM catalog_screening s
+                JOIN catalog_room r ON s.room_id = r.id
+                JOIN catalog_format f ON s.format_id = f.id
+                JOIN catalog_language l ON s.language_id = l.id
+                WHERE s.movie_id = :id 
+                  AND s.start_time > :now 
+                  AND s.is_active = true
+                ORDER BY s.start_time ASC
+            """)
+            screenings_result = db.execute(screenings_query, {"id": movie_id, "now": now_utc}).fetchall()
+            
+            for s in screenings_result:
+                movie["screenings"].append({
+                    "id": s[0],
+                    "start_time": s[1].isoformat() if hasattr(s[1], 'isoformat') else str(s[1]),
+                    "room": s[2],
+                    "format": s[3],
+                    "language": s[4]
+                })
+        except Exception as se:
+            print(f"[Warning] Error cargando funciones: {se}")
+
+        return movie
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"[CRITICAL] Error en /movies/{movie_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error interno al cargar la película")
