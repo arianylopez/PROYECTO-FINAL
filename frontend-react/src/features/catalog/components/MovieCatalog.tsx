@@ -9,12 +9,10 @@ import '../styles/Catalog.css';
 export const MovieCatalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   
-  const initialSearch = searchParams.get('q') || '';
+  const urlSearchQuery = searchParams.get('q') || '';
   const initialGenre = searchParams.get('genre') || 'Todas';
 
-  const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [selectedGenre, setSelectedGenre] = useState(initialGenre);
-  
   const [dynamicGenres, setDynamicGenres] = useState<string[]>(['Todas']);
 
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -26,7 +24,7 @@ export const MovieCatalog = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
 
-  const debouncedSearchTerm = useDebounce(searchTerm, 350);
+  const debouncedSearchTerm = useDebounce(urlSearchQuery, 350);
   const isFirstMount = useRef(true);
 
   useEffect(() => {
@@ -97,8 +95,8 @@ export const MovieCatalog = () => {
   };
 
   const clearFilters = () => {
-    setSearchTerm('');
     setSelectedGenre('Todas');
+    setSearchParams(new URLSearchParams(), { replace: true });
   };
 
   return (
@@ -116,21 +114,6 @@ export const MovieCatalog = () => {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-end' }}>
           
-          <div style={{ position: 'relative', width: '280px' }}>
-            <svg style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input 
-              type="text" 
-              placeholder="Buscar título, director..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                width: '100%', padding: '0.6rem 1rem 0.6rem 2.5rem', borderRadius: '30px', border: '1px solid #374151', backgroundColor: '#1f222b', color: 'white', fontSize: '0.9rem', outline: 'none'
-              }}
-            />
-          </div>
-
           <div className="catalog-filters">
             {dynamicGenres.map(genre => (
               <button 
@@ -145,6 +128,12 @@ export const MovieCatalog = () => {
 
         </div>
       </div>
+
+      {urlSearchQuery && (
+        <div style={{ marginBottom: '2rem', padding: '1rem', backgroundColor: 'rgba(244, 233, 81, 0.05)', border: '1px solid rgba(244, 233, 81, 0.2)', borderRadius: '8px', color: '#e5e7eb' }}>
+          Resultados para la búsqueda: <strong style={{ color: '#f4e951', fontSize: '1.1rem' }}>"{urlSearchQuery}"</strong>
+        </div>
+      )}
 
       {error && movies.length === 0 ? (
         <div className="catalog-state">

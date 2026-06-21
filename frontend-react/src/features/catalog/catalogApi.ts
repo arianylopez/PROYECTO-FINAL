@@ -123,10 +123,43 @@ export const lockScreeningSeats = async (screeningId: string, seatIds: string[])
   return response.data;
 };
 
-export const processScreeningPurchase = async (screeningId: string, seatIds: string[], method: string) => {
+export const processScreeningPurchase = async (
+  screeningId: string, 
+  seatIds: string[], 
+  method: string, 
+  userId: string, 
+  total: number, 
+  seatLabels: string[]
+) => {
   const response = await apiClient.post(`/api/v1/catalog/screenings/${screeningId}/purchase`, {
     seat_ids: seatIds,
-    payment_method: method
+    payment_method: method,
+    user_id: userId,
+    invoice_total: total,
+    seat_labels: seatLabels
   });
   return response.data;
+};
+
+export interface OrderTicket {
+  seat_id: string;
+  qr_code: string;
+}
+
+export interface OrderHistoryItem {
+  id: string;
+  movie_title: string;
+  poster_url: string;
+  room_name: string;
+  start_time: string;
+  seat_labels: string[];
+  total_price: number;
+  status: string;
+  created_at: string;
+  tickets: OrderTicket[];
+}
+
+export const fetchMyOrders = async (userId: string): Promise<OrderHistoryItem[]> => {
+  const response = await apiClient.get<{orders: OrderHistoryItem[]}>(`/api/v1/catalog/me/orders?user_id=${userId}`);
+  return response.data.orders;
 };

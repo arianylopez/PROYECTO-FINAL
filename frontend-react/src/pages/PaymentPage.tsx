@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { fetchScreeningSeats, processScreeningPurchase, type ScreeningSeatsResponse } from '../features/catalog/catalogApi';
+import { useAuthStore } from '../shared/store/authStore';
 
 const validateLuhn = (num: string): boolean => {
   let arr = (num + '').replace(/\D/g, '').split('').reverse().map(x => parseInt(x, 10));
@@ -33,6 +34,8 @@ export const PaymentPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { user } = useAuthStore();
 
   const [data, setData] = useState<ScreeningSeatsResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -128,7 +131,9 @@ export const PaymentPage = () => {
       }
 
       setIsLoading(true);
-      const res = await processScreeningPurchase(id, seatIds, paymentMethod);
+      const userId = user?.id || 'guest-123'; 
+      const seatLabels = getSeatLabels();
+      const res = await processScreeningPurchase(id, seatIds, paymentMethod, userId, invoice.total, seatLabels);
       
       sessionStorage.setItem('ticketData', JSON.stringify({ invoice, data, res, seatIds }));
       sessionStorage.removeItem('lockExpiration');

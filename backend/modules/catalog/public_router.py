@@ -357,12 +357,13 @@ def lock_seats(screening_id: str, req: LockSeatsRequest, db: Session = Depends(g
 
 class PurchaseRequest(BaseModel):
     seat_ids: List[str]
+    seat_labels: List[str]  
     payment_method: str
+    user_id: str
+    invoice_total: float
 
 @router.post("/screenings/{screening_id}/purchase")
-def process_purchase(screening_id: str, req: PurchaseRequest, db: Session = Depends(get_business_db)):
-    """HU-13: Procesa el pago simulado y consolida los asientos como vendidos."""
-    
+def process_purchase(screening_id: str, req: PurchaseRequest, db: Session = Depends(get_business_db)):    
     for sid in req.seat_ids:
         if not redis_client.exists(f"lock:{screening_id}:{sid}"):
             raise HTTPException(409, "Tu reserva expiró. Volvé a elegir tus butacas.")
@@ -374,9 +375,60 @@ def process_purchase(screening_id: str, req: PurchaseRequest, db: Session = Depe
     import uuid
     order_number = f"ORD-{datetime.now().year}-{str(uuid.uuid4())[:8].upper()}"
 
+    scr_query = text("""
+        SELECT m.title, m.poster_url, r.name, s.start_time
+        FROM catalog_screening s
+        JOIN catalog_movie m ON s.movie_id = m.id
+        JOIN catalog_room r ON s.room_id = r.id
+        WHERE s.id = :id
+    """)
+    scr = db.execute(scr_query, {"id": screening_id}).fetchone()
+
+    order_data = {
+        "id": order_number,
+        "user_id": req.user_id,
+        "movie_title": scr[0] if scr else "Película",
+        "poster_url": scr[1] if scr else "",
+        "room_name": scr[2] if scr else "Sala",
+        "start_time": scr[3].isoformat() if scr else datetime.now().isoformat(),
+        "seat_labels": req.seat_labels,
+        "total_price": req.invoice_total,
+        "status": "Completada",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "tickets": [{"seat_id": sid, "qr_code": f"QR-{order_number}-{sid}"} for sid in req.seat_ids]
+    }
+
+    redis_client.set(f"order:{order_number}", json.dumps(order_data))
+    redis_client.sadd(f"user_orders:{req.user_id}", order_number)
+
     return {
         "order_id": order_number,
         "status": "completed",
         "method": req.payment_method,
-        "tickets": [{"seat_id": sid, "qr_code": f"QR-{order_number}-{sid}"} for sid in req.seat_ids]
+        "tickets": order_data["tickets"]
     }
+
+@router.get("/me/orders")
+def get_my_orders(user_id: str = Query(...)):
+    """HU-14: Obtiene todas las órdenes de un usuario (Cronológico inverso)."""
+    order_ids = redis_client.smembers(f"user_orders:{user_id}")
+    orders = []
+    for oid in order_ids:
+        odata = redis_client.get(f"order:{oid}")
+        if odata:
+            orders.append(json.loads(odata))
+            
+    orders.sort(key=lambda x: x["created_at"], reverse=True)
+    return {"orders": orders}
+
+@router.get("/me/orders/{order_id}")
+def get_order_detail(order_id: str, user_id: str = Query(...)):
+    odata = redis_client.get(f"order:{order_id}")
+    if not odata:
+        raise HTTPException(404, "Orden no encontrada")
+        
+    order = json.loads(odata)
+    if order["user_id"] != user_id:
+        raise HTTPException(403, "Forbidden: La orden no te pertenece")
+        
+    return order
