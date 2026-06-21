@@ -3,13 +3,13 @@ from elasticsearch import Elasticsearch
 import redis
 import json
 import os
-from typing import Optional
+import uuid
+from typing import Optional, List
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 from core.database import get_business_db
 from datetime import datetime, timezone
 from pydantic import BaseModel
-from typing import List
 
 router = APIRouter(prefix="/catalog", tags=["Public Catalog"])
 
@@ -21,6 +21,13 @@ redis_client = redis.Redis(host=REDIS_HOST, port=6379, db=0, decode_responses=Tr
 
 class LockSeatsRequest(BaseModel):
     seat_ids: List[str]
+
+class PurchaseRequest(BaseModel):
+    seat_ids: List[str]
+    seat_labels: List[str]  
+    payment_method: str
+    user_id: str
+    invoice_total: float
 
 @router.get("/movies")
 def get_public_movies(
@@ -288,13 +295,19 @@ def get_screening_seats(screening_id: str, db: Session = Depends(get_business_db
         locked_keys = redis_client.keys(f"lock:{screening_id}:*")
         locked_seat_ids = [k.split(":")[-1] for k in locked_keys]
 
-        sold_keys = redis_client.keys(f"sold:{screening_id}:*")
-        sold_seat_ids = [k.split(":")[-1] for k in sold_keys]
+        sold_query = text("""
+            SELECT CAST(seat_id AS VARCHAR) 
+            FROM catalog_ticket t
+            JOIN catalog_ticketorder o ON t.order_id = o.id
+            WHERE o.screening_id = :scr AND o.status = 'completed'
+        """)
+        sold_records = db.execute(sold_query, {"scr": screening_id}).fetchall()
+        db_sold_ids = [row[0] for row in sold_records]
 
         result_seats = []
         for s in seats:
             sid = s[0]
-            if sid in sold_seat_ids:
+            if sid in db_sold_ids:
                 status = "sold"
             elif sid in locked_seat_ids:
                 status = "locked"
@@ -355,62 +368,92 @@ def lock_seats(screening_id: str, req: LockSeatsRequest, db: Session = Depends(g
         "expires_in_seconds": 600
     }
 
-class PurchaseRequest(BaseModel):
-    seat_ids: List[str]
-    seat_labels: List[str]  
-    payment_method: str
-    user_id: str
-    invoice_total: float
-
 @router.post("/screenings/{screening_id}/purchase")
 def process_purchase(screening_id: str, req: PurchaseRequest, db: Session = Depends(get_business_db)):    
     for sid in req.seat_ids:
-        if not redis_client.exists(f"lock:{screening_id}:{sid}"):
-            raise HTTPException(409, "Tu reserva expiró. Volvé a elegir tus butacas.")
+        check_query = text("""
+            SELECT t.id 
+            FROM catalog_ticket t
+            JOIN catalog_ticketorder o ON t.order_id = o.id
+            WHERE o.screening_id = :scr AND t.seat_id = :sid AND o.status = 'completed'
+        """)
+        is_sold = db.execute(check_query, {"scr": screening_id, "sid": sid}).fetchone()
+        if is_sold:
+            raise HTTPException(409, f"Lo sentimos, uno de los asientos seleccionados ya fue comprado.")
 
-    for sid in req.seat_ids:
-        redis_client.delete(f"lock:{screening_id}:{sid}")
-        redis_client.set(f"sold:{screening_id}:{sid}", "sold")
-
-    import uuid
     order_number = f"ORD-{datetime.now().year}-{str(uuid.uuid4())[:8].upper()}"
 
-    scr_query = text("""
-        SELECT m.title, m.poster_url, r.name, s.start_time
-        FROM catalog_screening s
-        JOIN catalog_movie m ON s.movie_id = m.id
-        JOIN catalog_room r ON s.room_id = r.id
-        WHERE s.id = :id
-    """)
-    scr = db.execute(scr_query, {"id": screening_id}).fetchone()
+    try:
+        insert_order = text("""
+            INSERT INTO catalog_ticketorder (id, screening_id, user_id, total_price, status, created_at)
+            VALUES (:id, :scr, :uid, :total, 'completed', :now)
+        """)
+        db.execute(insert_order, {
+            "id": order_number, "scr": screening_id, "uid": req.user_id,
+            "total": req.invoice_total, "now": datetime.now(timezone.utc)
+        })
 
-    order_data = {
-        "id": order_number,
-        "user_id": req.user_id,
-        "movie_title": scr[0] if scr else "Película",
-        "poster_url": scr[1] if scr else "",
-        "room_name": scr[2] if scr else "Sala",
-        "start_time": scr[3].isoformat() if scr else datetime.now().isoformat(),
-        "seat_labels": req.seat_labels,
-        "total_price": req.invoice_total,
-        "status": "Completada",
-        "created_at": datetime.now(timezone.utc).isoformat(),
-        "tickets": [{"seat_id": sid, "qr_code": f"QR-{order_number}-{sid}"} for sid in req.seat_ids]
-    }
+        tickets_info = []
+        for sid in req.seat_ids:
+            ticket_id = str(uuid.uuid4())
+            qr = f"QR-{order_number}-{sid}"
+            insert_ticket = text("""
+                INSERT INTO catalog_ticket (id, order_id, seat_id, qr_code)
+                VALUES (:tid, :oid, :sid, :qr)
+            """)
+            db.execute(insert_ticket, {"tid": ticket_id, "oid": order_number, "sid": sid, "qr": qr})
+            tickets_info.append({"seat_id": sid, "qr_code": qr})
 
-    redis_client.set(f"order:{order_number}", json.dumps(order_data))
-    redis_client.sadd(f"user_orders:{req.user_id}", order_number)
+        db.commit()
+
+    except Exception as e:
+        db.rollback()
+        print(f"[DB ERROR] Fallo al crear orden: {e}")
+        raise HTTPException(500, "Error crítico al procesar y guardar la compra.")
+
+    try:
+        for sid in req.seat_ids:
+            redis_client.delete(f"lock:{screening_id}:{sid}")
+
+        scr_query = text("""
+            SELECT m.title, m.poster_url, r.name, s.start_time
+            FROM catalog_screening s
+            JOIN catalog_movie m ON s.movie_id = m.id
+            JOIN catalog_room r ON s.room_id = r.id
+            WHERE s.id = :id
+        """)
+        scr = db.execute(scr_query, {"id": screening_id}).fetchone()
+
+        order_data = {
+            "id": order_number,
+            "user_id": req.user_id,
+            "movie_title": scr[0] if scr else "Película",
+            "poster_url": scr[1] if scr else "",
+            "room_name": scr[2] if scr else "Sala",
+            "start_time": scr[3].isoformat() if scr else datetime.now().isoformat(),
+            "seat_labels": req.seat_labels,
+            "total_price": req.invoice_total,
+            "status": "Completada",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "tickets": tickets_info
+        }
+
+        redis_client.set(f"order:{order_number}", json.dumps(order_data))
+        redis_client.sadd(f"user_orders:{req.user_id}", order_number)
+
+    except Exception as re:
+        print(f"[REDIS WARNING] Orden en BD pero falló caché historial: {re}")
 
     return {
         "order_id": order_number,
         "status": "completed",
         "method": req.payment_method,
-        "tickets": order_data["tickets"]
+        "tickets": tickets_info
     }
 
 @router.get("/me/orders")
 def get_my_orders(user_id: str = Query(...)):
-    """HU-14: Obtiene todas las órdenes de un usuario (Cronológico inverso)."""
+    """Obtiene todas las órdenes de un usuario de la caché (Cronológico inverso)."""
     order_ids = redis_client.smembers(f"user_orders:{user_id}")
     orders = []
     for oid in order_ids:

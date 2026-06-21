@@ -6,7 +6,7 @@ from django.utils.timezone import now
 from django.core.exceptions import PermissionDenied 
 import json
 from django.core.serializers.json import DjangoJSONEncoder
-from .models import Genre, Seat, Movie, Room, Screening, TicketOrder, AuditLog, Format, Language, TicketType
+from .models import Genre, Seat, Movie, Room, Screening, TicketOrder, Ticket, AuditLog, Format, Language, TicketType
 
 def create_audit_log(request, action, obj, snapshot_before=None):
     snapshot_after = model_to_dict(obj) if action != 'DELETE' else None
@@ -140,7 +140,26 @@ class AuditLogAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None): return False
 
 admin.site.register(Genre)
-admin.site.register(TicketOrder) 
+
+class TicketInline(admin.TabularInline):
+    model = Ticket
+    extra = 0
+    readonly_fields = ('id', 'seat', 'qr_code')
+    can_delete = False
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+@admin.register(TicketOrder)
+class TicketOrderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'screening', 'user_id', 'total_price', 'status', 'created_at')
+    search_fields = ('id', 'user_id')
+    list_filter = ('status', 'created_at')
+    readonly_fields = ('id', 'screening', 'user_id', 'total_price', 'created_at')
+    inlines = [TicketInline]
+
+    def has_add_permission(self, request):
+        return False
 
 @admin.register(Format)
 class FormatAdmin(admin.ModelAdmin):
