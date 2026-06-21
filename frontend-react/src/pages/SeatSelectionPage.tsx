@@ -1,26 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { fetchScreeningSeats, lockScreeningSeats, type Seat } from '../features/catalog/catalogApi';
+import { fetchScreeningSeats, lockScreeningSeats, type Seat, type ScreeningSeatsResponse } from '../features/catalog/catalogApi';
 
 export const SeatSelectionPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [seats, setSeats] = useState<Seat[]>([]);
+  const [data, setData] = useState<ScreeningSeatsResponse | null>(null);
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
-  const [lockTimer, setLockTimer] = useState<number | null>(null);
 
-  const totalRequestedTickets = Array.from(new URLSearchParams(location.search).values())
-    .reduce((sum, val) => sum + parseInt(val), 0) || 1; 
+  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
 
-  const loadSeats = async () => {
+  const loadSeatsData = async () => {
     try {
       if (!id) return;
-      const data = await fetchScreeningSeats(id);
-      setSeats(data);
+      const res = await fetchScreeningSeats(id);
+      setData(res);
     } catch (err: any) {
       setErrorMsg(err.response?.data?.detail || 'Error al cargar el mapa de butacas.');
     } finally {
@@ -28,13 +26,27 @@ export const SeatSelectionPage = () => {
     }
   };
 
-  useEffect(() => { loadSeats(); }, [id]);
+  useEffect(() => { loadSeatsData(); }, [id]);
 
-  useEffect(() => {
-    if (lockTimer === null || lockTimer <= 0) return;
-    const interval = setInterval(() => setLockTimer(t => (t ? t - 1 : 0)), 1000);
-    return () => clearInterval(interval);
-  }, [lockTimer]);
+  const purchaseSummary = useMemo(() => {
+    if (!data) return { items: [], totalTickets: 0, totalPrice: 0 };
+    
+    let totalTickets = 0;
+    let totalPrice = 0;
+    const items: Array<{name: string, qty: number, price: number, total: number}> = [];
+
+    Array.from(searchParams.entries()).forEach(([ticketId, qtyStr]) => {
+      const qty = parseInt(qtyStr);
+      const tt = data.ticket_types.find(t => t.id === ticketId);
+      if (tt && qty > 0) {
+        items.push({ name: tt.name, qty, price: tt.price, total: tt.price * qty });
+        totalTickets += qty;
+        totalPrice += (tt.price * qty);
+      }
+    });
+
+    return { items, totalTickets, totalPrice };
+  }, [data, searchParams]);
 
   const toggleSeat = (seat: Seat) => {
     if (seat.status !== 'available' || seat.type === 'corridor') return;
@@ -43,9 +55,8 @@ export const SeatSelectionPage = () => {
     if (isSelected) {
       setSelectedSeats(prev => prev.filter(s => s.id !== seat.id));
     } else {
-      const maxAllowed = Math.min(totalRequestedTickets, 8);
-      if (selectedSeats.length >= maxAllowed) {
-        alert(`Has alcanzado el límite de ${maxAllowed} entradas seleccionadas.`);
+      if (selectedSeats.length >= purchaseSummary.totalTickets) {
+        alert(`Solo puedes seleccionar ${purchaseSummary.totalTickets} asientos.`);
         return;
       }
       setSelectedSeats(prev => [...prev, seat]);
@@ -56,152 +67,200 @@ export const SeatSelectionPage = () => {
     try {
       setErrorMsg('');
       if (!id) return;
-      const res = await lockScreeningSeats(id, selectedSeats.map(s => s.id));
-      
-      setLockTimer(res.expires_in_seconds);
+      await lockScreeningSeats(id, selectedSeats.map(s => s.id));
+      navigate(`/booking/${id}/payment?${searchParams.toString()}`);
     } catch (err: any) {
       if (err.response?.status === 409) {
         alert(err.response.data.detail);
         setSelectedSeats([]);
-        loadSeats(); 
+        loadSeatsData(); 
       } else {
         setErrorMsg(err.response?.data?.detail || 'Error en la reserva.');
       }
     }
   };
 
-  if (isLoading) return <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#0f1115', color: '#f4e951', fontFamily: 'system-ui' }}>Dibujando sala...</div>;
+  if (isLoading) return <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#0f1115', color: '#f4e951', fontFamily: 'system-ui' }}>Cargando experiencia...</div>;
+  if (!data) return <div style={{ height: '100vh', backgroundColor: '#0f1115' }}>Error cargando datos.</div>;
 
-  const rows = Array.from(new Set(seats.map(s => s.row))).sort();
+  const rows = Array.from(new Set(data.seats.map(s => s.row))).sort();
+  const screenDate = new Date(data.screening.start_time);
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#0f1115', color: '#fff', fontFamily: '"Inter", system-ui, sans-serif' }}>
+    <div style={{ position: 'relative', minHeight: '100vh', color: '#ffffff', fontFamily: '"Inter", system-ui, sans-serif', overflow: 'hidden' }}>
       
-      <div style={{ flex: '1', padding: '2rem 4rem', display: 'flex', flexDirection: 'column', alignItems: 'center', overflowY: 'auto' }}>
-        
-        <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-start', marginBottom: '1rem' }}>
-          <button onClick={() => navigate(-1)} style={{ background: 'transparent', border: 'none', color: '#9ca3af', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span>←</span> Volver a horarios
-          </button>
-        </div>
-
-        <div style={{ width: '100%', maxWidth: '700px', height: '50px', borderTop: '6px solid #374151', borderRadius: '50% 50% 0 0', marginTop: '1rem', marginBottom: '5rem', display: 'flex', justifyContent: 'center', paddingTop: '15px', color: '#4b5563', letterSpacing: '10px', fontWeight: '900', fontSize: '1.2rem' }}>
-          PANTALLA
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-          {rows.map(row => (
-            <div key={row} style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              
-              <div style={{ width: '30px', fontWeight: 'bold', color: '#6b7280', textAlign: 'center' }}>{row}</div>
-              
-              <div style={{ display: 'flex', gap: '10px' }}>
-                {seats.filter(s => s.row === row).sort((a, b) => a.col - b.col).map(seat => {
-                  
-                  if (seat.type === 'corridor') return <div key={seat.id} style={{ width: '35px', height: '35px' }} />;
-
-                  const isSelected = selectedSeats.some(s => s.id === seat.id);
-                  let bgColor = '#1f222b'; 
-                  let borderColor = '#374151';
-                  let cursor = 'pointer';
-
-                  if (seat.status === 'locked' || seat.status === 'sold') {
-                    bgColor = '#374151'; 
-                    borderColor = '#1f222b';
-                    cursor = 'not-allowed';
-                  } else if (isSelected) {
-                    bgColor = '#f4e951'; 
-                    borderColor = '#d4c942';
-                  } else if (seat.type === 'vip') {
-                    borderColor = '#3b82f6';
-                  } else if (seat.type === 'wheelchair') {
-                    borderColor = '#8b5cf6'; 
-                  }
-
-                  return (
-                    <div
-                      key={seat.id}
-                      onClick={() => toggleSeat(seat)}
-                      style={{
-                        width: '35px', height: '35px', backgroundColor: bgColor, border: `2px solid ${borderColor}`,
-                        borderRadius: '8px 8px 4px 4px', cursor: cursor, display: 'flex', justifyContent: 'center', alignItems: 'center',
-                        color: isSelected ? '#000' : (seat.status === 'available' ? '#9ca3af' : '#1f222b'),
-                        fontWeight: 'bold', fontSize: '0.8rem', transition: 'all 0.2s'
-                      }}
-                      title={`${row}${seat.col} - ${seat.type}`}
-                    >
-                      {seat.status !== 'available' ? '×' : seat.col}
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div style={{ width: '30px', fontWeight: 'bold', color: '#6b7280', textAlign: 'center' }}>{row}</div>
-            </div>
-          ))}
-        </div>
-
-        <div style={{ display: 'flex', gap: '2.5rem', marginTop: '4rem', padding: '1.5rem 3rem', backgroundColor: '#171a21', borderRadius: '30px', border: '1px solid #262932', fontSize: '0.9rem', color: '#9ca3af', fontWeight: '600' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><div style={{ width: '18px', height: '18px', backgroundColor: '#1f222b', border: '2px solid #374151', borderRadius: '4px' }}></div> Disponible</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><div style={{ width: '18px', height: '18px', backgroundColor: '#f4e951', borderRadius: '4px' }}></div> Seleccionado</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><div style={{ width: '18px', height: '18px', backgroundColor: '#374151', borderRadius: '4px' }}></div> Ocupado</div>
-        </div>
+      <div style={{ position: 'fixed', inset: 0, zIndex: -1 }}>
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${data.movie.poster_url})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'blur(45px) brightness(0.2)' }} />
+        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(15, 17, 21, 0.75)' }} />
       </div>
 
-      <div style={{ width: '400px', backgroundColor: '#171a21', borderLeft: '1px solid #262932', padding: '3rem 2rem', display: 'flex', flexDirection: 'column', boxShadow: '-10px 0 30px rgba(0,0,0,0.3)' }}>
+      <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '2rem' }}>
         
-        {errorMsg && (
-          <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '1rem', borderRadius: '8px', marginBottom: '2rem', fontSize: '0.9rem', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
-            ⚠️ {errorMsg}
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '2rem', marginBottom: '3rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: '#f4e951', fontWeight: 'bold' }}>
+            <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#f4e951', marginBottom: '0.5rem', boxShadow: '0 0 10px #f4e951' }}></div>
+            Selección de Asientos
           </div>
-        )}
-
-        <h2 style={{ fontSize: '1.6rem', fontWeight: '900', marginBottom: '2rem', letterSpacing: '0.5px' }}>TUS BUTACAS</h2>
-        
-        <div style={{ display: 'flex', justifyContent: 'space-between', color: '#9ca3af', borderBottom: '1px solid #262932', paddingBottom: '1rem', marginBottom: '1.5rem', fontWeight: '600' }}>
-          <span>Seleccionadas</span>
-          <strong style={{ color: '#fff' }}>{selectedSeats.length} de {totalRequestedTickets}</strong>
+          <div style={{ width: '80px', height: '2px', backgroundColor: '#374151' }}></div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: '#6b7280', fontWeight: 'bold' }}>
+            <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#374151', marginBottom: '0.5rem' }}></div>
+            Pago
+          </div>
+          <div style={{ width: '80px', height: '2px', backgroundColor: '#374151' }}></div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: '#6b7280', fontWeight: 'bold' }}>
+            <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#374151', marginBottom: '0.5rem' }}></div>
+            Confirmación
+          </div>
         </div>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', minHeight: '80px', marginBottom: '2rem' }}>
-          {selectedSeats.length > 0 ? selectedSeats.map(s => (
-            <span key={s.id} style={{ backgroundColor: '#262932', color: '#f4e951', padding: '0.5rem 1rem', borderRadius: '6px', fontWeight: '900', fontSize: '1.1rem', border: '1px solid #374151' }}>
-              {s.row}{s.col}
-            </span>
-          )) : (
-            <p style={{ color: '#4b5563', fontSize: '0.95rem', fontStyle: 'italic', margin: 0 }}>Haz clic en el mapa para asignar asientos a tus boletos.</p>
-          )}
-        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2.5rem', alignItems: 'flex-start' }}>
+          
+          <div style={{ flex: '1 1 250px', maxWidth: '320px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <img src={data.movie.poster_url} alt={data.movie.title} style={{ width: '100%', borderRadius: '12px', boxShadow: '0 15px 30px rgba(0,0,0,0.5)', border: '1px solid #262932', marginBottom: '1rem' }} />
+            
+            <h1 style={{ fontSize: '2rem', fontWeight: '900', margin: 0, textTransform: 'uppercase', lineHeight: '1.1' }}>{data.movie.title}</h1>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: '#9ca3af', fontSize: '0.9rem', fontWeight: 'bold' }}>
+              <span>{Math.floor(data.movie.duration_minutes/60)}h {data.movie.duration_minutes%60}m</span>
+              <span>|</span>
+              <span style={{ border: '1px solid #4b5563', padding: '0.1rem 0.4rem', borderRadius: '4px', color: '#fff' }}>{data.movie.rating_classification}</span>
+            </div>
 
-        {lockTimer !== null && lockTimer > 0 && (
-          <div style={{ backgroundColor: 'rgba(244, 233, 81, 0.05)', border: '1px dashed #f4e951', padding: '1.5rem', borderRadius: '12px', textAlign: 'center', marginBottom: '2rem' }}>
-            <span style={{ display: 'block', color: '#9ca3af', fontSize: '0.85rem', textTransform: 'uppercase', marginBottom: '0.5rem', fontWeight: '700' }}>Tu reserva expira en</span>
-            <strong style={{ color: '#f4e951', fontSize: '2.5rem', fontWeight: '900', letterSpacing: '2px' }}>
-              {Math.floor(lockTimer / 60)}:{(lockTimer % 60).toString().padStart(2, '0')}
-            </strong>
+            <div style={{ marginTop: '1.5rem', padding: '1.5rem', backgroundColor: 'rgba(23, 26, 33, 0.6)', borderRadius: '12px', border: '1px solid #262932' }}>
+              <p style={{ margin: '0 0 0.5rem', color: '#9ca3af', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>{data.screening.room_name}</p>
+              <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '800' }}>
+                {screenDate.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
+              </h3>
+              <h2 style={{ margin: '0.5rem 0 0', color: '#f4e951', fontSize: '1.8rem', fontWeight: '900' }}>
+                {screenDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+              </h2>
+            </div>
           </div>
-        )}
 
-        {lockTimer === 0 && (
-          <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '1rem', borderRadius: '8px', textAlign: 'center', marginBottom: '2rem', border: '1px solid rgba(239, 68, 68, 0.3)', fontWeight: 'bold' }}>
-            Tu reserva ha expirado. Vuelve a intentarlo.
+          <div style={{ flex: '2 1 500px', display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'rgba(15, 17, 21, 0.8)', padding: '3rem 2rem', borderRadius: '16px', border: '1px solid #262932', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
+            
+            <div style={{ width: '80%', maxWidth: '400px', height: '40px', backgroundColor: 'rgba(255,255,255,0.05)', clipPath: 'polygon(10% 0, 90% 0, 100% 100%, 0% 100%)', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#6b7280', letterSpacing: '8px', fontWeight: '900', fontSize: '0.85rem', marginBottom: '4rem', boxShadow: '0 10px 20px rgba(255,255,255,0.02)' }}>
+              PANTALLA
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {rows.map(row => (
+                <div key={row} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ width: '25px', fontWeight: 'bold', color: '#6b7280', textAlign: 'right', fontSize: '0.9rem' }}>{row}</div>
+                  
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    {data.seats.filter(s => s.row === row).sort((a, b) => a.col - b.col).map(seat => {
+                      if (seat.type === 'corridor') return <div key={seat.id} style={{ width: '32px', height: '32px' }} />;
+
+                      const isSelected = selectedSeats.some(s => s.id === seat.id);
+                      
+                      let bgColor = '#e5e7eb'; 
+                      let fontColor = '#000000';
+                      let cursor = 'pointer';
+                      let borderColor = 'transparent';
+
+                      if (seat.status === 'locked') {
+                        bgColor = '#14532d'; 
+                        fontColor = '#ffffff';
+                        cursor = 'not-allowed';
+                      } else if (seat.status === 'sold') {
+                        bgColor = '#374151'; 
+                        fontColor = '#9ca3af';
+                        cursor = 'not-allowed';
+                      } else if (isSelected) {
+                        bgColor = '#f4e951'; 
+                        fontColor = '#000000';
+                        borderColor = '#ca8a04';
+                      }
+
+                      return (
+                        <div
+                          key={seat.id}
+                          onClick={() => toggleSeat(seat)}
+                          title={`${row}-${seat.col}`}
+                          style={{
+                            width: '32px', height: '32px', backgroundColor: bgColor, border: borderColor !== 'transparent' ? `2px solid ${borderColor}` : 'none',
+                            borderRadius: '6px 6px 3px 3px', cursor: cursor, display: 'flex', justifyContent: 'center', alignItems: 'center',
+                            color: fontColor, fontWeight: '800', fontSize: '0.75rem', transition: 'all 0.15s', boxShadow: 'inset 0 -3px 0 rgba(0,0,0,0.15)'
+                          }}
+                        >
+                          {(seat.status !== 'available' && !isSelected) ? '' : seat.col}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  
+                  <div style={{ width: '25px', fontWeight: 'bold', color: '#6b7280', textAlign: 'left', fontSize: '0.9rem' }}>{row}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: 'flex', gap: '2rem', marginTop: '4rem', color: '#9ca3af', fontSize: '0.85rem', fontWeight: '600' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><div style={{ width: '14px', height: '14px', backgroundColor: '#e5e7eb', borderRadius: '3px' }}></div> Disponible</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><div style={{ width: '14px', height: '14px', backgroundColor: '#14532d', borderRadius: '3px' }}></div> Reservado</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><div style={{ width: '14px', height: '14px', backgroundColor: '#f4e951', borderRadius: '3px' }}></div> Seleccionado</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><div style={{ width: '14px', height: '14px', backgroundColor: '#374151', borderRadius: '3px' }}></div> No disponible</div>
+            </div>
           </div>
-        )}
 
-        <div style={{ marginTop: 'auto' }}>
-          <button 
-            onClick={handleLockSeats}
-            disabled={selectedSeats.length !== totalRequestedTickets || (lockTimer !== null && lockTimer > 0)}
-            style={{
-              width: '100%', padding: '1.25rem', borderRadius: '8px', border: 'none', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '1rem',
-              backgroundColor: (selectedSeats.length === totalRequestedTickets && (!lockTimer || lockTimer <= 0)) ? '#f4e951' : '#262932',
-              color: (selectedSeats.length === totalRequestedTickets && (!lockTimer || lockTimer <= 0)) ? '#0f1115' : '#4b5563',
-              cursor: (selectedSeats.length === totalRequestedTickets && (!lockTimer || lockTimer <= 0)) ? 'pointer' : 'not-allowed',
-              transition: 'background-color 0.2s'
-            }}
-          >
-            {lockTimer && lockTimer > 0 ? 'Reserva Confirmada' : 'Confirmar Reserva'}
-          </button>
+          <div style={{ flex: '1 1 300px', maxWidth: '380px', backgroundColor: 'rgba(23, 26, 33, 0.8)', border: '1px solid #262932', padding: '2.5rem 2rem', borderRadius: '16px', backdropFilter: 'blur(10px)' }}>
+            
+            {errorMsg && (
+               <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '0.9rem', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
+                 {errorMsg}
+               </div>
+            )}
+
+            <h3 style={{ fontSize: '1.2rem', color: '#9ca3af', marginBottom: '1.5rem', fontWeight: '700' }}>Boletos seleccionados</h3>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem', borderBottom: '1px solid #374151', paddingBottom: '1.5rem' }}>
+              {purchaseSummary.items.map((item, idx) => (
+                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '1.05rem', fontWeight: '600' }}>{item.name} <span style={{ color: '#9ca3af' }}>x{item.qty}</span></span>
+                  <span style={{ fontWeight: 'bold' }}>Bs. {item.total.toFixed(2)}</span>
+                </div>
+              ))}
+            </div>
+
+            <h3 style={{ fontSize: '1.2rem', color: '#9ca3af', marginBottom: '1rem', fontWeight: '700' }}>Asientos seleccionados</h3>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', minHeight: '60px', marginBottom: '2rem', borderBottom: '1px solid #374151', paddingBottom: '1.5rem' }}>
+              {selectedSeats.length > 0 ? selectedSeats.map(s => (
+                <span key={s.id} style={{ color: '#f4e951', fontWeight: '900', fontSize: '1.1rem' }}>
+                  {s.row}{s.col}{selectedSeats[selectedSeats.length - 1].id !== s.id ? ',' : ''}
+                </span>
+              )) : (
+                <span style={{ color: '#6b7280', fontSize: '0.95rem' }}>Aún no has seleccionado asientos.</span>
+              )}
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
+              <span style={{ fontSize: '1.2rem', color: '#9ca3af', fontWeight: '700' }}>Total a pagar:</span>
+              <span style={{ fontSize: '1.8rem', fontWeight: '900', color: '#ffffff' }}>Bs. {purchaseSummary.totalPrice.toFixed(2)}</span>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <button 
+                onClick={handleLockSeats}
+                disabled={selectedSeats.length !== purchaseSummary.totalTickets}
+                style={{
+                  width: '100%', padding: '1.1rem', borderRadius: '8px', border: 'none', fontWeight: '900', fontSize: '1.05rem', textTransform: 'uppercase', letterSpacing: '1px',
+                  backgroundColor: selectedSeats.length === purchaseSummary.totalTickets ? '#f4e951' : '#374151',
+                  color: selectedSeats.length === purchaseSummary.totalTickets ? '#000000' : '#9ca3af',
+                  cursor: selectedSeats.length === purchaseSummary.totalTickets ? 'pointer' : 'not-allowed',
+                  transition: 'background-color 0.2s'
+                }}
+              >
+                Continuar
+              </button>
+              <button 
+                onClick={() => navigate(-1)}
+                style={{ width: '100%', padding: '1.1rem', borderRadius: '8px', backgroundColor: 'transparent', border: '1px solid #4b5563', color: '#ffffff', fontWeight: '700', fontSize: '1rem', textTransform: 'uppercase', cursor: 'pointer' }}
+              >
+                Cancelar
+              </button>
+            </div>
+
+          </div>
         </div>
 
       </div>

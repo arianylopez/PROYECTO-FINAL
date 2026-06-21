@@ -47,6 +47,23 @@ export interface Seat {
   status: 'available' | 'locked' | 'sold';
 }
 
+export interface ScreeningSeatsResponse {
+  movie: {
+    id: string;
+    title: string;
+    poster_url: string;
+    duration_minutes: number;
+    rating_classification: string;
+  };
+  screening: {
+    id: string;
+    start_time: string;
+    room_name: string;
+  };
+  ticket_types: TicketType[];
+  seats: Seat[];
+}
+
 export interface MovieScreeningsResponse {
   movie: {
     id: string;
@@ -94,9 +111,9 @@ export const fetchMovieScreenings = async (id: string): Promise<MovieScreeningsR
   return response.data;
 };
 
-export const fetchScreeningSeats = async (screeningId: string): Promise<Seat[]> => {
-  const response = await apiClient.get<{seats: Seat[]}>(`/api/v1/catalog/screenings/${screeningId}/seats`);
-  return response.data.seats;
+export const fetchScreeningSeats = async (screeningId: string): Promise<ScreeningSeatsResponse> => {
+  const response = await apiClient.get<ScreeningSeatsResponse>(`/api/v1/catalog/screenings/${screeningId}/seats`);
+  return response.data; 
 };
 
 export const lockScreeningSeats = async (screeningId: string, seatIds: string[]) => {

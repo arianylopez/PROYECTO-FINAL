@@ -262,14 +262,20 @@ def get_movie_screenings(movie_id: str, db: Session = Depends(get_business_db)):
 @router.get("/screenings/{screening_id}/seats")
 def get_screening_seats(screening_id: str, db: Session = Depends(get_business_db)):
     try:
-        scr_query = text("SELECT room_id, start_time FROM catalog_screening WHERE id = :id AND is_active = true")
+        scr_query = text("""
+            SELECT s.room_id, s.start_time, m.id as movie_id, m.title, m.poster_url, m.duration_minutes, m.rating_classification, r.name as room_name
+            FROM catalog_screening s
+            JOIN catalog_movie m ON s.movie_id = m.id
+            JOIN catalog_room r ON s.room_id = r.id
+            WHERE s.id = :id AND s.is_active = true
+        """)
         scr = db.execute(scr_query, {"id": screening_id}).fetchone()
         
         if not scr:
             raise HTTPException(404, "Función no encontrada.")
             
         if scr[1] < datetime.now(timezone.utc):
-            raise HTTPException(422, "No se pueden seleccionar butacas para una función en el pasado.")
+            raise HTTPException(422, "No se pueden seleccionar butacas para una función pasada.")
 
         seats_query = text("""
             SELECT CAST(id AS VARCHAR), row_label, column_number, seat_type 
@@ -282,21 +288,40 @@ def get_screening_seats(screening_id: str, db: Session = Depends(get_business_db
         locked_keys = redis_client.keys(f"lock:{screening_id}:*")
         locked_seat_ids = [k.split(":")[-1] for k in locked_keys]
 
-        result = []
+        result_seats = []
         for s in seats:
             sid = s[0]
             status = "locked" if sid in locked_seat_ids else "available"
-            result.append({
+            result_seats.append({
                 "id": sid, "row": s[1], "col": s[2], "type": s[3], "status": status
             })
 
-        return {"seats": result}
+        ticket_types = []
+        tt_query = text("SELECT CAST(id AS VARCHAR), name, base_price FROM catalog_tickettype WHERE is_active = true")
+        for t in db.execute(tt_query).fetchall():
+            ticket_types.append({"id": t[0], "name": t[1], "price": float(t[2])})
+
+        return {
+            "movie": {
+                "id": scr[2],
+                "title": scr[3],
+                "poster_url": scr[4],
+                "duration_minutes": scr[5],
+                "rating_classification": scr[6]
+            },
+            "screening": {
+                "id": screening_id,
+                "start_time": scr[1].isoformat(),
+                "room_name": scr[7]
+            },
+            "ticket_types": ticket_types,
+            "seats": result_seats
+        }
     except HTTPException:
         raise
     except Exception as e:
         print(f"[Error] Seats: {e}")
-        raise HTTPException(500, "Error interno.")
-
+        raise HTTPException(500, "Error interno al cargar la sala.")
 
 @router.post("/screenings/{screening_id}/lock-seats")
 def lock_seats(screening_id: str, req: LockSeatsRequest, db: Session = Depends(get_business_db)):
