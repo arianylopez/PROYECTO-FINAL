@@ -38,6 +38,16 @@ jobs:
       run:
         working-directory: ./backend
 
+    env:
+      DB_USER: ci_test_user
+      DB_PASSWORD: ci_test_password
+      DB_NAME: ci_db
+      DB_HOST: localhost
+      DB_PORT: 5432
+      SECRET_KEY: test_secret_key_ci_cd_12345
+      ALGORITHM: HS256
+      ENVIRONMENT: test
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
