@@ -7,6 +7,7 @@ from core.database import auth_engine, AuthBase
 from modules.auth.router import router as auth_router
 from modules.catalog.public_router import router as catalog_public_router
 from modules.ugc.router import router as ugc_router 
+from modules.recommendations.router import router as recs_router
 
 from core.mongo_db import db as mongo_db_client
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -51,6 +52,7 @@ app.add_middleware(
 app.include_router(auth_router) 
 app.include_router(catalog_public_router, prefix="/api/v1")
 app.include_router(ugc_router, prefix="/api/v1")
+app.include_router(recs_router, prefix="/api/v1")
 
 @app.get("/health")
 async def health_check():
