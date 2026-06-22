@@ -173,3 +173,46 @@ export const fetchMyOrders = async (userId: string): Promise<OrderHistoryItem[]>
   const response = await apiClient.get<{orders: OrderHistoryItem[]}>(`/api/v1/catalog/me/orders?user_id=${userId}`);
   return response.data.orders;
 };
+
+export interface Review {
+  id: string;
+  user_id: string;
+  user_name: string;
+  score: number;
+  text: string;
+  date: string;
+}
+
+export interface ReviewsResponse {
+  stats: {
+    avg_score: number;
+    total_ratings: number;
+    positive: number;
+    neutral: number;
+    negative: number;
+  };
+  reviews: Review[];
+}
+
+export const fetchMovieReviews = async (movieId: string): Promise<ReviewsResponse> => {
+  const response = await apiClient.get<ReviewsResponse>(`/api/v1/ugc/movies/${movieId}/reviews`);
+  return response.data;
+};
+
+export const submitMovieRating = async (movieId: string, userId: string, userName: string, score: number) => {
+  const response = await apiClient.post(`/api/v1/ugc/movies/${movieId}/rate`, {
+    user_id: userId,
+    user_name: userName,
+    score
+  });
+  return response.data;
+};
+
+export const submitMovieReview = async (movieId: string, userId: string, userName: string, text: string) => {
+  const response = await apiClient.post(`/api/v1/ugc/movies/${movieId}/review`, {
+    user_id: userId,
+    user_name: userName,
+    text
+  });
+  return response.data;
+};
