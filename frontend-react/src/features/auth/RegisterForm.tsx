@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { apiClient } from '../../shared/api/apiClient';
@@ -30,6 +30,7 @@ const registerSchema = z.object({
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 export const RegisterForm = () => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   
@@ -73,7 +74,8 @@ export const RegisterForm = () => {
         loginAction(response.data.user, response.data.access_token);
       }
 
-      window.location.href = '/onboarding/preferences';
+      // RUTA SIMPLIFICADA
+      navigate('/preferences');
     } catch (error: any) {
       if (error.response?.status === 409) {
         setServerError('Este correo electrónico ya está registrado. Ingresa a tu cuenta o usa "¿Olvidaste tu contraseña?"');
@@ -107,7 +109,8 @@ export const RegisterForm = () => {
           email: response.data.user.email,
           role: decodedUser.role
         }, token);
-        window.location.href = '/home'; 
+        
+        navigate('/home'); 
         
       } catch (error: any) {
         if (error.response?.status === 404) {
@@ -149,7 +152,8 @@ export const RegisterForm = () => {
         loginAction(response.data.user, response.data.access_token);
       }
 
-      window.location.href = '/home';
+      // RUTA SIMPLIFICADA
+      navigate('/preferences');
     } catch (error: any) {
       const backendError = Array.isArray(error.response?.data?.detail) 
         ? error.response.data.detail[0].msg 

@@ -38,8 +38,8 @@ function App() {
             <Route path="/login" element={<LoginForm />} />
             <Route path="/forgot-password" element={<ForgotPasswordForm />} />
             <Route path="/reset-password" element={<ResetPasswordForm />} />
-            <Route path="/onboarding/preferences" element={<OnboardingPreferencesPage />} />
-            
+            <Route path="/preferences" element={<OnboardingPreferencesPage />} />
+
             <Route element={<MainLayout />}>
               <Route path="/home" element={<HomePage />} />
               <Route path="/movie/:id" element={<MovieDetailPage />} />
