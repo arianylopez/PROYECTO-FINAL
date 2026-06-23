@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_ID: str = ""
     
     REDIS_HOST: str
+    REDIS_PORT: int
     MONGO_URL: str
     MONGO_DB: str
     KAFKA_BOOTSTRAP_SERVERS: str
