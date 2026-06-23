@@ -1,0 +1,71 @@
+graph TD;
+    subgraph Cliente ["Red de Usuario / Cliente"]
+        Browser[Navegador Web / Mobile]
+    end
+
+    subgraph CDN ["CDN / Edge"]
+        Cloudflare[Servicios Estáticos & CDN]
+    end
+
+    subgraph Produccion ["Entorno de Producción (Servidor / Cloud)"]
+        subgraph Proxy ["Capa de Proxy"]
+            Nginx[Nginx Reverse Proxy\n(Puerto 80/443)]
+        end
+
+        subgraph Frontend_Containers ["Contenedores Frontend"]
+            ReactApp[Frontend React SPA\n(Estáticos)]
+            VanillaApp[Frontend Vanilla JS\n(Estáticos)]
+        end
+
+        subgraph Backend_Container ["Contenedor Monolito Backend"]
+            Monolito[Uvicorn / Gunicorn\n(FastAPI + Django)\nPuerto 8000]
+        end
+
+        subgraph Workers ["Workers Asíncronos"]
+            Celery[Celery ETL Worker]
+            KafkaCons[Kafka Consumer\nAnalítica]
+        end
+
+        subgraph Bases_de_Datos ["Persistencia & Cache"]
+            AuthDB[(AuthDB\nPostgreSQL 16\nPuerto 5433\nSSL Obligatorio)]
+            BusinessDB[(BusinessDB\nPostgreSQL 16\nPuerto 5432)]
+            Redis[(Redis 7\nCache & Locks\nPuerto 6379)]
+            Elastic[(Elasticsearch 8\nBúsqueda\nPuerto 9200)]
+            MongoDB[(MongoDB 7\nUGC Store\nPuerto 27017)]
+            ClickHouse[(ClickHouse 24\nAnalítica\nPuerto 8123)]
+        end
+
+        subgraph Message_Brokers ["Colas y Buses"]
+            KafkaBroker[Apache Kafka 3\nEventos\nPuerto 9092]
+        end
+    end
+
+    Browser -->|HTTPS / API Requests| Nginx
+    Browser -->|Descarga SPA| Cloudflare
+    Cloudflare -.-> ReactApp
+    Cloudflare -.-> VanillaApp
+
+    Nginx -->|Proxy Pass /api/*| Monolito
+    Nginx -->|Sirve estáticos| ReactApp
+    Nginx -->|Sirve estáticos| VanillaApp
+
+    Monolito -->|TCP/IP SSL| AuthDB
+    Monolito -->|TCP/IP| BusinessDB
+    Monolito -->|REST/HTTP| Elastic
+    Monolito -->|TCP/IP| Redis
+    Monolito -->|TCP/IP| MongoDB
+    Monolito -->|TCP/IP| KafkaBroker
+    Monolito -->|HTTP/JDBC| ClickHouse
+
+    Celery -->|Polling| BusinessDB
+    Celery -->|Upsert| Elastic
+
+    KafkaBroker --> KafkaCons
+    KafkaCons -->|Insert| ClickHouse
+
+    classDef aws fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef container fill:#d1e0e0,stroke:#333,stroke-width:2px;
+    classDef db fill:#ffcc99,stroke:#333,stroke-width:2px;
+    
+    class ReactApp,VanillaApp,Monolito,Celery,KafkaCons,KafkaBroker,Nginx container;
+    class AuthDB,BusinessDB,Redis,Elastic,MongoDB,ClickHouse db;

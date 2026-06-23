@@ -1,0 +1,157 @@
+erDiagram
+    %% AuthDB Schema (Puerto 5433)
+    auth_users {
+        UUID id PK
+        VARCHAR name
+        VARCHAR email "UNIQUE"
+        VARCHAR password_hash
+        VARCHAR role
+        DATE birth_date
+        BOOLEAN is_verified
+        INT_ARRAY genre_preferences
+        TIMESTAMPTZ created_at
+        TIMESTAMPTZ updated_at
+    }
+
+    auth_devices {
+        UUID id PK
+        UUID user_id FK "REFERENCES auth_users"
+        VARCHAR device_fingerprint
+        VARCHAR device_name
+        INET ip_address
+        BOOLEAN is_active
+        TIMESTAMPTZ last_seen
+        TIMESTAMPTZ created_at
+    }
+
+    auth_oauth_accounts {
+        UUID id PK
+        UUID user_id FK "REFERENCES auth_users"
+        VARCHAR provider
+        VARCHAR provider_user_id
+        VARCHAR email
+        TIMESTAMPTZ created_at
+    }
+
+    admin_roles {
+        UUID id PK
+        UUID user_id FK "REFERENCES auth_users"
+        VARCHAR role "e.g., CONTENT_ADMIN"
+        UUID granted_by FK "REFERENCES auth_users"
+        TIMESTAMPTZ granted_at
+        BOOLEAN is_active
+    }
+
+    auth_users ||--o{ auth_devices : "posee (máx 3 activos)"
+    auth_users ||--o{ auth_oauth_accounts : "se vincula a"
+    auth_users ||--o{ admin_roles : "puede tener"
+
+    %% BusinessDB Schema (Puerto 5432)
+    catalog_movies {
+        UUID id PK
+        VARCHAR title
+        TEXT synopsis
+        VARCHAR director
+        TEXT_ARRAY cast_members
+        INT duration_min
+        VARCHAR rating_classification
+        DATE release_date
+        VARCHAR poster_url
+        VARCHAR trailer_url
+        BOOLEAN is_active
+        UUID created_by "FK Lógica -> auth_users.id"
+        TIMESTAMPTZ created_at
+        TIMESTAMPTZ updated_at
+    }
+
+    catalog_genres {
+        SERIAL id PK
+        VARCHAR name "UNIQUE"
+        VARCHAR slug "UNIQUE"
+    }
+
+    catalog_movie_genres {
+        UUID movie_id FK "REFERENCES catalog_movies"
+        INT genre_id FK "REFERENCES catalog_genres"
+    }
+
+    catalog_rooms {
+        UUID id PK
+        VARCHAR name
+        INT capacity
+        JSONB layout_json
+        VARCHAR cinema_name
+        TEXT address
+        BOOLEAN is_active
+        TIMESTAMPTZ created_at
+    }
+
+    catalog_seats {
+        UUID id PK
+        UUID room_id FK "REFERENCES catalog_rooms"
+        VARCHAR row
+        INT number
+        VARCHAR seat_type
+    }
+
+    catalog_screenings {
+        UUID id PK
+        UUID movie_id FK "REFERENCES catalog_movies"
+        UUID room_id FK "REFERENCES catalog_rooms"
+        TIMESTAMPTZ start_time
+        DECIMAL price
+        BOOLEAN is_active
+        TIMESTAMPTZ created_at
+        TIMESTAMPTZ updated_at
+    }
+
+    business_orders {
+        UUID id PK
+        UUID user_id "FK Lógica -> auth_users.id (AuthDB)"
+        UUID screening_id FK "REFERENCES catalog_screenings"
+        DECIMAL total_amount
+        VARCHAR payment_method
+        VARCHAR card_type
+        VARCHAR card_last4
+        VARCHAR status "pending | completed | failed"
+        VARCHAR order_number "UNIQUE"
+        TIMESTAMPTZ created_at
+        TIMESTAMPTZ updated_at
+    }
+
+    business_order_items {
+        UUID id PK
+        UUID order_id FK "REFERENCES business_orders"
+        UUID seat_id FK "REFERENCES catalog_seats"
+        VARCHAR ticket_type
+        DECIMAL price
+        TEXT qr_code_data
+    }
+
+    audit_logs {
+        UUID id PK
+        UUID admin_user_id "FK Lógica -> auth_users.id"
+        VARCHAR admin_role
+        VARCHAR action
+        VARCHAR entity_type
+        UUID entity_id
+        JSONB old_value
+        JSONB new_value
+        INET ip_address
+        TIMESTAMPTZ created_at
+    }
+
+    %% Relaciones BusinessDB
+    catalog_movies ||--o{ catalog_movie_genres : "pertenece a"
+    catalog_genres ||--o{ catalog_movie_genres : "agrupa"
+    catalog_movies ||--o{ catalog_screenings : "proyectada en"
+    catalog_rooms ||--o{ catalog_screenings : "aloja"
+    catalog_rooms ||--o{ catalog_seats : "contiene (generación automática)"
+    catalog_screenings ||--o{ business_orders : "reservada a través de"
+    business_orders ||--o{ business_order_items : "incluye tickets para"
+    catalog_seats ||--o| business_order_items : "asignada a"
+
+    %% Relación Lógica Transversal (Vía JWT Decodificado, Sin Foreign Key Física)
+    auth_users }|..|{ business_orders : "Realiza (Link lógico vía JWT)"
+    auth_users }|..|{ catalog_movies : "Creado por Admin (Link lógico vía JWT)"
+    auth_users }|..|{ audit_logs : "Acción ejecutada por Admin (Link lógico vía JWT)"

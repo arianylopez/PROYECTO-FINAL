@@ -1,0 +1,22 @@
+stateDiagram-v2
+    [*] --> DISPONIBLE : El sistema genera butacas para la función
+
+    state "Disponible (Available)" as DISPONIBLE
+    state "Bloqueada Temporalmente (Temporarily Reserved)" as BLOQUEADA
+    state "Vendida (Sold)" as VENDIDA
+
+    DISPONIBLE --> BLOQUEADA : Usuario selecciona y hace clic en "Continuar"\n[Redis SETNX reservation:{id} EX 600]
+    
+    BLOQUEADA --> DISPONIBLE : El usuario abandona o cancela voluntariamente\n[Redis DEL explícito por Frontend]
+    BLOQUEADA --> DISPONIBLE : El pago no se completa en 10 minutos\n[Redis TTL expira automáticamente]
+    BLOQUEADA --> DISPONIBLE : El usuario intenta reservar, pero el SETNX falla\n[Conflicto concurrencia: Rollback de todos los locks del request]
+    
+    BLOQUEADA --> VENDIDA : El usuario completa el flujo de pago con tarjeta o QR\n[Se procesa PaymentSimulator exitoso]
+    
+    state VENDIDA {
+        [*] --> COMPRA_CONFIRMADA
+        COMPRA_CONFIRMADA --> TICKETS_GENERADOS : Sistema genera códigos QR (TicketService)
+        TICKETS_GENERADOS --> ORDEN_GUARDADA : Se inserta en PostgreSQL (business_orders)
+    }
+
+    VENDIDA --> DISPONIBLE : Función cancelada por Administrador (Refund Pending)\n[Actualización de estado en BD, asientos liberados lógicamente]

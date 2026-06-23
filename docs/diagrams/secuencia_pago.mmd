@@ -1,0 +1,54 @@
+sequenceDiagram
+    autonumber
+    actor Cliente as "Usuario Registrado\n(Frontend SPA)"
+    participant BusinessAPI as "Business Module\n(FastAPI)"
+    participant PaymentSim as "PaymentSimulator\n(Service)"
+    participant Redis as "Redis\n(Cache & Locks)"
+    participant BusinessDB as "BusinessDB\n(PostgreSQL)"
+    participant TicketGen as "TicketService\n(QR Generator)"
+    participant Kafka as "Kafka Broker\n(Event Bus)"
+
+    note over Cliente, Kafka: Fase 1: Selección y Reserva Temporal
+    Cliente->>BusinessAPI: POST /api/v1/screenings/{id}/reserve (seat_ids: [X, Y])
+    activate BusinessAPI
+    BusinessAPI->>Redis: Verifica si existe lock previo
+    Redis-->>BusinessAPI: Devuelve nulo (Asientos libres)
+    
+    loop Para cada asiento seleccionado
+        BusinessAPI->>Redis: SETNX reservation:{sid}:{seat_id} {user_id} EX 600
+        Redis-->>BusinessAPI: 1 (Bloqueo exitoso, TTL 10 min configurado)
+    end
+    
+    BusinessAPI-->>Cliente: 201 Created (Reservados temporalmente)
+    deactivate BusinessAPI
+
+    note over Cliente, Kafka: Fase 2: Checkout y Pago Simulado
+    Cliente->>Cliente: Llena formulario (Detecta tipo tarjeta + valida Luhn)
+    Cliente->>BusinessAPI: POST /api/v1/catalog/screenings/{id}/purchase
+    activate BusinessAPI
+    
+    BusinessAPI->>BusinessAPI: AgeCheckDependency (Valida edad del JWT)
+    BusinessAPI->>Redis: Verifica que los locks le pertenecen al usuario
+    Redis-->>BusinessAPI: Locks válidos y vigentes
+    
+    BusinessAPI->>PaymentSim: validar Luhn, vencimiento y extraer card_type/last4
+    activate PaymentSim
+    PaymentSim-->>BusinessAPI: {success: true, card_type: "VISA", last4: "1234"}
+    deactivate PaymentSim
+    
+    note over BusinessAPI, BusinessDB: Transacción en Base de Datos (db.begin())
+    activate BusinessDB
+    BusinessAPI->>BusinessDB: INSERT INTO business_orders (status='completed')
+    BusinessAPI->>TicketGen: Generar códigos QR únicos
+    TicketGen-->>BusinessAPI: qr_code_data / URLs
+    BusinessAPI->>BusinessDB: INSERT INTO business_order_items (incluyendo qr)
+    BusinessDB-->>BusinessAPI: Transacción confirmada (Commit)
+    deactivate BusinessDB
+
+    note over BusinessAPI, Redis: Liberación de recursos y eventos
+    BusinessAPI->>Redis: DELETE reservation:{sid}:{seat_id} (Remover bloqueos explícitamente)
+    BusinessAPI->>Kafka: PUBLICAR EVENTO order.completed {user_id, movie_id}
+    
+    BusinessAPI-->>Cliente: 200 OK (Resumen de orden y QRs)
+    deactivate BusinessAPI
+    Cliente->>Cliente: Muestra pantalla de éxito
