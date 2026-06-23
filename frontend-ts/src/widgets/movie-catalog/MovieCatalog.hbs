@@ -1,0 +1,20 @@
+<section class="movie-catalog">
+  <div class="movie-catalog__header">
+    <h2 class="movie-catalog__title">Catálogo</h2>
+  </div>
+
+  <div class="movie-catalog__grid" id="catalog-grid">
+    {{#each movies}}
+      <article class="movie-card" data-id="{{this.id}}">
+        <img class="movie-card__poster" src="{{this.poster_url}}" alt="{{this.title}}" loading="lazy" />
+        <div class="movie-card__info">
+          <h3 class="movie-card__title">{{this.title}}</h3>
+          <div class="movie-card__meta">
+            <span class="movie-card__genre">{{this.genre}}</span>
+            <span class="movie-card__rating">★ {{this.rating}}</span>
+          </div>
+        </div>
+      </article>
+    {{/each}}
+  </div>
+</section>

@@ -1,4 +1,5 @@
-import Block from '../block/Block.ts';
+import Block from '../block/Block';
+import { renderDOM } from '../block/renderDOM';
 
 export class Route {
   private _pathname: string;
@@ -31,6 +32,11 @@ export class Route {
   }
 
   match(pathname: string) {
+    if (this._pathname.includes(':')) {
+      const regexPattern = this._pathname.replace(/:[^/]+/g, '([^/]+)');
+      const regex = new RegExp(`^${regexPattern}$`);
+      return regex.test(pathname);
+    }
     return pathname === this._pathname;
   }
 
@@ -38,16 +44,6 @@ export class Route {
     if (!this._block) {
       this._block = new this._blockClass();
     }
-    const rootQuery: string = this._props.rootQuery;
-    const root = document.querySelector(rootQuery);
-    if (!root) {
-      throw new Error(`Root element not found by selector: ${rootQuery}`);
-    }
-
-    const content = this._block!.getContent();
-    if (!content) return;
-
-    root.innerHTML = '';
-    root.appendChild(content);
+    renderDOM(this._props.rootQuery, this._block!);
   }
 }

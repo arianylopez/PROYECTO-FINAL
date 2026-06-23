@@ -1,0 +1,12 @@
+<div class="featured-hero" style="background-image: url('{{featured.backdrop_url}}');">
+  <div class="featured-hero__overlay"></div>
+  <div class="featured-hero__content">
+    {{#if featured}}
+      <h1 class="featured-hero__title">{{featured.title}}</h1>
+      <p class="featured-hero__description">{{featured.abstract}}</p>
+      <button class="featured-hero__button" data-id="{{featured.id}}">Ver Detalles</button>
+    {{else}}
+      <h1 class="featured-hero__title">Cargando...</h1>
+    {{/if}}
+  </div>
+</div>

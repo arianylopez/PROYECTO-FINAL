@@ -1,0 +1,18 @@
+<section class="reviews-list">
+  <h2 class="reviews-list__title">Reseñas de Usuarios</h2>
+  <div class="reviews-list__grid">
+    {{#if reviews.length}}
+      {{#each reviews}}
+        <div class="review-card">
+          <div class="review-card__header">
+            <span class="review-card__author">{{this.user_name}}</span>
+            <span class="review-card__rating">★ {{this.rating}}</span>
+          </div>
+          <p class="review-card__text">{{this.comment}}</p>
+        </div>
+      {{/each}}
+    {{else}}
+      <p class="reviews-list__empty">Aún no hay reseñas para esta película.</p>
+    {{/if}}
+  </div>
+</section>

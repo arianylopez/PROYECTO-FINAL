@@ -16,6 +16,7 @@ export default abstract class Block<Props extends Record<string, any> = any> {
   private _id: string = Math.random().toString(36).substring(2, 9);
 
   protected abstract template: string;
+  protected events: Record<string, EventListener> = {};
 
   constructor(propsWithChildren: any = {}) {
     const eventBus = new EventBus();
@@ -98,6 +99,11 @@ export default abstract class Block<Props extends Record<string, any> = any> {
     fragment.innerHTML = compiledTemplate(contextAndStubs);
 
     const newElement = fragment.content.firstElementChild as HTMLElement;
+
+    const classEvents = (this as any).events || {};
+    Object.keys(classEvents).forEach((eventName) => {
+      newElement.addEventListener(eventName, classEvents[eventName]);
+    });
 
     if (this.props.events) {
       Object.keys(this.props.events).forEach((eventName) => {

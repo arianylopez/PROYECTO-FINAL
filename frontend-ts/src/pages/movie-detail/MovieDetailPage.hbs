@@ -1,0 +1,31 @@
+<div class="movie-page__layout">
+  <div id="header-slot"></div>
+  <main class="movie-page__content">
+    {{#if movie}}
+      <div class="movie-detail__hero" style="background-image: url('{{movie.backdrop_url}}');">
+        <div class="movie-detail__overlay"></div>
+        <div class="movie-detail__info">
+          <img src="{{movie.poster_url}}" alt="{{movie.title}}" class="movie-detail__poster" />
+          <div class="movie-detail__text">
+            <h1 class="movie-detail__title">{{movie.title}}</h1>
+            <div class="movie-detail__meta">
+              <span>{{movie.genre}}</span>
+              <span>★ {{movie.rating}}</span>
+              <span>{{movie.duration_minutes}} min</span>
+            </div>
+            <p class="movie-detail__description">{{movie.description}}</p>
+            <button class="movie-detail__ticket-btn">Comprar Entradas</button>
+          </div>
+        </div>
+      </div>
+      <div class="movie-detail__reviews-container">
+        <div id="reviews-slot"></div>
+      </div>
+    {{else if error}}
+      <div class="movie-detail__error" style="padding: 4rem; text-align: center;">Película no encontrada.</div>
+    {{else}}
+      <div class="movie-detail__loading" style="padding: 4rem; text-align: center;">Cargando película...</div>
+    {{/if}}
+  </main>
+  <div id="footer-slot"></div>
+</div>

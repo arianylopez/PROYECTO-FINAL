@@ -1,0 +1,92 @@
+.movie-page__layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.movie-page__content {
+  flex: 1;
+}
+
+.movie-detail__hero {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  padding: 4rem 2rem;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid #2a2e38;
+}
+
+.movie-detail__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 17, 21, 0.85);
+  backdrop-filter: blur(5px);
+}
+
+.movie-detail__info {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 3rem;
+  max-width: 1000px;
+  width: 100%;
+}
+
+.movie-detail__poster {
+  width: 300px;
+  border-radius: 8px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.movie-detail__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.movie-detail__title {
+  font-size: 3rem;
+  margin: 0 0 1rem 0;
+}
+
+.movie-detail__meta {
+  display: flex;
+  gap: 1rem;
+  color: #f4e951;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.movie-detail__description {
+  line-height: 1.6;
+  color: #cccccc;
+  margin-bottom: 2rem;
+}
+
+.movie-detail__ticket-btn {
+  align-self: flex-start;
+  background-color: #f4e951;
+  color: #0f1115;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.movie-detail__ticket-btn:hover {
+  background-color: #d8ce46;
+}
+
+.movie-detail__reviews-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
