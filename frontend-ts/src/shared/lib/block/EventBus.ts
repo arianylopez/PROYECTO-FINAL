@@ -1,8 +1,6 @@
-// frontend-ts/src/core/EventBus.ts
-
 export type Callback = (...args: any[]) => void;
 
-export default class EventBus {
+export class EventBus {
   private listeners: Record<string, Callback[]> = {};
 
   on(event: string, callback: Callback): void {
@@ -14,7 +12,7 @@ export default class EventBus {
 
   off(event: string, callback: Callback): void {
     if (!this.listeners[event]) {
-      throw new Error(`No existe el evento: ${event}`);
+      throw new Error(`Event not found: ${event}`);
     }
     this.listeners[event] = this.listeners[event].filter(
       (listener) => listener !== callback
@@ -23,7 +21,7 @@ export default class EventBus {
 
   emit(event: string, ...args: any[]): void {
     if (!this.listeners[event]) {
-      return; // Ignorar si no hay listeners para este evento
+      return;
     }
     this.listeners[event].forEach((listener) => {
       listener(...args);

@@ -1,9 +1,6 @@
-// frontend-ts/src/core/Block.ts
-
 import Handlebars from 'handlebars';
-import EventBus from './EventBus';
+import { EventBus } from './EventBus';
 
-// Eventos del ciclo de vida del componente
 export const EVENTS = {
   INIT: 'init',
   FLOW_CDM: 'flow:component-did-mount',
@@ -18,9 +15,6 @@ export default abstract class Block<Props extends Record<string, any> = any> {
   private _element: HTMLElement | null = null;
   private _id: string = Math.random().toString(36).substring(2, 9);
 
-  /**
-   * Todo componente debe definir su plantilla Handlebars
-   */
   protected abstract template: string;
 
   constructor(propsWithChildren: any = {}) {
@@ -32,7 +26,6 @@ export default abstract class Block<Props extends Record<string, any> = any> {
     this.eventBus = () => eventBus;
 
     this._registerEvents(eventBus);
-    // eventBus.emit(EVENTS.INIT);
   }
 
   private _getChildrenAndProps(childrenAndProps: any) {
@@ -83,7 +76,7 @@ export default abstract class Block<Props extends Record<string, any> = any> {
   }
 
   protected componentDidUpdate(oldProps: Props, newProps: Props): boolean {
-    return true; // Por defecto siempre re-renderiza si cambian los props
+    return true;
   }
 
   public setProps = (nextProps: Partial<Props>) => {
@@ -99,7 +92,6 @@ export default abstract class Block<Props extends Record<string, any> = any> {
     const templateString = this.template;
     const compiledTemplate = Handlebars.compile(templateString);
     
-    // Inyectamos props y children al template
     const contextAndStubs = { ...this.props };
     
     const fragment = document.createElement('template');
@@ -107,7 +99,6 @@ export default abstract class Block<Props extends Record<string, any> = any> {
 
     const newElement = fragment.content.firstElementChild as HTMLElement;
 
-    // Manejo de eventos del DOM pasados por props (ej: onClick)
     if (this.props.events) {
       Object.keys(this.props.events).forEach((eventName) => {
         newElement.addEventListener(eventName, this.props.events[eventName]);
@@ -122,7 +113,6 @@ export default abstract class Block<Props extends Record<string, any> = any> {
   }
 
   public getContent() {
-    // Lazy Evaluation: Si el elemento no existe, disparamos el inicio y renderizado
     if (!this._element) {
       this.eventBus().emit(EVENTS.INIT);
     }
@@ -143,7 +133,7 @@ export default abstract class Block<Props extends Record<string, any> = any> {
         return true;
       },
       deleteProperty() {
-        throw new Error('No permitido');
+        throw new Error('Not allowed');
       },
     });
   }
