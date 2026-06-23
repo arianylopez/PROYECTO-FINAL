@@ -4,7 +4,7 @@ import './MovieDetailPage.css';
 import { Header } from '../../widgets/header/Header';
 import { Footer } from '../../widgets/footer/Footer';
 import { catalogApi } from '../../shared/api/catalogApi';
-import { ReviewsList } from '../../widgets/reviews-list/ReviewsList';
+import { ReviewsList } from '../../widgets/reviews-list/ReviewsList'
 
 export class MovieDetailPage extends Block {
   protected template = template;

@@ -1,7 +1,7 @@
 import { routerInstance } from '../shared/lib/router/Router';
 import { HomePage } from '../pages/home/HomePage';
 import { LoginPage } from '../pages/login/LoginPage';
-import { MovieDetailPage } from '../pages/movie-detail/MovieDetailPage';
+import { MovieDetailPage } from '../pages/movie-detail/MovieDetailPage'
 import './styles/global.css';
 
 routerInstance

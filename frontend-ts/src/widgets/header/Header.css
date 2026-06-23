@@ -3,15 +3,16 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #1a1d24;
+  background-color: #0f1115;
   border-bottom: 1px solid #2a2e38;
 }
 
 .header__logo {
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 800;
   color: #f4e951;
   cursor: pointer;
+  letter-spacing: -0.5px;
 }
 
 .header__nav {
@@ -24,27 +25,58 @@
   background: none;
   border: none;
   color: #ffffff;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
   cursor: pointer;
   padding: 0.5rem;
-  transition: color 0.2s;
+  transition: color 0.2s ease;
 }
 
 .header__link:hover {
   color: #f4e951;
 }
 
+.header__user-menu {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-left: 1rem;
+  padding-left: 1.5rem;
+  border-left: 1px solid #2a2e38;
+}
+
+.header__user-name {
+  color: #cccccc;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
 .header__btn {
   background-color: #f4e951;
   color: #0f1115;
   border: none;
-  padding: 0.5rem 1.25rem;
-  border-radius: 4px;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
   font-weight: 600;
+  font-size: 0.95rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .header__btn:hover {
   background-color: #d8ce46;
+}
+
+.header__btn:active {
+  transform: scale(0.98);
+}
+
+.header__btn--outline {
+  background-color: transparent;
+  color: #f4e951;
+  border: 1px solid #f4e951;
+}
+
+.header__btn--outline:hover {
+  background-color: rgba(244, 233, 81, 0.1);
 }

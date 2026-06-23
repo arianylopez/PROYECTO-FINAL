@@ -1,7 +1,16 @@
 <header class="header">
-  <div class="header__logo" id="logo-home">CinemaPlus</div>
+  <div class="header__logo" id="nav-logo">CinemaPlus</div>
   <nav class="header__nav">
-    <button class="header__link" id="nav-home">Catálogo</button>
-    <button class="header__btn" id="nav-login">Iniciar Sesión</button>
+    <button class="header__link" id="nav-catalog">Catálogo</button>
+    {{#if isAuthenticated}}
+      <button class="header__link" id="nav-history">Historial</button>
+      <div class="header__user-menu">
+        <span class="header__user-name">Hola, {{user.first_name}}</span>
+        <button class="header__btn header__btn--outline" id="nav-logout">Cerrar Sesión</button>
+      </div>
+    {{else}}
+      <button class="header__link" id="nav-register">Registrarse</button>
+      <button class="header__btn" id="nav-login">Iniciar Sesión</button>
+    {{/if}}
   </nav>
 </header>

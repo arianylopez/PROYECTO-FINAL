@@ -20,8 +20,8 @@ export class MovieCatalog extends Block {
 
   protected async componentDidMount() {
     try {
-      const data = await catalogApi.getMovies(1, 12);
-      this.setProps({ movies: data.results });
+      const movies = await catalogApi.getMovies(1, 12);
+      this.setProps({ movies });
     } catch (error) {
       this.setProps({ movies: [] });
     }
