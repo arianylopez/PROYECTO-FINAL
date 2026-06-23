@@ -5,6 +5,7 @@ import json
 import redis
 from typing import Optional
 
+# Importaciones locales
 from core.mongo_db import get_mongo_db
 from core.database import get_business_db
 
@@ -20,9 +21,23 @@ async def get_recommendations(user_id: Optional[str] = None, mongo_db = Depends(
         if cached_recs:
             return json.loads(cached_recs)
 
-    movies_query = text("SELECT id, title, poster_url, genres FROM catalog_movie")
+    movies_query = text("""
+        SELECT 
+            m.id, 
+            m.title, 
+            m.poster_url, 
+            array_agg(g.name) as genres
+        FROM catalog_movie m
+        LEFT JOIN catalog_movie_genres mg ON m.id = mg.movie_id
+        LEFT JOIN catalog_genre g ON mg.genre_id = g.id
+        GROUP BY m.id
+    """)
     all_movies = pg_db.execute(movies_query).fetchall()
-    movie_dict = {str(m[0]): {"id": str(m[0]), "title": m[1], "poster_url": m[2], "genres": m[3]} for m in all_movies}
+    
+    movie_dict = {}
+    for m in all_movies:
+        genres = [g for g in m[3] if g is not None] if m[3] else []
+        movie_dict[str(m[0])] = {"id": str(m[0]), "title": m[1], "poster_url": m[2], "genres": genres}
 
     purchased_ids = set()
     not_interested_ids = set()
@@ -31,7 +46,8 @@ async def get_recommendations(user_id: Optional[str] = None, mongo_db = Depends(
     if user_id:
         purchased_query = text("""
             SELECT DISTINCT m.id FROM catalog_ticketorder o
-            JOIN catalog_screening s ON o.screening_id = s.id JOIN catalog_movie m ON s.movie_id = m.id
+            JOIN catalog_screening s ON o.screening_id = s.id 
+            JOIN catalog_movie m ON s.movie_id = m.id
             WHERE o.user_id = :uid AND o.status = 'completed'
         """)
         try:
@@ -105,7 +121,8 @@ async def get_recommendations(user_id: Optional[str] = None, mongo_db = Depends(
         try:
             trending_query = text("""
                 SELECT m.id, COUNT(o.id) as sales FROM catalog_movie m
-                LEFT JOIN catalog_screening s ON m.id = s.movie_id LEFT JOIN catalog_ticketorder o ON s.id = o.screening_id
+                LEFT JOIN catalog_screening s ON m.id = s.movie_id 
+                LEFT JOIN catalog_ticketorder o ON s.id = o.screening_id
                 GROUP BY m.id ORDER BY sales DESC LIMIT 10
             """)
             trend_rows = pg_db.execute(trending_query).fetchall()
@@ -119,6 +136,12 @@ async def get_recommendations(user_id: Optional[str] = None, mongo_db = Depends(
                         recs.append({"id": movie["id"], "title": movie["title"], "poster_url": movie["poster_url"], "reason": "Esta película es tendencia por su gran volumen de ventas esta semana."})
         except Exception:
             pass
+            
+        if len(recs) < 5:
+            for m in available_movies:
+                if len(recs) == 5: break
+                if not any(r.get('id') == m["id"] for r in recs) and not set(m["genres"]).intersection(penalized_genres):
+                    recs.append({"id": m["id"], "title": m["title"], "poster_url": m["poster_url"], "reason": "Una de las películas más destacadas actualmente en cartelera."})
 
     response = {
         "is_personalized": is_personalized,
