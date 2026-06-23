@@ -13,17 +13,17 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 from core.config import settings
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3@39=6(c-vtr%!)7l$$!9-*@mq^*kb0&x#*d@@_qa*#y9@a=j('
-
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-3@39=6(c-vtr%!)7l$$!9-*@mq^*kb0&x#*d@@_qa*#y9@a=j(')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -80,11 +80,11 @@ WSGI_APPLICATION = 'core_admin.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': settings.DB_NAME,
-        'USER': settings.DB_USER,
-        'PASSWORD': settings.DB_PASSWORD,
-        'HOST': settings.DB_HOST, 
-        'PORT': settings.DB_PORT,
+        'NAME': os.getenv('DB_NAME', 'business_db'),
+        'USER': os.getenv('DB_USER', 'cinemaplus_admin'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'SecurePassword2026!'), 
+        'HOST': os.getenv('DB_HOST', 'business-db'), 
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
