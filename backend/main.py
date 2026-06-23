@@ -41,9 +41,11 @@ app = FastAPI(
     lifespan=lifespan 
 )
 
+origins = settings.CORS_ALLOWED_ORIGINS.split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost", "http://127.0.0.1"],
+    allow_origins=origins,          # <-- Lista dinámica inyectada desde el entorno
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

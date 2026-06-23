@@ -267,7 +267,7 @@ def request_password_reset(request: PasswordResetRequest, db: Session = Depends(
     if user:
         expire = datetime.now(timezone.utc) + timedelta(hours=1)
         reset_token = jwt.encode({"sub": str(user.id), "type": "reset", "exp": expire}, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-        reset_link = f"http://localhost/reset-password?token={reset_token}"
+        reset_link = f"{settings.FRONTEND_URL}/reset-password?token={reset_token}"
         print(f"\n[EMAIL SIMULADO] Para: {user.email} -> Enlace de recuperación: {reset_link}\n")
         
         success_message["demo_link"] = reset_link
