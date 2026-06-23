@@ -275,3 +275,8 @@ export const fetchRecommendations = async (userId?: string): Promise<Recommendat
   const response = await apiClient.get<RecommendationResponse>('/api/v1/recommendations/', { params });
   return response.data;
 };
+
+export const markNotInterested = async (movieId: string, userId: string) => {
+  const response = await apiClient.post(`/api/v1/ugc/movies/${movieId}/not-interested`, { user_id: userId });
+  return response.data;
+};

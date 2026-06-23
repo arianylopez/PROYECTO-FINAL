@@ -34,6 +34,9 @@ class WatchlistRequest(BaseModel):
     movie_title: str
     poster_url: str
 
+class NotInterestedRequest(BaseModel):
+    user_id: str
+
 @router.post("/movies/{movie_id}/rate")
 async def submit_rating(movie_id: str, req: RatingRequest, db = Depends(get_mongo_db)):
     now = datetime.now(timezone.utc)
@@ -174,3 +177,17 @@ async def get_activity(user_id: str, mongo_db = Depends(get_mongo_db), pg_db: Se
         a["date"] = a["date"].isoformat()
         
     return activities
+
+@router.post("/movies/{movie_id}/not-interested")
+async def mark_not_interested(movie_id: str, req: NotInterestedRequest, db = Depends(get_mongo_db)):
+    now = datetime.now(timezone.utc)
+    
+    await db.not_interested.update_one(
+        {"user_id": req.user_id, "movie_id": movie_id},
+        {"$set": {"added_at": now}},
+        upsert=True
+    )
+    
+    redis_client.delete(f"recs:{req.user_id}")
+    
+    return {"message": "Película descartada de tus recomendaciones"}
