@@ -7,7 +7,7 @@ class Command(BaseCommand):
     help = 'Sincroniza las películas de PostgreSQL a Elasticsearch'
 
     def handle(self, *args, **kwargs):
-        es = Elasticsearch(os.getenv("ELASTICSEARCH_URL", "http://elasticsearch:9200"))
+        es = Elasticsearch(os.getenv("ELASTICSEARCH_URL", "http://127.0.0.1:9200"))
         movies = Movie.objects.filter(is_active=True)
         count = 0
         
