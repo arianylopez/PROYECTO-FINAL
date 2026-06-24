@@ -44,6 +44,12 @@ export class MainLayout extends Block {
       }
     }
   }
+
+  public updateUrlParams() {
+    if (typeof (this.contentBlock as any).updateUrlParams === 'function') {
+      (this.contentBlock as any).updateUrlParams();
+    }
+  }
 }
 
 export function withMainLayout(PageClass: new () => Block): new () => Block {

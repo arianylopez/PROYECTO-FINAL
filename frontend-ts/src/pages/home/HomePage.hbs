@@ -115,6 +115,9 @@
                   <img src="{{this.poster_url}}" alt="{{this.title}}" class="movie-card__image" loading="lazy" />
                   <div class="movie-card__overlay">
                     <p class="movie-card__overlay-synopsis">{{this.synopsis}}</p>
+                    {{#if this.trailer_url}}
+                      <button class="movie-card__btn-trailer" data-trailer="{{this.trailer_url}}">Ver Tráiler Oficial</button>
+                    {{/if}}
                   </div>
                 </div>
                 

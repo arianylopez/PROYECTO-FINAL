@@ -184,6 +184,15 @@ export class HomePage extends Block {
     click: async (e: Event) => {
       const target = e.target as HTMLElement;
 
+      const trailerBtn = target.closest('.movie-card__btn-trailer');
+      if (trailerBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const trailerUrl = trailerBtn.getAttribute('data-trailer');
+        if (trailerUrl) window.open(trailerUrl, '_blank');
+        return;
+      }
+
       const navigateElement = target.closest('[data-navigate]');
       if (navigateElement) {
         const path = navigateElement.getAttribute('data-navigate');
