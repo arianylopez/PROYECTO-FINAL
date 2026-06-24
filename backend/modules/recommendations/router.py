@@ -33,6 +33,7 @@ async def get_recommendations(user_id: Optional[str] = None, mongo_db = Depends(
         FROM catalog_movie m
         LEFT JOIN catalog_movie_genres mg ON m.id = mg.movie_id
         LEFT JOIN catalog_genre g ON mg.genre_id = g.id
+        WHERE m.is_active = true
         GROUP BY m.id
     """)
     all_movies = pg_db.execute(movies_query).fetchall()
@@ -126,6 +127,7 @@ async def get_recommendations(user_id: Optional[str] = None, mongo_db = Depends(
                 SELECT m.id, COUNT(o.id) as sales FROM catalog_movie m
                 LEFT JOIN catalog_screening s ON m.id = s.movie_id 
                 LEFT JOIN catalog_ticketorder o ON s.id = o.screening_id
+                WHERE m.is_active = true
                 GROUP BY m.id ORDER BY sales DESC LIMIT 10
             """)
             trend_rows = pg_db.execute(trending_query).fetchall()
