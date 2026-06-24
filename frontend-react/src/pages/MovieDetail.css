@@ -53,7 +53,7 @@
 .movie-detail__poster {
   width: 320px;
   border-radius: 16px;
-  box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
 }
 
 .movie-detail__info {
@@ -67,7 +67,7 @@
   text-transform: uppercase;
   margin: 0 0 1rem 0;
   line-height: 1.1;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .movie-detail__meta {
@@ -99,8 +99,8 @@
 }
 
 .movie-detail__genre {
-  background-color: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.1);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0.4rem 1.2rem;
   border-radius: 20px;
   font-size: 0.85rem;
@@ -136,7 +136,7 @@
   letter-spacing: 1px;
   cursor: pointer;
   transition: background-color 0.2s;
-  box-shadow: 0 10px 20px rgba(244,233,81,0.2);
+  box-shadow: 0 10px 20px rgba(244, 233, 81, 0.2);
 }
 
 .movie-detail__btn:hover {
@@ -199,7 +199,7 @@
   padding: 2.5rem;
   border-radius: 16px;
   border: 1px solid #262932;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .reviews-section__stats {
@@ -226,7 +226,7 @@
   font-weight: 900;
   color: #fff;
   line-height: 1;
-  text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 .reviews-section__stats-stars {
@@ -286,9 +286,15 @@
   transition: width 0.5s ease-out;
 }
 
-.reviews-section__bar-fill--pos { background-color: #4ade80; }
-.reviews-section__bar-fill--neu { background-color: #facc15; }
-.reviews-section__bar-fill--neg { background-color: #f87171; }
+.reviews-section__bar-fill--pos {
+  background-color: #4ade80;
+}
+.reviews-section__bar-fill--neu {
+  background-color: #facc15;
+}
+.reviews-section__bar-fill--neg {
+  background-color: #f87171;
+}
 
 .reviews-section__bar-pct {
   width: 45px;
@@ -330,7 +336,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1.5rem;
-  background-color: rgba(0,0,0,0.2);
+  background-color: rgba(0, 0, 0, 0.2);
   padding: 1.5rem;
   border-radius: 12px;
 }
@@ -368,7 +374,8 @@
   font-weight: bold;
 }
 
-.reviews-section__form-group {}
+.reviews-section__form-group {
+}
 
 .reviews-section__form-label {
   display: block;
@@ -390,7 +397,7 @@
 
 .reviews-section__form-textarea {
   width: 100%;
-  background-color: rgba(0,0,0,0.2);
+  background-color: rgba(0, 0, 0, 0.2);
   border: 1px solid #374151;
   border-radius: 12px;
   color: #fff;
@@ -492,7 +499,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .review-card__header {

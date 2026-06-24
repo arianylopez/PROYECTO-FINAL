@@ -4,1793 +4,1793 @@
  */
 
 export interface paths {
-    "/auth/register": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Register User */
-        post: operations["register_user_auth_register_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+  '/auth/register': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/login": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Login */
-        post: operations["login_auth_login_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Register User */
+    post: operations['register_user_auth_register_post'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/auth/login': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/google": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Google Auth */
-        post: operations["google_auth_auth_google_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Login */
+    post: operations['login_auth_login_post'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/auth/google': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/devices/{device_id}/revoke": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Revoke Device */
-        post: operations["revoke_device_auth_devices__device_id__revoke_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Google Auth */
+    post: operations['google_auth_auth_google_post'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/auth/devices/{device_id}/revoke': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/refresh": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Refresh Token */
-        post: operations["refresh_token_auth_refresh_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Revoke Device */
+    post: operations['revoke_device_auth_devices__device_id__revoke_post'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/auth/refresh': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/logout": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Logout */
-        post: operations["logout_auth_logout_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Refresh Token */
+    post: operations['refresh_token_auth_refresh_post'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/auth/logout': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/password-reset-request": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Request Password Reset */
-        post: operations["request_password_reset_auth_password_reset_request_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Logout */
+    post: operations['logout_auth_logout_post'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/auth/password-reset-request': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/password-reset": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Confirm Password Reset */
-        post: operations["confirm_password_reset_auth_password_reset_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Request Password Reset */
+    post: operations['request_password_reset_auth_password_reset_request_post'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/auth/password-reset': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/users/{user_id}/preferences": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Update Preferences */
-        put: operations["update_preferences_auth_users__user_id__preferences_put"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Confirm Password Reset */
+    post: operations['confirm_password_reset_auth_password_reset_post'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/auth/users/{user_id}/preferences': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/catalog/movies": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Public Movies */
-        get: operations["get_public_movies_api_v1_catalog_movies_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    /** Update Preferences */
+    put: operations['update_preferences_auth_users__user_id__preferences_put'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/catalog/movies': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/catalog/genres": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Public Genres */
-        get: operations["get_public_genres_api_v1_catalog_genres_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get Public Movies */
+    get: operations['get_public_movies_api_v1_catalog_movies_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/catalog/genres': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/catalog/movies/{movie_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Movie Detail */
-        get: operations["get_movie_detail_api_v1_catalog_movies__movie_id__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get Public Genres */
+    get: operations['get_public_genres_api_v1_catalog_genres_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/catalog/movies/{movie_id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/catalog/movies/{movie_id}/screenings": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Movie Screenings */
-        get: operations["get_movie_screenings_api_v1_catalog_movies__movie_id__screenings_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get Movie Detail */
+    get: operations['get_movie_detail_api_v1_catalog_movies__movie_id__get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/catalog/movies/{movie_id}/screenings': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/catalog/screenings/{screening_id}/seats": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Screening Seats */
-        get: operations["get_screening_seats_api_v1_catalog_screenings__screening_id__seats_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get Movie Screenings */
+    get: operations['get_movie_screenings_api_v1_catalog_movies__movie_id__screenings_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/catalog/screenings/{screening_id}/seats': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/catalog/screenings/{screening_id}/lock-seats": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Lock Seats */
-        post: operations["lock_seats_api_v1_catalog_screenings__screening_id__lock_seats_post"];
-        /** Unlock Seats */
-        delete: operations["unlock_seats_api_v1_catalog_screenings__screening_id__lock_seats_delete"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get Screening Seats */
+    get: operations['get_screening_seats_api_v1_catalog_screenings__screening_id__seats_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/catalog/screenings/{screening_id}/lock-seats': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/catalog/screenings/{screening_id}/purchase": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Process Purchase */
-        post: operations["process_purchase_api_v1_catalog_screenings__screening_id__purchase_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Lock Seats */
+    post: operations['lock_seats_api_v1_catalog_screenings__screening_id__lock_seats_post'];
+    /** Unlock Seats */
+    delete: operations['unlock_seats_api_v1_catalog_screenings__screening_id__lock_seats_delete'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/catalog/screenings/{screening_id}/purchase': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/catalog/me/orders": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get My Orders
-         * @description Obtiene todas las órdenes de un usuario de la caché (Cronológico inverso).
-         */
-        get: operations["get_my_orders_api_v1_catalog_me_orders_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Process Purchase */
+    post: operations['process_purchase_api_v1_catalog_screenings__screening_id__purchase_post'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/catalog/me/orders': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/catalog/me/orders/{order_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Order Detail */
-        get: operations["get_order_detail_api_v1_catalog_me_orders__order_id__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * Get My Orders
+     * @description Obtiene todas las órdenes de un usuario de la caché (Cronológico inverso).
+     */
+    get: operations['get_my_orders_api_v1_catalog_me_orders_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/catalog/me/orders/{order_id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/ugc/movies/{movie_id}/rate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Submit Rating */
-        post: operations["submit_rating_api_v1_ugc_movies__movie_id__rate_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get Order Detail */
+    get: operations['get_order_detail_api_v1_catalog_me_orders__order_id__get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/ugc/movies/{movie_id}/rate': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/ugc/movies/{movie_id}/review": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Submit Review */
-        post: operations["submit_review_api_v1_ugc_movies__movie_id__review_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Submit Rating */
+    post: operations['submit_rating_api_v1_ugc_movies__movie_id__rate_post'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/ugc/movies/{movie_id}/review': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/ugc/movies/{movie_id}/reviews": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Reviews */
-        get: operations["get_reviews_api_v1_ugc_movies__movie_id__reviews_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Submit Review */
+    post: operations['submit_review_api_v1_ugc_movies__movie_id__review_post'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/ugc/movies/{movie_id}/reviews': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/ugc/movies/{movie_id}/watchlist-status": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Watchlist Status */
-        get: operations["get_watchlist_status_api_v1_ugc_movies__movie_id__watchlist_status_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get Reviews */
+    get: operations['get_reviews_api_v1_ugc_movies__movie_id__reviews_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/ugc/movies/{movie_id}/watchlist-status': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/ugc/movies/{movie_id}/watchlist": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Toggle Watchlist */
-        post: operations["toggle_watchlist_api_v1_ugc_movies__movie_id__watchlist_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get Watchlist Status */
+    get: operations['get_watchlist_status_api_v1_ugc_movies__movie_id__watchlist_status_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/ugc/movies/{movie_id}/watchlist': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/ugc/users/{user_id}/watchlist": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Watchlist */
-        get: operations["get_watchlist_api_v1_ugc_users__user_id__watchlist_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Toggle Watchlist */
+    post: operations['toggle_watchlist_api_v1_ugc_movies__movie_id__watchlist_post'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/ugc/users/{user_id}/watchlist': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/ugc/users/{user_id}/activity": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Activity */
-        get: operations["get_activity_api_v1_ugc_users__user_id__activity_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get Watchlist */
+    get: operations['get_watchlist_api_v1_ugc_users__user_id__watchlist_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/ugc/users/{user_id}/activity': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/ugc/movies/{movie_id}/not-interested": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Mark Not Interested */
-        post: operations["mark_not_interested_api_v1_ugc_movies__movie_id__not_interested_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get Activity */
+    get: operations['get_activity_api_v1_ugc_users__user_id__activity_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/ugc/movies/{movie_id}/not-interested': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/v1/recommendations/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Recommendations */
-        get: operations["get_recommendations_api_v1_recommendations__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Mark Not Interested */
+    post: operations['mark_not_interested_api_v1_ugc_movies__movie_id__not_interested_post'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/recommendations/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/health": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Health Check */
-        get: operations["health_check_health_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get Recommendations */
+    get: operations['get_recommendations_api_v1_recommendations__get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/health': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
+    /** Health Check */
+    get: operations['health_check_health_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        /** CatalogResponse */
-        CatalogResponse: {
-            /** Items */
-            items: components["schemas"]["MovieResponse"][];
-            /** Total */
-            total: number;
-            /** Page */
-            page: number;
-            /** Size */
-            size: number;
-            /** Pages */
-            pages: number;
-        };
-        /** DeviceInfo */
-        DeviceInfo: {
-            /** Id */
-            id: string;
-            /** Name */
-            name: string;
-            /** Last Seen */
-            last_seen: string;
-        };
-        /** DevicesErrorResponse */
-        DevicesErrorResponse: {
-            /** Detail */
-            detail: string;
-            /** Devices */
-            devices: components["schemas"]["DeviceInfo"][];
-        };
-        /** GenreResponse */
-        GenreResponse: {
-            /** Genres */
-            genres: string[];
-        };
-        /** GoogleLoginRequest */
-        GoogleLoginRequest: {
-            /** Token */
-            token: string;
-            /** Device Fingerprint */
-            device_fingerprint: string;
-            /**
-             * Device Name
-             * @default Navegador Web
-             */
-            device_name: string;
-        };
-        /** HTTPValidationError */
-        HTTPValidationError: {
-            /** Detail */
-            detail?: components["schemas"]["ValidationError"][];
-        };
-        /** LockSeatsRequest */
-        LockSeatsRequest: {
-            /** Seat Ids */
-            seat_ids: string[];
-            /** User Id */
-            user_id: string;
-        };
-        /** LoginRequest */
-        LoginRequest: {
-            /**
-             * Email
-             * Format: email
-             */
-            email: string;
-            /** Password */
-            password: string;
-            /** Device Fingerprint */
-            device_fingerprint: string;
-            /**
-             * Device Name
-             * @default Navegador Web
-             */
-            device_name: string;
-        };
-        /** LoginResponse */
-        LoginResponse: {
-            /** Access Token */
-            access_token: string;
-            user: components["schemas"]["UserInfo"];
-        };
-        /** MessageResponse */
-        MessageResponse: {
-            /** Message */
-            message: string;
-        };
-        /** MovieDetailResponse */
-        MovieDetailResponse: {
-            /** Id */
-            id: string;
-            /** Title */
-            title: string;
-            /** Director */
-            director: string;
-            /** Duration Minutes */
-            duration_minutes: number;
-            /** Rating Classification */
-            rating_classification: string;
-            /** Release Date */
-            release_date: string;
-            /** Poster Url */
-            poster_url: string;
-            /** Genres */
-            genres: string[];
-            /**
-             * Synopsis
-             * @default
-             */
-            synopsis: string;
-            /**
-             * Trailer Url
-             * @default
-             */
-            trailer_url: string;
-            /** Screenings */
-            screenings: components["schemas"]["ScreeningResponse"][];
-        };
-        /** MovieResponse */
-        MovieResponse: {
-            /** Id */
-            id: string;
-            /** Title */
-            title: string;
-            /** Director */
-            director: string;
-            /** Duration Minutes */
-            duration_minutes: number;
-            /** Rating Classification */
-            rating_classification: string;
-            /** Release Date */
-            release_date: string;
-            /** Poster Url */
-            poster_url: string;
-            /** Genres */
-            genres: string[];
-            /**
-             * Synopsis
-             * @default
-             */
-            synopsis: string;
-            /**
-             * Trailer Url
-             * @default
-             */
-            trailer_url: string;
-        };
-        /** MovieScreeningsResponse */
-        MovieScreeningsResponse: {
-            /** Movie */
-            movie: Record<string, never>;
-            /** Screenings */
-            screenings: components["schemas"]["ScreeningResponse"][];
-            /** Ticket Types */
-            ticket_types: components["schemas"]["TicketTypeResponse"][];
-        };
-        /** NotInterestedRequest */
-        NotInterestedRequest: {
-            /** User Id */
-            user_id: string;
-        };
-        /** OrderHistoryItem */
-        OrderHistoryItem: {
-            /** Id */
-            id: string;
-            /** User Id */
-            user_id: string;
-            /** Movie Title */
-            movie_title: string;
-            /** Poster Url */
-            poster_url: string;
-            /** Room Name */
-            room_name: string;
-            /** Start Time */
-            start_time: string;
-            /** Seat Labels */
-            seat_labels: string[];
-            /** Total Price */
-            total_price: number;
-            /** Status */
-            status: string;
-            /** Created At */
-            created_at: string;
-            /** Tickets */
-            tickets: components["schemas"]["OrderTicket"][];
-        };
-        /** OrderHistoryResponse */
-        OrderHistoryResponse: {
-            /** Orders */
-            orders: components["schemas"]["OrderHistoryItem"][];
-        };
-        /** OrderTicket */
-        OrderTicket: {
-            /** Seat Id */
-            seat_id: string;
-            /** Qr Code */
-            qr_code: string;
-        };
-        /** PasswordResetConfirm */
-        PasswordResetConfirm: {
-            /** Token */
-            token: string;
-            /** New Password */
-            new_password: string;
-        };
-        /** PasswordResetRequest */
-        PasswordResetRequest: {
-            /**
-             * Email
-             * Format: email
-             */
-            email: string;
-        };
-        /** PreferencesRequest */
-        PreferencesRequest: {
-            /** Genres */
-            genres: string[];
-        };
-        /** PurchaseRequest */
-        PurchaseRequest: {
-            /** Seat Ids */
-            seat_ids: string[];
-            /** Seat Labels */
-            seat_labels: string[];
-            /** Payment Method */
-            payment_method: string;
-            /** User Id */
-            user_id: string;
-            /** Invoice Total */
-            invoice_total: number;
-        };
-        /** PurchaseResponse */
-        PurchaseResponse: {
-            /** Order Id */
-            order_id: string;
-            /** Status */
-            status: string;
-            /** Method */
-            method: string;
-            /** Tickets */
-            tickets: components["schemas"]["OrderTicket"][];
-        };
-        /** RatingRequest */
-        RatingRequest: {
-            /** User Id */
-            user_id: string;
-            /** User Name */
-            user_name: string;
-            /** Score */
-            score: number;
-        };
-        /** RefreshResponse */
-        RefreshResponse: {
-            /** Access Token */
-            access_token: string;
-        };
-        /** RegisterResponse */
-        RegisterResponse: {
-            /** Message */
-            message: string;
-            /** Redirect */
-            redirect: string;
-            /** Access Token */
-            access_token: string;
-            user: components["schemas"]["UserInfo"];
-        };
-        /** ReviewRequest */
-        ReviewRequest: {
-            /** User Id */
-            user_id: string;
-            /** User Name */
-            user_name: string;
-            /** Text */
-            text: string;
-        };
-        /** ScreeningResponse */
-        ScreeningResponse: {
-            /** Id */
-            id: string;
-            /** Start Time */
-            start_time: string;
-            /** Room */
-            room: string;
-            /** Format */
-            format: string;
-            /** Language */
-            language: string;
-        };
-        /** ScreeningSeatsResponse */
-        ScreeningSeatsResponse: {
-            /** Movie */
-            movie: Record<string, never>;
-            /** Screening */
-            screening: Record<string, never>;
-            /** Ticket Types */
-            ticket_types: components["schemas"]["TicketTypeResponse"][];
-            /** Seats */
-            seats: components["schemas"]["SeatResponse"][];
-            /** Active Lock Ttl */
-            active_lock_ttl: number | null;
-        };
-        /** SeatResponse */
-        SeatResponse: {
-            /** Id */
-            id: string;
-            /** Row */
-            row: string;
-            /** Col */
-            col: number;
-            /** Type */
-            type: string;
-            /** Status */
-            status: string;
-        };
-        /** TicketTypeResponse */
-        TicketTypeResponse: {
-            /** Id */
-            id: string;
-            /** Name */
-            name: string;
-            /** Price */
-            price: number;
-        };
-        /** UserInfo */
-        UserInfo: {
-            /** Id */
-            id: string;
-            /** Name */
-            name: string;
-            /** Email */
-            email: string;
-            /** Role */
-            role: string;
-        };
-        /** UserRegisterRequest */
-        UserRegisterRequest: {
-            /** Name */
-            name: string;
-            /**
-             * Email
-             * Format: email
-             */
-            email: string;
-            /** Password */
-            password: string;
-            /** Birth Date */
-            birth_date: string;
-            /** Device Fingerprint */
-            device_fingerprint: string;
-            /**
-             * Device Name
-             * @default Navegador Web
-             */
-            device_name: string;
-        };
-        /** ValidationError */
-        ValidationError: {
-            /** Location */
-            loc: (string | number)[];
-            /** Message */
-            msg: string;
-            /** Error Type */
-            type: string;
-        };
-        /** WatchlistRequest */
-        WatchlistRequest: {
-            /** User Id */
-            user_id: string;
-            /** Movie Title */
-            movie_title: string;
-            /** Poster Url */
-            poster_url: string;
-        };
+  schemas: {
+    /** CatalogResponse */
+    CatalogResponse: {
+      /** Items */
+      items: components['schemas']['MovieResponse'][];
+      /** Total */
+      total: number;
+      /** Page */
+      page: number;
+      /** Size */
+      size: number;
+      /** Pages */
+      pages: number;
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    /** DeviceInfo */
+    DeviceInfo: {
+      /** Id */
+      id: string;
+      /** Name */
+      name: string;
+      /** Last Seen */
+      last_seen: string;
+    };
+    /** DevicesErrorResponse */
+    DevicesErrorResponse: {
+      /** Detail */
+      detail: string;
+      /** Devices */
+      devices: components['schemas']['DeviceInfo'][];
+    };
+    /** GenreResponse */
+    GenreResponse: {
+      /** Genres */
+      genres: string[];
+    };
+    /** GoogleLoginRequest */
+    GoogleLoginRequest: {
+      /** Token */
+      token: string;
+      /** Device Fingerprint */
+      device_fingerprint: string;
+      /**
+       * Device Name
+       * @default Navegador Web
+       */
+      device_name: string;
+    };
+    /** HTTPValidationError */
+    HTTPValidationError: {
+      /** Detail */
+      detail?: components['schemas']['ValidationError'][];
+    };
+    /** LockSeatsRequest */
+    LockSeatsRequest: {
+      /** Seat Ids */
+      seat_ids: string[];
+      /** User Id */
+      user_id: string;
+    };
+    /** LoginRequest */
+    LoginRequest: {
+      /**
+       * Email
+       * Format: email
+       */
+      email: string;
+      /** Password */
+      password: string;
+      /** Device Fingerprint */
+      device_fingerprint: string;
+      /**
+       * Device Name
+       * @default Navegador Web
+       */
+      device_name: string;
+    };
+    /** LoginResponse */
+    LoginResponse: {
+      /** Access Token */
+      access_token: string;
+      user: components['schemas']['UserInfo'];
+    };
+    /** MessageResponse */
+    MessageResponse: {
+      /** Message */
+      message: string;
+    };
+    /** MovieDetailResponse */
+    MovieDetailResponse: {
+      /** Id */
+      id: string;
+      /** Title */
+      title: string;
+      /** Director */
+      director: string;
+      /** Duration Minutes */
+      duration_minutes: number;
+      /** Rating Classification */
+      rating_classification: string;
+      /** Release Date */
+      release_date: string;
+      /** Poster Url */
+      poster_url: string;
+      /** Genres */
+      genres: string[];
+      /**
+       * Synopsis
+       * @default
+       */
+      synopsis: string;
+      /**
+       * Trailer Url
+       * @default
+       */
+      trailer_url: string;
+      /** Screenings */
+      screenings: components['schemas']['ScreeningResponse'][];
+    };
+    /** MovieResponse */
+    MovieResponse: {
+      /** Id */
+      id: string;
+      /** Title */
+      title: string;
+      /** Director */
+      director: string;
+      /** Duration Minutes */
+      duration_minutes: number;
+      /** Rating Classification */
+      rating_classification: string;
+      /** Release Date */
+      release_date: string;
+      /** Poster Url */
+      poster_url: string;
+      /** Genres */
+      genres: string[];
+      /**
+       * Synopsis
+       * @default
+       */
+      synopsis: string;
+      /**
+       * Trailer Url
+       * @default
+       */
+      trailer_url: string;
+    };
+    /** MovieScreeningsResponse */
+    MovieScreeningsResponse: {
+      /** Movie */
+      movie: Record<string, never>;
+      /** Screenings */
+      screenings: components['schemas']['ScreeningResponse'][];
+      /** Ticket Types */
+      ticket_types: components['schemas']['TicketTypeResponse'][];
+    };
+    /** NotInterestedRequest */
+    NotInterestedRequest: {
+      /** User Id */
+      user_id: string;
+    };
+    /** OrderHistoryItem */
+    OrderHistoryItem: {
+      /** Id */
+      id: string;
+      /** User Id */
+      user_id: string;
+      /** Movie Title */
+      movie_title: string;
+      /** Poster Url */
+      poster_url: string;
+      /** Room Name */
+      room_name: string;
+      /** Start Time */
+      start_time: string;
+      /** Seat Labels */
+      seat_labels: string[];
+      /** Total Price */
+      total_price: number;
+      /** Status */
+      status: string;
+      /** Created At */
+      created_at: string;
+      /** Tickets */
+      tickets: components['schemas']['OrderTicket'][];
+    };
+    /** OrderHistoryResponse */
+    OrderHistoryResponse: {
+      /** Orders */
+      orders: components['schemas']['OrderHistoryItem'][];
+    };
+    /** OrderTicket */
+    OrderTicket: {
+      /** Seat Id */
+      seat_id: string;
+      /** Qr Code */
+      qr_code: string;
+    };
+    /** PasswordResetConfirm */
+    PasswordResetConfirm: {
+      /** Token */
+      token: string;
+      /** New Password */
+      new_password: string;
+    };
+    /** PasswordResetRequest */
+    PasswordResetRequest: {
+      /**
+       * Email
+       * Format: email
+       */
+      email: string;
+    };
+    /** PreferencesRequest */
+    PreferencesRequest: {
+      /** Genres */
+      genres: string[];
+    };
+    /** PurchaseRequest */
+    PurchaseRequest: {
+      /** Seat Ids */
+      seat_ids: string[];
+      /** Seat Labels */
+      seat_labels: string[];
+      /** Payment Method */
+      payment_method: string;
+      /** User Id */
+      user_id: string;
+      /** Invoice Total */
+      invoice_total: number;
+    };
+    /** PurchaseResponse */
+    PurchaseResponse: {
+      /** Order Id */
+      order_id: string;
+      /** Status */
+      status: string;
+      /** Method */
+      method: string;
+      /** Tickets */
+      tickets: components['schemas']['OrderTicket'][];
+    };
+    /** RatingRequest */
+    RatingRequest: {
+      /** User Id */
+      user_id: string;
+      /** User Name */
+      user_name: string;
+      /** Score */
+      score: number;
+    };
+    /** RefreshResponse */
+    RefreshResponse: {
+      /** Access Token */
+      access_token: string;
+    };
+    /** RegisterResponse */
+    RegisterResponse: {
+      /** Message */
+      message: string;
+      /** Redirect */
+      redirect: string;
+      /** Access Token */
+      access_token: string;
+      user: components['schemas']['UserInfo'];
+    };
+    /** ReviewRequest */
+    ReviewRequest: {
+      /** User Id */
+      user_id: string;
+      /** User Name */
+      user_name: string;
+      /** Text */
+      text: string;
+    };
+    /** ScreeningResponse */
+    ScreeningResponse: {
+      /** Id */
+      id: string;
+      /** Start Time */
+      start_time: string;
+      /** Room */
+      room: string;
+      /** Format */
+      format: string;
+      /** Language */
+      language: string;
+    };
+    /** ScreeningSeatsResponse */
+    ScreeningSeatsResponse: {
+      /** Movie */
+      movie: Record<string, never>;
+      /** Screening */
+      screening: Record<string, never>;
+      /** Ticket Types */
+      ticket_types: components['schemas']['TicketTypeResponse'][];
+      /** Seats */
+      seats: components['schemas']['SeatResponse'][];
+      /** Active Lock Ttl */
+      active_lock_ttl: number | null;
+    };
+    /** SeatResponse */
+    SeatResponse: {
+      /** Id */
+      id: string;
+      /** Row */
+      row: string;
+      /** Col */
+      col: number;
+      /** Type */
+      type: string;
+      /** Status */
+      status: string;
+    };
+    /** TicketTypeResponse */
+    TicketTypeResponse: {
+      /** Id */
+      id: string;
+      /** Name */
+      name: string;
+      /** Price */
+      price: number;
+    };
+    /** UserInfo */
+    UserInfo: {
+      /** Id */
+      id: string;
+      /** Name */
+      name: string;
+      /** Email */
+      email: string;
+      /** Role */
+      role: string;
+    };
+    /** UserRegisterRequest */
+    UserRegisterRequest: {
+      /** Name */
+      name: string;
+      /**
+       * Email
+       * Format: email
+       */
+      email: string;
+      /** Password */
+      password: string;
+      /** Birth Date */
+      birth_date: string;
+      /** Device Fingerprint */
+      device_fingerprint: string;
+      /**
+       * Device Name
+       * @default Navegador Web
+       */
+      device_name: string;
+    };
+    /** ValidationError */
+    ValidationError: {
+      /** Location */
+      loc: (string | number)[];
+      /** Message */
+      msg: string;
+      /** Error Type */
+      type: string;
+    };
+    /** WatchlistRequest */
+    WatchlistRequest: {
+      /** User Id */
+      user_id: string;
+      /** Movie Title */
+      movie_title: string;
+      /** Poster Url */
+      poster_url: string;
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    register_user_auth_register_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserRegisterRequest"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RegisterResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  register_user_auth_register_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    login_auth_login_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LoginRequest"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LoginResponse"];
-                };
-            };
-            /** @description Forbidden */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DevicesErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UserRegisterRequest'];
+      };
     };
-    google_auth_auth_google_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GoogleLoginRequest"];
-            };
+        content: {
+          'application/json': components['schemas']['RegisterResponse'];
         };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LoginResponse"];
-                };
-            };
-            /** @description Forbidden */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DevicesErrorResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
     };
-    revoke_device_auth_devices__device_id__revoke_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                device_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MessageResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  };
+  login_auth_login_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    refresh_token_auth_refresh_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RefreshResponse"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LoginRequest'];
+      };
     };
-    logout_auth_logout_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MessageResponse"];
-                };
-            };
+        content: {
+          'application/json': components['schemas']['LoginResponse'];
         };
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['DevicesErrorResponse'];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
     };
-    request_password_reset_auth_password_reset_request_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PasswordResetRequest"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": Record<string, never>;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  };
+  google_auth_auth_google_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    confirm_password_reset_auth_password_reset_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PasswordResetConfirm"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MessageResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GoogleLoginRequest'];
+      };
     };
-    update_preferences_auth_users__user_id__preferences_put: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                user_id: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PreferencesRequest"];
-            };
+        content: {
+          'application/json': components['schemas']['LoginResponse'];
         };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": Record<string, never>;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
+      };
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          'application/json': components['schemas']['DevicesErrorResponse'];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
     };
-    get_public_movies_api_v1_catalog_movies_get: {
-        parameters: {
-            query?: {
-                page?: number;
-                size?: number;
-                /** @description Término de búsqueda para título */
-                q?: string | null;
-                /** @description Filtro exacto por nombre de género */
-                genre?: string | null;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CatalogResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  };
+  revoke_device_auth_devices__device_id__revoke_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        device_id: string;
+      };
+      cookie?: never;
     };
-    get_public_genres_api_v1_catalog_genres_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GenreResponse"];
-                };
-            };
+        content: {
+          'application/json': components['schemas']['MessageResponse'];
         };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
     };
-    get_movie_detail_api_v1_catalog_movies__movie_id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                movie_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MovieDetailResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  };
+  refresh_token_auth_refresh_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    get_movie_screenings_api_v1_catalog_movies__movie_id__screenings_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                movie_id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MovieScreeningsResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
+        content: {
+          'application/json': components['schemas']['RefreshResponse'];
         };
+      };
     };
-    get_screening_seats_api_v1_catalog_screenings__screening_id__seats_get: {
-        parameters: {
-            query?: {
-                user_id?: string | null;
-            };
-            header?: never;
-            path: {
-                screening_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ScreeningSeatsResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  };
+  logout_auth_logout_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    lock_seats_api_v1_catalog_screenings__screening_id__lock_seats_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                screening_id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LockSeatsRequest"];
-            };
+        content: {
+          'application/json': components['schemas']['MessageResponse'];
         };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+      };
     };
-    unlock_seats_api_v1_catalog_screenings__screening_id__lock_seats_delete: {
-        parameters: {
-            query: {
-                user_id: string;
-            };
-            header?: never;
-            path: {
-                screening_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  };
+  request_password_reset_auth_password_reset_request_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    process_purchase_api_v1_catalog_screenings__screening_id__purchase_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                screening_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PurchaseRequest"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PurchaseResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PasswordResetRequest'];
+      };
     };
-    get_my_orders_api_v1_catalog_me_orders_get: {
-        parameters: {
-            query: {
-                user_id: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OrderHistoryResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
+        content: {
+          'application/json': Record<string, never>;
         };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
     };
-    get_order_detail_api_v1_catalog_me_orders__order_id__get: {
-        parameters: {
-            query: {
-                user_id: string;
-            };
-            header?: never;
-            path: {
-                order_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OrderHistoryItem"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  };
+  confirm_password_reset_auth_password_reset_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    submit_rating_api_v1_ugc_movies__movie_id__rate_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                movie_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RatingRequest"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PasswordResetConfirm'];
+      };
     };
-    submit_review_api_v1_ugc_movies__movie_id__review_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                movie_id: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ReviewRequest"];
-            };
+        content: {
+          'application/json': components['schemas']['MessageResponse'];
         };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
     };
-    get_reviews_api_v1_ugc_movies__movie_id__reviews_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                movie_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  };
+  update_preferences_auth_users__user_id__preferences_put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        user_id: string;
+      };
+      cookie?: never;
     };
-    get_watchlist_status_api_v1_ugc_movies__movie_id__watchlist_status_get: {
-        parameters: {
-            query: {
-                user_id: string;
-            };
-            header?: never;
-            path: {
-                movie_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PreferencesRequest'];
+      };
     };
-    toggle_watchlist_api_v1_ugc_movies__movie_id__watchlist_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                movie_id: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["WatchlistRequest"];
-            };
+        content: {
+          'application/json': Record<string, never>;
         };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
     };
-    get_watchlist_api_v1_ugc_users__user_id__watchlist_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                user_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  };
+  get_public_movies_api_v1_catalog_movies_get: {
+    parameters: {
+      query?: {
+        page?: number;
+        size?: number;
+        /** @description Término de búsqueda para título */
+        q?: string | null;
+        /** @description Filtro exacto por nombre de género */
+        genre?: string | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    get_activity_api_v1_ugc_users__user_id__activity_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                user_id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
+        content: {
+          'application/json': components['schemas']['CatalogResponse'];
         };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
     };
-    mark_not_interested_api_v1_ugc_movies__movie_id__not_interested_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                movie_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["NotInterestedRequest"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  };
+  get_public_genres_api_v1_catalog_genres_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    get_recommendations_api_v1_recommendations__get: {
-        parameters: {
-            query?: {
-                user_id?: string | null;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
+        content: {
+          'application/json': components['schemas']['GenreResponse'];
         };
+      };
     };
-    health_check_health_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-        };
+  };
+  get_movie_detail_api_v1_catalog_movies__movie_id__get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        movie_id: string;
+      };
+      cookie?: never;
     };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['MovieDetailResponse'];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  get_movie_screenings_api_v1_catalog_movies__movie_id__screenings_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        movie_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['MovieScreeningsResponse'];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  get_screening_seats_api_v1_catalog_screenings__screening_id__seats_get: {
+    parameters: {
+      query?: {
+        user_id?: string | null;
+      };
+      header?: never;
+      path: {
+        screening_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ScreeningSeatsResponse'];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  lock_seats_api_v1_catalog_screenings__screening_id__lock_seats_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        screening_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LockSeatsRequest'];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  unlock_seats_api_v1_catalog_screenings__screening_id__lock_seats_delete: {
+    parameters: {
+      query: {
+        user_id: string;
+      };
+      header?: never;
+      path: {
+        screening_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  process_purchase_api_v1_catalog_screenings__screening_id__purchase_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        screening_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PurchaseRequest'];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PurchaseResponse'];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  get_my_orders_api_v1_catalog_me_orders_get: {
+    parameters: {
+      query: {
+        user_id: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OrderHistoryResponse'];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  get_order_detail_api_v1_catalog_me_orders__order_id__get: {
+    parameters: {
+      query: {
+        user_id: string;
+      };
+      header?: never;
+      path: {
+        order_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OrderHistoryItem'];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  submit_rating_api_v1_ugc_movies__movie_id__rate_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        movie_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RatingRequest'];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  submit_review_api_v1_ugc_movies__movie_id__review_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        movie_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ReviewRequest'];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  get_reviews_api_v1_ugc_movies__movie_id__reviews_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        movie_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  get_watchlist_status_api_v1_ugc_movies__movie_id__watchlist_status_get: {
+    parameters: {
+      query: {
+        user_id: string;
+      };
+      header?: never;
+      path: {
+        movie_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  toggle_watchlist_api_v1_ugc_movies__movie_id__watchlist_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        movie_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['WatchlistRequest'];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  get_watchlist_api_v1_ugc_users__user_id__watchlist_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        user_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  get_activity_api_v1_ugc_users__user_id__activity_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        user_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  mark_not_interested_api_v1_ugc_movies__movie_id__not_interested_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        movie_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['NotInterestedRequest'];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  get_recommendations_api_v1_recommendations__get: {
+    parameters: {
+      query?: {
+        user_id?: string | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HTTPValidationError'];
+        };
+      };
+    };
+  };
+  health_check_health_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': unknown;
+        };
+      };
+    };
+  };
 }

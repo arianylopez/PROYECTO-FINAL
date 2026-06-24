@@ -8,8 +8,8 @@ vi.mock('../../shared/api/apiClient', () => {
       get: vi.fn(),
       post: vi.fn(),
       delete: vi.fn(),
-      interceptors: { request: { use: vi.fn() }, response: { use: vi.fn() } }
-    }
+      interceptors: { request: { use: vi.fn() }, response: { use: vi.fn() } },
+    },
   };
 });
 
@@ -18,7 +18,9 @@ describe('catalogApi', () => {
     (apiClient.get as any).mockResolvedValue({ data: { items: [], total: 0 } });
     const res = await api.fetchMovies(1, 10, 'title', 'genre');
     expect(res).toEqual({ items: [], total: 0 });
-    expect(apiClient.get).toHaveBeenCalledWith('/api/v1/catalog/movies', { params: { page: 1, size: 10, genre: 'genre', q: 'title' } });
+    expect(apiClient.get).toHaveBeenCalledWith('/api/v1/catalog/movies', {
+      params: { page: 1, size: 10, genre: 'genre', q: 'title' },
+    });
   });
 
   it('fetchGenres', async () => {

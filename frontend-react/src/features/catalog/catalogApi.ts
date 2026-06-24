@@ -11,13 +11,13 @@ export type ScreeningSeatsResponse = components['schemas']['ScreeningSeatsRespon
 export type MovieScreeningsResponse = components['schemas']['MovieScreeningsResponse'];
 
 export const fetchMovies = async (
-  page: number = 1, 
+  page: number = 1,
   size: number = 12,
   searchQuery?: string,
   genre?: string
 ): Promise<CatalogResponse> => {
   const params: Record<string, any> = { page, size };
-  
+
   if (searchQuery) params.q = searchQuery;
   if (genre && genre !== 'Todas') params.genre = genre;
 
@@ -27,11 +27,11 @@ export const fetchMovies = async (
 
 export const fetchGenres = async (): Promise<string[]> => {
   try {
-    const response = await apiClient.get<{genres: string[]}>('/api/v1/catalog/genres');
+    const response = await apiClient.get<{ genres: string[] }>('/api/v1/catalog/genres');
     return response.data.genres;
   } catch (error) {
-    console.error("Error cargando géneros dinámicos:", error);
-    return []; 
+    console.error('Error cargando géneros dinámicos:', error);
+    return [];
   }
 };
 
@@ -47,31 +47,33 @@ export const fetchMovieScreenings = async (id: string): Promise<MovieScreeningsR
 
 export const fetchScreeningSeats = async (screeningId: string, userId?: string): Promise<ScreeningSeatsResponse> => {
   const params = userId ? { user_id: userId } : {};
-  const response = await apiClient.get<ScreeningSeatsResponse>(`/api/v1/catalog/screenings/${screeningId}/seats`, { params });
+  const response = await apiClient.get<ScreeningSeatsResponse>(`/api/v1/catalog/screenings/${screeningId}/seats`, {
+    params,
+  });
   return response.data;
 };
 
 export const lockScreeningSeats = async (screeningId: string, seatIds: string[], userId: string) => {
   const response = await apiClient.post(`/api/v1/catalog/screenings/${screeningId}/lock-seats`, {
     seat_ids: seatIds,
-    user_id: userId 
+    user_id: userId,
   });
   return response.data;
 };
 
 export const unlockScreeningSeats = async (screeningId: string, userId: string) => {
   const response = await apiClient.delete(`/api/v1/catalog/screenings/${screeningId}/lock-seats`, {
-    params: { user_id: userId }
+    params: { user_id: userId },
   });
   return response.data;
 };
 
 export const processScreeningPurchase = async (
-  screeningId: string, 
-  seatIds: string[], 
-  method: string, 
-  userId: string, 
-  total: number, 
+  screeningId: string,
+  seatIds: string[],
+  method: string,
+  userId: string,
+  total: number,
   seatLabels: string[]
 ) => {
   const response = await apiClient.post(`/api/v1/catalog/screenings/${screeningId}/purchase`, {
@@ -79,7 +81,7 @@ export const processScreeningPurchase = async (
     payment_method: method,
     user_id: userId,
     invoice_total: total,
-    seat_labels: seatLabels
+    seat_labels: seatLabels,
   });
   return response.data;
 };
@@ -88,7 +90,7 @@ export type OrderTicket = components['schemas']['OrderTicket'];
 export type OrderHistoryItem = components['schemas']['OrderHistoryItem'];
 
 export const fetchMyOrders = async (userId: string): Promise<OrderHistoryItem[]> => {
-  const response = await apiClient.get<{orders: OrderHistoryItem[]}>(`/api/v1/catalog/me/orders?user_id=${userId}`);
+  const response = await apiClient.get<{ orders: OrderHistoryItem[] }>(`/api/v1/catalog/me/orders?user_id=${userId}`);
   return response.data.orders;
 };
 
@@ -121,7 +123,7 @@ export const submitMovieRating = async (movieId: string, userId: string, userNam
   const response = await apiClient.post(`/api/v1/ugc/movies/${movieId}/rate`, {
     user_id: userId,
     user_name: userName,
-    score
+    score,
   });
   return response.data;
 };
@@ -130,7 +132,7 @@ export const submitMovieReview = async (movieId: string, userId: string, userNam
   const response = await apiClient.post(`/api/v1/ugc/movies/${movieId}/review`, {
     user_id: userId,
     user_name: userName,
-    text
+    text,
   });
   return response.data;
 };
@@ -153,13 +155,17 @@ export interface ActivityItem {
 }
 
 export const fetchWatchlistStatus = async (movieId: string, userId: string) => {
-  const response = await apiClient.get(`/api/v1/ugc/movies/${movieId}/watchlist-status`, { params: { user_id: userId } });
+  const response = await apiClient.get(`/api/v1/ugc/movies/${movieId}/watchlist-status`, {
+    params: { user_id: userId },
+  });
   return response.data.is_added;
 };
 
 export const toggleWatchlist = async (movieId: string, userId: string, movieTitle: string, posterUrl: string) => {
   const response = await apiClient.post(`/api/v1/ugc/movies/${movieId}/watchlist`, {
-    user_id: userId, movie_title: movieTitle, poster_url: posterUrl
+    user_id: userId,
+    movie_title: movieTitle,
+    poster_url: posterUrl,
   });
   return response.data.is_added;
 };

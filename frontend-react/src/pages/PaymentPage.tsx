@@ -1,6 +1,10 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { fetchScreeningSeats, processScreeningPurchase, type ScreeningSeatsResponse } from '../features/catalog/catalogApi';
+import {
+  fetchScreeningSeats,
+  processScreeningPurchase,
+  type ScreeningSeatsResponse,
+} from '../features/catalog/catalogApi';
 import { useAuthStore } from '../shared/store/authStore';
 
 import { validateLuhn, detectCardBrand, isCardExpired } from '../shared/utils/cardUtils';
@@ -62,20 +66,20 @@ export const PaymentPage = () => {
     if (!data) return { subtotal: 0, fee: 0, tax: 0, total: 0, tickets: [] };
     let subtotal = 0;
     const tickets: any[] = [];
-    
+
     Array.from(searchParams.entries()).forEach(([key, val]) => {
       if (key !== 'seats') {
         const qty = parseInt(val);
-        const tt = data.ticket_types.find(t => t.id === key);
+        const tt = data.ticket_types.find((t) => t.id === key);
         if (tt && qty > 0) {
-          subtotal += (tt.price * qty);
+          subtotal += tt.price * qty;
           tickets.push({ name: tt.name, qty });
         }
       }
     });
 
     const tax = subtotal * 0.13;
-    const fee = 5.00; 
+    const fee = 5.0;
     return { subtotal, tax, fee, total: subtotal + tax + fee, tickets };
   }, [data, searchParams]);
 
@@ -86,7 +90,7 @@ export const PaymentPage = () => {
     if (brand === 'Amex' && val.length > 15) return;
     if (brand !== 'Amex' && val.length > 16) return;
     setCardNumber(val);
-    setLuhnError(false); 
+    setLuhnError(false);
   };
 
   const handleCardBlur = () => {
@@ -99,22 +103,33 @@ export const PaymentPage = () => {
     try {
       if (!id) return;
       if (paymentMethod === 'card') {
-        if (luhnError || cardNumber.length < 13) { alert('Número de tarjeta inválido.'); return; }
-        if (isCardExpired(cardMonth, cardYear)) { alert('La tarjeta está vencida.'); return; }
-        if (!cardName) { alert('Ingresa el nombre del titular.'); return; }
+        if (luhnError || cardNumber.length < 13) {
+          alert('Número de tarjeta inválido.');
+          return;
+        }
+        if (isCardExpired(cardMonth, cardYear)) {
+          alert('La tarjeta está vencida.');
+          return;
+        }
+        if (!cardName) {
+          alert('Ingresa el nombre del titular.');
+          return;
+        }
         const cvvLength = cardBrand === 'Amex' ? 4 : 3;
-        if (cardCvv.length !== cvvLength) { alert(`El CVV debe tener ${cvvLength} dígitos.`); return; }
+        if (cardCvv.length !== cvvLength) {
+          alert(`El CVV debe tener ${cvvLength} dígitos.`);
+          return;
+        }
       }
 
       setIsLoading(true);
-      const userId = user?.id || 'guest-123'; 
+      const userId = user?.id || 'guest-123';
       const seatLabels = getSeatLabels();
       const res = await processScreeningPurchase(id, seatIds, paymentMethod, userId, invoice.total, seatLabels);
-      
+
       sessionStorage.setItem('ticketData', JSON.stringify({ invoice, data, res, seatIds }));
       sessionStorage.removeItem('lockExpiration');
       navigate(`/booking/${id}/ticket`);
-      
     } catch (err: any) {
       if (err.response?.status === 409) {
         alert('Tu reserva expiró. Volvé a elegir tus butacas.');
@@ -129,10 +144,12 @@ export const PaymentPage = () => {
   if (isLoading || !data) return <div className="payment-page__loading">Procesando...</div>;
 
   const getSeatLabels = () => {
-    return seatIds.map(sid => {
-      const s = data.seats.find(x => x.id === sid);
-      return s ? `${s.row}${s.col}` : '';
-    }).filter(Boolean);
+    return seatIds
+      .map((sid) => {
+        const s = data.seats.find((x) => x.id === sid);
+        return s ? `${s.row}${s.col}` : '';
+      })
+      .filter(Boolean);
   };
 
   const expired = isCardExpired(cardMonth, cardYear);
@@ -145,7 +162,6 @@ export const PaymentPage = () => {
       </div>
 
       <div className="payment-page__content">
-        
         <div className="booking-steps">
           <div className="step step--inactive">
             <div className="step__dot"></div>
@@ -166,39 +182,76 @@ export const PaymentPage = () => {
         {errorMsg && <div className="payment-page__error">{errorMsg}</div>}
 
         <div className="payment-layout">
-          
           <div className="payment-info">
             <img src={data.movie.poster_url} className="payment-info__poster" alt="Poster" />
             <h2 className="payment-info__title">{data.movie.title}</h2>
             <div className="payment-info__meta">
-              <span>{Math.floor(data.movie.duration_minutes/60)}h {data.movie.duration_minutes%60}m</span> | <span className="payment-info__rating">{data.movie.rating_classification}</span>
+              <span>
+                {Math.floor(data.movie.duration_minutes / 60)}h {data.movie.duration_minutes % 60}m
+              </span>{' '}
+              | <span className="payment-info__rating">{data.movie.rating_classification}</span>
             </div>
 
             <div className="payment-info__details">
-              <div><strong className="payment-info__label">Fecha y Hora</strong> {new Date(data.screening.start_time).toLocaleString('es-ES', { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })}</div>
-              <div><strong className="payment-info__label">Sala</strong> {data.screening.room_name}</div>
-              <div><strong className="payment-info__label">Butacas Seleccionadas</strong> {getSeatLabels().join(', ')}</div>
+              <div>
+                <strong className="payment-info__label">Fecha y Hora</strong>{' '}
+                {new Date(data.screening.start_time).toLocaleString('es-ES', {
+                  weekday: 'short',
+                  day: 'numeric',
+                  month: 'short',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </div>
+              <div>
+                <strong className="payment-info__label">Sala</strong> {data.screening.room_name}
+              </div>
+              <div>
+                <strong className="payment-info__label">Butacas Seleccionadas</strong> {getSeatLabels().join(', ')}
+              </div>
             </div>
           </div>
 
           <div className="payment-form">
             <h2 className="payment-form__title">Método de pago</h2>
-            
+
             <div className="payment-methods">
               <label className={`payment-method ${paymentMethod === 'card' ? 'payment-method--active' : ''}`}>
-                <input type="radio" checked={paymentMethod === 'card'} onChange={() => setPaymentMethod('card')} className="payment-method__input" /> Tarjeta
+                <input
+                  type="radio"
+                  checked={paymentMethod === 'card'}
+                  onChange={() => setPaymentMethod('card')}
+                  className="payment-method__input"
+                />{' '}
+                Tarjeta
               </label>
               <label className={`payment-method ${paymentMethod === 'qr' ? 'payment-method--active' : ''}`}>
-                <input type="radio" checked={paymentMethod === 'qr'} onChange={() => setPaymentMethod('qr')} className="payment-method__input" /> Pago QR
+                <input
+                  type="radio"
+                  checked={paymentMethod === 'qr'}
+                  onChange={() => setPaymentMethod('qr')}
+                  className="payment-method__input"
+                />{' '}
+                Pago QR
               </label>
             </div>
 
             {paymentMethod === 'card' && (
               <div className="card-form">
                 <div className="card-form__group">
-                  <label className="card-form__label" htmlFor="cardNumber">Número de Tarjeta</label>
+                  <label className="card-form__label" htmlFor="cardNumber">
+                    Número de Tarjeta
+                  </label>
                   <div className="card-form__input-wrapper">
-                    <input id="cardNumber" type="text" value={cardNumber} onChange={handleCardChange} onBlur={handleCardBlur} placeholder="0000 0000 0000 0000" className={`card-form__input ${luhnError ? 'card-form__input--error' : ''}`} />
+                    <input
+                      id="cardNumber"
+                      type="text"
+                      value={cardNumber}
+                      onChange={handleCardChange}
+                      onBlur={handleCardBlur}
+                      placeholder="0000 0000 0000 0000"
+                      className={`card-form__input ${luhnError ? 'card-form__input--error' : ''}`}
+                    />
                     <span className="card-form__brand">{cardBrand !== 'Unknown' ? cardBrand : '💳'}</span>
                   </div>
                   {luhnError && <span className="card-form__error-text">Número de tarjeta inválido</span>}
@@ -206,22 +259,58 @@ export const PaymentPage = () => {
 
                 <div className="card-form__row">
                   <div className="card-form__group">
-                    <p className="card-form__label" id="expiryLabel">Vencimiento (MM / AA)</p>
+                    <p className="card-form__label" id="expiryLabel">
+                      Vencimiento (MM / AA)
+                    </p>
                     <div className="card-form__date-group" role="group" aria-labelledby="expiryLabel">
-                      <input aria-label="Mes de Vencimiento" type="text" placeholder="MM" value={cardMonth} onChange={(e) => setCardMonth(e.target.value.replace(/\D/g,'').slice(0,2))} className="card-form__input card-form__input--center" />
-                      <input aria-label="Año de Vencimiento" type="text" placeholder="AA" value={cardYear} onChange={(e) => setCardYear(e.target.value.replace(/\D/g,'').slice(0,2))} className="card-form__input card-form__input--center" />
+                      <input
+                        aria-label="Mes de Vencimiento"
+                        type="text"
+                        placeholder="MM"
+                        value={cardMonth}
+                        onChange={(e) => setCardMonth(e.target.value.replace(/\D/g, '').slice(0, 2))}
+                        className="card-form__input card-form__input--center"
+                      />
+                      <input
+                        aria-label="Año de Vencimiento"
+                        type="text"
+                        placeholder="AA"
+                        value={cardYear}
+                        onChange={(e) => setCardYear(e.target.value.replace(/\D/g, '').slice(0, 2))}
+                        className="card-form__input card-form__input--center"
+                      />
                     </div>
                     {expired && <span className="card-form__error-text">La tarjeta está vencida</span>}
                   </div>
                   <div className="card-form__group">
-                    <label className="card-form__label" htmlFor="cardCvv">CVV</label>
-                    <input id="cardCvv" type="password" value={cardCvv} onChange={(e) => setCardCvv(e.target.value.replace(/\D/g,'').slice(0, cardBrand === 'Amex' ? 4 : 3))} placeholder={cardBrand === 'Amex' ? '1234' : '123'} className="card-form__input" />
+                    <label className="card-form__label" htmlFor="cardCvv">
+                      CVV
+                    </label>
+                    <input
+                      id="cardCvv"
+                      type="password"
+                      value={cardCvv}
+                      onChange={(e) =>
+                        setCardCvv(e.target.value.replace(/\D/g, '').slice(0, cardBrand === 'Amex' ? 4 : 3))
+                      }
+                      placeholder={cardBrand === 'Amex' ? '1234' : '123'}
+                      className="card-form__input"
+                    />
                   </div>
                 </div>
 
                 <div className="card-form__group">
-                  <label className="card-form__label" htmlFor="cardName">Nombre del Titular</label>
-                  <input id="cardName" type="text" value={cardName} onChange={(e) => setCardName(e.target.value)} placeholder="COMO APARECE EN LA TARJETA" className="card-form__input card-form__input--uppercase" />
+                  <label className="card-form__label" htmlFor="cardName">
+                    Nombre del Titular
+                  </label>
+                  <input
+                    id="cardName"
+                    type="text"
+                    value={cardName}
+                    onChange={(e) => setCardName(e.target.value)}
+                    placeholder="COMO APARECE EN LA TARJETA"
+                    className="card-form__input card-form__input--uppercase"
+                  />
                 </div>
               </div>
             )}
@@ -229,7 +318,16 @@ export const PaymentPage = () => {
             {paymentMethod === 'qr' && (
               <div className="qr-payment">
                 <div className="qr-payment__code">
-                  <svg width="100%" height="100%" viewBox="0 0 100 100"><rect width="100%" height="100%" fill="#fff"/><rect x="10" y="10" width="30" height="30" fill="#000"/><rect x="60" y="10" width="30" height="30" fill="#000"/><rect x="10" y="60" width="30" height="30" fill="#000"/><path d="M15 15h20v20h-20zM65 15h20v20h-20zM15 65h20v20h-20zM45 10h10v10h-10zM45 25h10v35h-10zM10 45h35v10h-35zM60 45h30v10h-30zM80 60h10v30h-10zM45 70h30v10h-30zM60 85h15v5h-15z" fill="#000"/></svg>
+                  <svg width="100%" height="100%" viewBox="0 0 100 100">
+                    <rect width="100%" height="100%" fill="#fff" />
+                    <rect x="10" y="10" width="30" height="30" fill="#000" />
+                    <rect x="60" y="10" width="30" height="30" fill="#000" />
+                    <rect x="10" y="60" width="30" height="30" fill="#000" />
+                    <path
+                      d="M15 15h20v20h-20zM65 15h20v20h-20zM15 65h20v20h-20zM45 10h10v10h-10zM45 25h10v35h-10zM10 45h35v10h-35zM60 45h30v10h-30zM80 60h10v30h-10zM45 70h30v10h-30zM60 85h15v5h-15z"
+                      fill="#000"
+                    />
+                  </svg>
                 </div>
                 <p className="qr-payment__text">Escanea este código con tu aplicación bancaria.</p>
                 <h3 className="qr-payment__amount">Bs. {invoice.total.toFixed(2)}</h3>
@@ -239,12 +337,14 @@ export const PaymentPage = () => {
 
           <div className="payment-summary">
             <h3 className="payment-summary__title">Resumen</h3>
-            
+
             <div className="payment-summary__section">
               <h4 className="payment-summary__section-title">Entradas</h4>
               {invoice.tickets.map((t, i) => (
                 <div key={i} className="payment-summary__row">
-                  <span>{t.name} <span className="payment-summary__highlight">x{t.qty}</span></span>
+                  <span>
+                    {t.name} <span className="payment-summary__highlight">x{t.qty}</span>
+                  </span>
                 </div>
               ))}
             </div>
@@ -255,9 +355,18 @@ export const PaymentPage = () => {
             </div>
 
             <div className="payment-summary__breakdown">
-              <div className="payment-summary__row"><span>Subtotal</span><span>Bs. {invoice.subtotal.toFixed(2)}</span></div>
-              <div className="payment-summary__row"><span>Impuestos (13%)</span><span>Bs. {invoice.tax.toFixed(2)}</span></div>
-              <div className="payment-summary__row"><span>Comisión servicio</span><span>Bs. {invoice.fee.toFixed(2)}</span></div>
+              <div className="payment-summary__row">
+                <span>Subtotal</span>
+                <span>Bs. {invoice.subtotal.toFixed(2)}</span>
+              </div>
+              <div className="payment-summary__row">
+                <span>Impuestos (13%)</span>
+                <span>Bs. {invoice.tax.toFixed(2)}</span>
+              </div>
+              <div className="payment-summary__row">
+                <span>Comisión servicio</span>
+                <span>Bs. {invoice.fee.toFixed(2)}</span>
+              </div>
             </div>
 
             <div className="payment-summary__total-row">
@@ -265,7 +374,7 @@ export const PaymentPage = () => {
               <span>Bs. {invoice.total.toFixed(2)}</span>
             </div>
 
-            <button 
+            <button
               onClick={handlePay}
               disabled={btnDisabled}
               className={`payment-summary__btn ${btnDisabled ? 'payment-summary__btn--disabled' : 'payment-summary__btn--active'}`}
@@ -273,7 +382,6 @@ export const PaymentPage = () => {
               {paymentMethod === 'card' ? `Pagar Bs. ${invoice.total.toFixed(2)}` : 'Confirmar pago QR'}
             </button>
           </div>
-
         </div>
       </div>
     </div>

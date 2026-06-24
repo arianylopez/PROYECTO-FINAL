@@ -2,7 +2,7 @@
   display: flex;
   width: 100%;
   min-height: 100vh;
-  background-color: #050505; 
+  background-color: #050505;
 }
 
 .auth-layout__sidebar {
@@ -10,15 +10,15 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   padding: 2rem;
-  z-index: 2; 
+  z-index: 2;
 }
 
 .auth-layout__cover {
   display: none;
-  flex: 1.2; 
-  background-image: url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070&auto=format&fit=crop'); 
+  flex: 1.2;
+  background-image: url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070&auto=format&fit=crop');
   background-size: cover;
   background-position: center;
   position: relative;
@@ -34,7 +34,7 @@
   content: '';
   position: absolute;
   top: 0;
-  left: -2px; 
+  left: -2px;
   bottom: 0;
   width: 50%;
   background: linear-gradient(to right, #050505 0%, transparent 100%);
@@ -42,7 +42,7 @@
 
 .register-form {
   width: 100%;
-  max-width: 380px; 
+  max-width: 380px;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -68,7 +68,7 @@
 }
 
 .register-form__logo-icon {
-  color: #f4e951; 
+  color: #f4e951;
 }
 
 .register-form__title {
@@ -89,7 +89,7 @@
 }
 
 .register-form__input {
-  background-color: #16181f; 
+  background-color: #16181f;
   border: 1px solid #2a2c36;
   border-radius: 6px;
   padding: 0.875rem 1rem;
@@ -115,7 +115,7 @@
 }
 
 .register-form__submit {
-  background-color: #f4e951; 
+  background-color: #f4e951;
   color: #0b0d14;
   font-weight: 600;
   font-size: 1rem;
@@ -232,12 +232,12 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(5, 5, 5, 0.85); 
+  background-color: rgba(5, 5, 5, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  backdrop-filter: blur(4px); 
+  backdrop-filter: blur(4px);
 }
 
 .auth-modal__content {
@@ -321,7 +321,7 @@
   margin-top: 1rem;
   padding: 1rem;
   background-color: #1a1d24;
-  border: 1px dashed #4285F4;
+  border: 1px dashed #4285f4;
   border-radius: 8px;
   text-align: center;
 }
@@ -336,6 +336,6 @@
 .register-form__demo-link {
   display: block;
   text-decoration: none;
-  background-color: #4285F4;
+  background-color: #4285f4;
   color: white;
 }

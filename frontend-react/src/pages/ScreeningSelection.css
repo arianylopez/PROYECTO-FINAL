@@ -38,7 +38,7 @@
 .movie-banner__poster {
   width: 90px;
   border-radius: 8px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
 .movie-banner__title {
@@ -276,7 +276,7 @@
   height: 310px;
   object-fit: cover;
   border-radius: 12px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
   margin-bottom: 0.8rem;
 }
 

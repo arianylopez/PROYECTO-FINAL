@@ -35,7 +35,7 @@
   margin: 0 0 0.75rem 0;
   letter-spacing: -1.5px;
   line-height: 1.1;
-  text-shadow: 3px 6px 15px rgba(0,0,0,0.9);
+  text-shadow: 3px 6px 15px rgba(0, 0, 0, 0.9);
 }
 
 .hero__synopsis {
@@ -47,7 +47,7 @@
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-shadow: 1px 2px 4px rgba(0,0,0,0.8);
+  text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .hero__actions {
@@ -103,7 +103,8 @@
   .hero__actions {
     flex-direction: column;
   }
-  .hero__btn, .hero__btn--trailer {
+  .hero__btn,
+  .hero__btn--trailer {
     width: 100%;
     text-align: center;
     justify-content: center;

@@ -7,13 +7,17 @@ vi.mock('../../store/authStore', () => ({
   useAuthStore: () => ({
     user: null,
     isAuthenticated: false,
-    logout: vi.fn()
-  })
+    logout: vi.fn(),
+  }),
 }));
 
 describe('Header', () => {
   it('renders correctly', () => {
-    render(<BrowserRouter><Header /></BrowserRouter>);
+    render(
+      <BrowserRouter>
+        <Header />
+      </BrowserRouter>
+    );
     expect(screen.getAllByText(/CARTELERA/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/CINES/i).length).toBeGreaterThan(0);
   });

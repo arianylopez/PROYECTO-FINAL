@@ -1,5 +1,9 @@
 export const validateLuhn = (num: string): boolean => {
-  const arr = (num + '').replace(/\D/g, '').split('').reverse().map(x => parseInt(x, 10));
+  const arr = (num + '')
+    .replace(/\D/g, '')
+    .split('')
+    .reverse()
+    .map((x) => parseInt(x, 10));
   if (arr.length < 13) return false;
   const lastDigit = arr.shift()!;
   const sum = arr.reduce((acc, val, i) => (i % 2 !== 0 ? acc + val : acc + ((val * 2) % 9) || 9), 0);

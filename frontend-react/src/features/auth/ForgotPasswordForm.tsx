@@ -13,9 +13,13 @@ const forgotSchema = z.object({
 export const ForgotPasswordForm = () => {
   const [message] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [demoLink, setDemoLink] = useState<string | null>(null); 
+  const [demoLink, setDemoLink] = useState<string | null>(null);
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(forgotSchema),
   });
 
@@ -24,7 +28,7 @@ export const ForgotPasswordForm = () => {
     setDemoLink(null);
     try {
       const response = await apiClient.post('/auth/password-reset-request', data);
-      
+
       if (response.data && response.data.demo_link) {
         setDemoLink(response.data.demo_link);
       }
@@ -46,8 +50,17 @@ export const ForgotPasswordForm = () => {
           {message && <div className="register-form__alert register-form__alert--success">{message}</div>}
 
           <div className="register-form__field">
-            <label className="register-form__label" htmlFor="email">Email</label>
-            <input id="email" className="register-form__input" type="email" placeholder="name@example.com" {...register('email')} disabled={isLoading} />
+            <label className="register-form__label" htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              className="register-form__input"
+              type="email"
+              placeholder="name@example.com"
+              {...register('email')}
+              disabled={isLoading}
+            />
             {errors.email && <span className="register-form__error">{errors.email?.message as string}</span>}
           </div>
 
@@ -59,13 +72,15 @@ export const ForgotPasswordForm = () => {
             <div className="register-form__demo-box">
               <p className="register-form__demo-text"></p>
               <a href={demoLink} className="register-form__submit register-form__demo-link">
-                Hacer clic para recuperar contraseña 
+                Hacer clic para recuperar contraseña
               </a>
             </div>
           )}
 
           <div className="register-form__footer">
-            <Link to="/login" className="register-form__link">Volver al Login</Link>
+            <Link to="/login" className="register-form__link">
+              Volver al Login
+            </Link>
           </div>
         </form>
       </div>

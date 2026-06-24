@@ -47,7 +47,7 @@ describe('cardUtils', () => {
     it('returns true for past dates', () => {
       expect(isCardExpired('01', '20')).toBe(true);
     });
-    
+
     it('returns false if month or year is missing', () => {
       expect(isCardExpired('', '30')).toBe(false);
       expect(isCardExpired('12', '')).toBe(false);

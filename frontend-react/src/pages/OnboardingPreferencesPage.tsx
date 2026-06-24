@@ -8,7 +8,7 @@ import './OnboardingPreferences.css';
 export const OnboardingPreferencesPage = () => {
   const navigate = useNavigate();
   const { user } = useAuthStore();
-  
+
   const [genres, setGenres] = useState<string[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -19,19 +19,22 @@ export const OnboardingPreferencesPage = () => {
       navigate('/login');
       return;
     }
-    fetchGenres().then(setGenres).catch(console.error).finally(() => setIsLoading(false));
+    fetchGenres()
+      .then(setGenres)
+      .catch(console.error)
+      .finally(() => setIsLoading(false));
   }, [user, navigate]);
 
   const toggleGenre = (genre: string) => {
     setErrorMsg('');
     if (selected.includes(genre)) {
-      setSelected(prev => prev.filter(g => g !== genre));
+      setSelected((prev) => prev.filter((g) => g !== genre));
     } else {
       if (selected.length >= 5) {
-        setErrorMsg("Podés seleccionar hasta 5 géneros");
+        setErrorMsg('Podés seleccionar hasta 5 géneros');
         return;
       }
-      setSelected(prev => [...prev, genre]);
+      setSelected((prev) => [...prev, genre]);
     }
   };
 
@@ -41,8 +44,8 @@ export const OnboardingPreferencesPage = () => {
       await apiClient.put(`/auth/users/${user.id}/preferences`, { genres: selected });
       navigate('/home');
     } catch (error: any) {
-      const backendError = error.response?.data?.detail?.[0]?.msg || "Error al guardar preferencias";
-      setErrorMsg(backendError.replace('Value error, ', '')); 
+      const backendError = error.response?.data?.detail?.[0]?.msg || 'Error al guardar preferencias';
+      setErrorMsg(backendError.replace('Value error, ', ''));
     }
   };
 
@@ -55,18 +58,13 @@ export const OnboardingPreferencesPage = () => {
   return (
     <div className="onboarding">
       <div className="onboarding__card">
-        
         <h1 className="onboarding__title">¿Qué géneros te gustan?</h1>
         <p className="onboarding__subtitle">Elige hasta 5 géneros para personalizar tu cartelera.</p>
 
-        {errorMsg && (
-          <div className="onboarding__alert">
-            {errorMsg}
-          </div>
-        )}
+        {errorMsg && <div className="onboarding__alert">{errorMsg}</div>}
 
         <div className="onboarding__genres">
-          {genres.map(genre => {
+          {genres.map((genre) => {
             const isSelected = selected.includes(genre);
             return (
               <button
@@ -81,22 +79,14 @@ export const OnboardingPreferencesPage = () => {
         </div>
 
         <div className="onboarding__actions">
-          <button 
-            onClick={handleSave}
-            disabled={selected.length === 0}
-            className="onboarding__btn-save"
-          >
+          <button onClick={handleSave} disabled={selected.length === 0} className="onboarding__btn-save">
             Guardar y Continuar
           </button>
-          
-          <button 
-            onClick={handleSkip}
-            className="onboarding__btn-skip"
-          >
+
+          <button onClick={handleSkip} className="onboarding__btn-skip">
             Saltar por ahora
           </button>
         </div>
-
       </div>
     </div>
   );

@@ -16,7 +16,11 @@ export const ResetPasswordForm = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
     resolver: zodResolver(resetSchema),
   });
 
@@ -43,12 +47,14 @@ export const ResetPasswordForm = () => {
           <div className="register-form__header">
             <h2 className="register-form__title">Nueva Contraseña</h2>
           </div>
-          
+
           {successMsg && <div className="register-form__alert register-form__alert--success">{successMsg}</div>}
           {errorMsg && <div className="register-form__alert register-form__alert--error">{errorMsg}</div>}
 
           <div className="register-form__field">
-            <label className="register-form__label" htmlFor="password">Nueva Contraseña</label>
+            <label className="register-form__label" htmlFor="password">
+              Nueva Contraseña
+            </label>
             <input id="password" className="register-form__input" type="password" {...register('password')} />
             {errors.password && <span className="register-form__error">{errors.password?.message as string}</span>}
           </div>
