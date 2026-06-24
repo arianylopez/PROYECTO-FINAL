@@ -1,0 +1,46 @@
+{{#if isOpen}}
+<div class="ticket-modal-overlay" id="ticket-modal-overlay">
+  <div class="ticket-modal">
+    <div class="ticket-modal__header">
+      <h2 class="ticket-modal__title">🎟️ SELECCIONA TUS ENTRADAS</h2>
+      <p class="ticket-modal__subtitle">
+        Función: <strong>{{screeningTime}}</strong> &bull; Sala: <strong>{{screeningRoom}}</strong>
+      </p>
+    </div>
+
+    <div class="ticket-modal__body">
+      {{#each ticketTypes}}
+        <div class="ticket-type">
+          <div>
+            <h4 class="ticket-type__name">{{name}}</h4>
+            <span class="ticket-type__price">Bs. {{formatPrice price}}</span>
+          </div>
+          
+          <div class="ticket-type__controls">
+            <button 
+              class="ticket-control-btn decrement" 
+              data-id="{{id}}" 
+              {{#if (eq (lookup ../ticketCounts id) 0)}}disabled{{/if}}>
+              &minus;
+            </button>
+            <span class="ticket-type__qty">{{lookup ../ticketCounts id}}</span>
+            <button class="ticket-control-btn increment" data-id="{{id}}">
+              &plus;
+            </button>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+
+    <div class="ticket-modal__summary">
+      <span class="summary-text">Total boletos: <strong>{{totalTickets}}</strong></span>
+      <span class="summary-text">Total a pagar: <strong class="highlight">Bs. {{formatPrice totalPrice}}</strong></span>
+    </div>
+
+    <div class="ticket-modal__footer">
+      <button class="ticket-modal-btn cancel" id="cancel-modal">Cancelar</button>
+      <button class="ticket-modal-btn continue" id="continue-modal" {{#if (eq totalTickets 0)}}disabled{{/if}}>Continuar</button>
+    </div>
+  </div>
+</div>
+{{/if}}

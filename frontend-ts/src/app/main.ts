@@ -8,6 +8,8 @@ import { ForgotPasswordPage } from '../pages/forgot-password/ForgotPasswordPage'
 import { ResetPasswordPage } from '../pages/reset-password/ResetPasswordPage';
 import './styles/global.css';
 
+import { ScreeningSelectionPage } from '../pages/screening-selection/ScreeningSelectionPage';
+
 routerInstance
   .use('/home', withMainLayout(HomePage))
   .use('/login', LoginPage, { requireGuest: true })
@@ -15,6 +17,7 @@ routerInstance
   .use('/forgot-password', ForgotPasswordPage, { requireGuest: true })
   .use('/reset-password', ResetPasswordPage, { requireGuest: true })
   .use('/movie/:id', withMainLayout(MovieDetailPage))
+  .use('/booking/:id/screenings', withMainLayout(ScreeningSelectionPage))
   .start();
 
 if (window.location.pathname === '/') {

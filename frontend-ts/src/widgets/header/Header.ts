@@ -119,7 +119,13 @@ export class Header extends Block {
     input: (e: Event) => {
       const target = e.target as HTMLInputElement;
       if (target.id === 'search-input') {
-        this.props.searchQuery = target.value; // Store silently
+        const val = target.value;
+        this.props.searchQuery = val; // Store silently so it doesn't re-render and lose focus
+        if (val.trim()) {
+          routerInstance.go(`/home?q=${encodeURIComponent(val.trim())}`);
+        } else {
+          routerInstance.go('/home');
+        }
       }
     },
     submit: (e: Event) => {

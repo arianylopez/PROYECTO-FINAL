@@ -1,0 +1,110 @@
+{{#if isLoading}}
+  <div class="screening-loading">Cargando funciones y cartelera...</div>
+{{else}}
+  {{#if fetchError}}
+    <div class="screening-error">{{fetchError}}</div>
+  {{else}}
+    <div class="screening-page">
+      
+      <!-- Cabecera de la película -->
+      <div class="movie-header-card">
+        <img src="{{movie.poster_url}}" alt="{{movie.title}}" class="movie-header-poster" />
+        <div class="movie-header-info">
+          <h1 class="movie-header-title">{{movie.title}}</h1>
+          <div class="movie-header-meta">
+            <span class="meta-rating">{{movie.rating_classification}}</span>
+            <span>{{durationString}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Selector de fechas -->
+      <div class="date-selector">
+        <button id="scroll-left-dates" class="scroll-btn">&lsaquo;</button>
+        <div class="dates-container" id="dates-container">
+          {{#each availableDates}}
+            <button 
+              class="date-tab {{#if (eq this ../selectedDate)}}active{{/if}}"
+              data-date="{{this}}"
+            >
+              {{this}}
+            </button>
+          {{/each}}
+        </div>
+        <button id="scroll-right-dates" class="scroll-btn">&rsaquo;</button>
+      </div>
+
+      <!-- Selector de formatos -->
+      <div class="format-selector">
+        {{#each formatsList}}
+          <button 
+            class="format-tab {{#if (eq this ../selectedFormat)}}active{{/if}}"
+            data-format="{{this}}"
+          >
+            {{this}}
+          </button>
+        {{/each}}
+      </div>
+
+      <!-- Lista de funciones por sala -->
+      <div class="rooms-list">
+        {{#if hasRooms}}
+          {{#each rooms}}
+            <div class="room-card">
+              <div class="room-info">
+                <h3 class="room-title">
+                  {{roomName}}
+                  <span class="room-badge">{{format}}</span>
+                </h3>
+                <div class="room-features">
+                  <span>&check; Asientos Numerados</span>
+                  <span>&check; Accesibilidad &#9855;</span>
+                  <span>&check; {{language}}</span>
+                </div>
+              </div>
+
+              <div class="screenings-container">
+                <div class="screenings-grid">
+                  {{#each screenings}}
+                    <button class="screening-time-btn" data-id="{{id}}">
+                      {{timeString}}
+                    </button>
+                  {{/each}}
+                </div>
+              </div>
+            </div>
+          {{/each}}
+        {{else}}
+          <div class="no-screenings">
+            <p>No hay funciones que coincidan con los filtros seleccionados para este día.</p>
+          </div>
+        {{/if}}
+      </div>
+
+      <!-- Próximos estrenos -->
+      <section class="upcoming-section">
+        <div class="upcoming-header">
+          <h2 class="upcoming-title">PRÓXIMAMENTE</h2>
+          <span class="upcoming-see-all">Ver todas</span>
+        </div>
+
+        <div class="upcoming-slider-wrapper">
+          <div class="upcoming-slider" id="upcoming-slider">
+            {{#each upcomingMovies}}
+              <div class="upcoming-card" data-navigate="/movie/{{id}}">
+                <img src="{{poster_url}}" alt="{{title}}" class="upcoming-poster" />
+                <h4 class="upcoming-name">{{title}}</h4>
+                <p class="upcoming-genres">{{genresString}}</p>
+                <p class="upcoming-release">Estreno: {{releaseYear}}</p>
+              </div>
+            {{/each}}
+          </div>
+        </div>
+      </section>
+
+      <!-- Slot para el TicketModal -->
+      <div id="ticket-modal-slot"></div>
+
+    </div>
+  {{/if}}
+{{/if}}
