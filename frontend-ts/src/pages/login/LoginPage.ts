@@ -1,7 +1,7 @@
 import Block from '../../shared/lib/block/Block';
 import './LoginPage.css';
-import template from './LoginPage.hbs?raw';
 import { routerInstance } from '../../shared/lib/router/Router';
+import template from './LoginPage.hbs?raw';
 
 interface LoginPageProps {
   subtitleText?: string;
@@ -123,7 +123,7 @@ export class LoginPage extends Block {
     }
   }
 
-  private async handleRevokeMock(deviceId: string) {
+  private async handleRevokeMock(_deviceId: string) {
     this.setProps({ isLoading: true });
     await new Promise(resolve => setTimeout(resolve, 500));
     this.setProps({ devicesLimit: [], serverError: 'Dispositivo revocado. Intenta ingresar.', isLoading: false });

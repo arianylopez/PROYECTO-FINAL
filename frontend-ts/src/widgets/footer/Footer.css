@@ -1,22 +1,22 @@
 .footer {
-  text-align: center;
   padding: 2rem;
-  background-color: #0f1115;
-  color: #888888;
-  font-size: 0.875rem;
   border-top: 1px solid #2a2e38;
   margin-top: auto;
+  background-color: #0f1115;
+  color: #888;
+  font-size: 0.875rem;
+  text-align: center;
 }
 
 .footer__links {
   display: flex;
   justify-content: center;
-  gap: 1.5rem;
   margin-top: 1rem;
+  gap: 1.5rem;
 }
 
 .footer__link {
-  color: #888888;
+  color: #888;
   text-decoration: none;
 }
 

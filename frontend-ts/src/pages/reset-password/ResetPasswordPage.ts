@@ -1,7 +1,7 @@
 import Block from '../../shared/lib/block/Block';
 import '../login/LoginPage.css'; // Reutilización limpia de estilos compartidos
-import template from './ResetPasswordPage.hbs?raw';
 import { routerInstance } from '../../shared/lib/router/Router';
+import template from './ResetPasswordPage.hbs?raw';
 
 interface ResetPasswordPageProps {
   errorMsg?: string | null;

@@ -1,7 +1,7 @@
 import Block from '../../shared/lib/block/Block';
 import '../login/LoginPage.css'; // Reutiliza tu hoja de estilos unificada
-import template from './ForgotPasswordPage.hbs?raw';
 import { routerInstance } from '../../shared/lib/router/Router';
+import template from './ForgotPasswordPage.hbs?raw';
 
 interface ForgotPasswordPageProps {
   message?: string | null;

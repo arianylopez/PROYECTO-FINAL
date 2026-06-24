@@ -1,9 +1,9 @@
 import Block from '../../shared/lib/block/Block';
 import template from './HomePage.hbs?raw';
 import './HomePage.css';
-import { Header } from '../../widgets/header/Header';
-import { Footer } from '../../widgets/footer/Footer';
 import { FeaturedHero } from '../../widgets/featured-hero/FeaturedHero';
+import { Footer } from '../../widgets/footer/Footer';
+import { Header } from '../../widgets/header/Header';
 import { MovieCatalog } from '../../widgets/movie-catalog/MovieCatalog';
 
 export class HomePage extends Block {

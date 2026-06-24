@@ -13,6 +13,7 @@ export default abstract class Block<Props extends Record<string, any> = any> {
   protected children: Record<string, Block>;
   private eventBus: () => EventBus;
   private _element: HTMLElement | null = null;
+  // @ts-expect-error Unused variable right now
   private _id: string = Math.random().toString(36).substring(2, 9);
 
   protected abstract template: string;
@@ -76,7 +77,7 @@ export default abstract class Block<Props extends Record<string, any> = any> {
     }
   }
 
-  protected componentDidUpdate(oldProps: Props, newProps: Props): boolean {
+  protected componentDidUpdate(_oldProps: Props, _newProps: Props): boolean {
     return true;
   }
 

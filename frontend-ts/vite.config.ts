@@ -1,3 +1,4 @@
+import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
@@ -19,5 +20,8 @@ export default defineConfig({
         }
       }
     }
-  }
+  },
+  plugins: [
+    visualizer({ filename: 'bundle-analysis.html', open: false })
+  ]
 });

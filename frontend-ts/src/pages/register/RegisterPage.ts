@@ -1,7 +1,7 @@
 import Block from '../../shared/lib/block/Block';
 import '../login/LoginPage.css'; // Reutilización de los estilos compartidos de autenticación
-import template from './RegisterPage.hbs?raw';
 import { routerInstance } from '../../shared/lib/router/Router';
+import template from './RegisterPage.hbs?raw';
 
 interface RegisterPageProps {
   serverError?: string | null;
@@ -80,7 +80,7 @@ export class RegisterPage extends Block {
   /**
    * MOLDE: Envío del formulario tradicional de registro
    */
-  private async handleRegisterSubmit(form: HTMLFormElement) {
+  private async handleRegisterSubmit(_form: HTMLFormElement) {
     this.setProps({ isLoading: true, serverError: null });
 
     try {
