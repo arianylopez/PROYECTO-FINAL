@@ -269,10 +269,10 @@ export class MovieDetailPage extends Block {
           this.setProps({ reviewErrorMsg: "Debes calificar la película antes de escribir una reseña." });
           return;
         }
-        this.setProps({ isSubmitting: true, reviewErrorMsg: '' });
-        
         const textarea = this.element?.querySelector('#review-textarea') as HTMLTextAreaElement;
         const reviewText = textarea ? textarea.value : '';
+
+        this.setProps({ isSubmitting: true, reviewErrorMsg: '' });
 
         try {
           await submitMovieRating(this.movieId, this.props.user.id, this.props.user.name || 'Usuario', this._rating);
