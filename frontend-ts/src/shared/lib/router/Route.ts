@@ -43,14 +43,17 @@ export class Route {
     return pathname === this._pathname;
   }
 
-  render() {
+  async render() {
     if (!this._block) {
-      this._block = new this._blockClass(this._props);
+      let BlockClass = this._blockClass;
+      if (this._props.isDynamic) {
+        BlockClass = await this._blockClass();
+      }
+      this._block = new BlockClass(this._props);
       renderDOM(this._props.rootQuery, this._block!);
       return;
     }
     this._block.show();
-    // Allow the block to react to URL changes (like query params)
     if (typeof (this._block as any).updateUrlParams === 'function') {
       (this._block as any).updateUrlParams();
     }

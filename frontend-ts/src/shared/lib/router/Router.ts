@@ -19,7 +19,7 @@ export class Router {
     Router.__instance = this;
   }
 
-  use(pathname: string, blockClass: any, meta: { requireAuth?: boolean; requireGuest?: boolean } = {}) {
+  use(pathname: string, blockClass: any, meta: { requireAuth?: boolean; requireGuest?: boolean; isDynamic?: boolean } = {}) {
     const route = new Route(pathname, blockClass, { rootQuery: this._rootQuery, ...meta });
     this.routes.push(route);
     return this;
@@ -32,7 +32,7 @@ export class Router {
     this._onRoute(window.location.pathname);
   }
 
-  private _onRoute(fullPath: string) {
+  private async _onRoute(fullPath: string) {
     const pathname = fullPath.split('?')[0];
     const route = this.getRoute(pathname);
     if (!route) {
@@ -56,7 +56,7 @@ export class Router {
       this._currentRoute.leave();
     }
     this._currentRoute = route;
-    route.render();
+    await route.render();
     window.scrollTo(0, 0);
   }
 
