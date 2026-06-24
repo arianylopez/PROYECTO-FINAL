@@ -111,9 +111,8 @@ export class SeatSelectionPage extends Block {
 
     this.updateTimerFormatted();
     this.timerInterval = setInterval(() => {
-      let t = this.props.lockTimer - 1;
+      const t = this.props.lockTimer - 1;
       if (t <= 0) {
-        t = 0;
         clearInterval(this.timerInterval);
         this.setProps({ lockTimer: 0, hasActiveReservation: false, selectedSeats: [] });
         this.loadSeatsData(); 

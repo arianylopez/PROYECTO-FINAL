@@ -107,6 +107,7 @@ export class Header extends Block {
         try {
           await authApi.logout();
         } catch (error) {
+          console.error(error);
         } finally {
           authStore.logout();
           this.setProps({ isDropdownOpen: false, isMobileMenuOpen: false });
