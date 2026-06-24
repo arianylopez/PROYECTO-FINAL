@@ -122,7 +122,38 @@ class PreferencesRequest(BaseModel):
             raise ValueError("Podés seleccionar hasta 5 géneros")
         return v
 
-@router.post("/register", status_code=status.HTTP_201_CREATED)
+class UserInfo(BaseModel):
+    id: str
+    name: str
+    email: str
+    role: str
+
+class LoginResponse(BaseModel):
+    access_token: str
+    user: UserInfo
+
+class RegisterResponse(BaseModel):
+    message: str
+    redirect: str
+    access_token: str
+    user: UserInfo
+
+class RefreshResponse(BaseModel):
+    access_token: str
+
+class MessageResponse(BaseModel):
+    message: str
+
+class DeviceInfo(BaseModel):
+    id: str
+    name: str
+    last_seen: str
+
+class DevicesErrorResponse(BaseModel):
+    detail: str
+    devices: list[DeviceInfo]
+
+@router.post("/register", status_code=status.HTTP_201_CREATED, response_model=RegisterResponse)
 def register_user(request: UserRegisterRequest, response: Response, db: Session = Depends(get_auth_db)):
     if db.query(User).filter(User.email == request.email).first():
         raise HTTPException(
@@ -159,7 +190,7 @@ def register_user(request: UserRegisterRequest, response: Response, db: Session 
         }
     }
 
-@router.post("/login")
+@router.post("/login", response_model=LoginResponse, responses={403: {"model": DevicesErrorResponse}})
 def login(request: LoginRequest, http_request: Request, response: Response, db: Session = Depends(get_auth_db)):
     client_ip = http_request.headers.get("X-Real-IP") or http_request.client.host
     check_rate_limit(client_ip)
@@ -191,7 +222,7 @@ def login(request: LoginRequest, http_request: Request, response: Response, db: 
     
     return {"access_token": access_token, "user": {"id": str(user.id), "name": user.name, "email": user.email, "role": user.role}}
 
-@router.post("/google")
+@router.post("/google", response_model=LoginResponse, responses={403: {"model": DevicesErrorResponse}})
 def google_auth(request: GoogleLoginRequest, response: Response, db: Session = Depends(get_auth_db)):
     google_response = requests.get(
         'https://www.googleapis.com/oauth2/v3/userinfo',
@@ -232,7 +263,7 @@ def google_auth(request: GoogleLoginRequest, response: Response, db: Session = D
     
     return {"access_token": access_token, "user": {"id": str(user.id), "name": user.name, "email": user.email, "role": user.role}}
 
-@router.post("/devices/{device_id}/revoke")
+@router.post("/devices/{device_id}/revoke", response_model=MessageResponse)
 def revoke_device(device_id: UUID, db: Session = Depends(get_auth_db)):
     device = db.query(Device).filter(Device.id == device_id).first()
     if device:
@@ -240,7 +271,7 @@ def revoke_device(device_id: UUID, db: Session = Depends(get_auth_db)):
         db.commit()
     return {"message": "Dispositivo revocado exitosamente"}
 
-@router.post("/refresh")
+@router.post("/refresh", response_model=RefreshResponse)
 def refresh_token(request: Request, response: Response, db: Session = Depends(get_auth_db)):
     token = request.cookies.get("refresh_token")
     if not token:
@@ -254,12 +285,12 @@ def refresh_token(request: Request, response: Response, db: Session = Depends(ge
     except JWTError:
         raise HTTPException(status_code=401, detail="Token inválido")
 
-@router.post("/logout")
+@router.post("/logout", response_model=MessageResponse)
 def logout(response: Response):
     response.delete_cookie("refresh_token")
     return {"message": "Cierre de sesión exitoso"}
 
-@router.post("/password-reset-request")
+@router.post("/password-reset-request", response_model=dict)
 def request_password_reset(request: PasswordResetRequest, db: Session = Depends(get_auth_db)):
     user = db.query(User).filter(User.email == request.email).first()
     success_message = {"message": "Si ese correo existe en nuestro sistema, recibirás un enlace en los próximos minutos"}
@@ -274,7 +305,7 @@ def request_password_reset(request: PasswordResetRequest, db: Session = Depends(
 
     return success_message
 
-@router.post("/password-reset")
+@router.post("/password-reset", response_model=MessageResponse)
 def confirm_password_reset(request: PasswordResetConfirm, db: Session = Depends(get_auth_db)):
     try:
         payload = jwt.decode(request.token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
@@ -291,7 +322,7 @@ def confirm_password_reset(request: PasswordResetConfirm, db: Session = Depends(
     except JWTError:
         raise HTTPException(status_code=400, detail="Este enlace ya no es válido. Solicitá uno nuevo.")
 
-@router.put("/users/{user_id}/preferences")
+@router.put("/users/{user_id}/preferences", response_model=dict)
 def update_preferences(user_id: str, req: PreferencesRequest, db: Session = Depends(get_auth_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:

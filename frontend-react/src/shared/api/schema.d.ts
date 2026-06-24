@@ -488,6 +488,40 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** CatalogResponse */
+        CatalogResponse: {
+            /** Items */
+            items: components["schemas"]["MovieResponse"][];
+            /** Total */
+            total: number;
+            /** Page */
+            page: number;
+            /** Size */
+            size: number;
+            /** Pages */
+            pages: number;
+        };
+        /** DeviceInfo */
+        DeviceInfo: {
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Last Seen */
+            last_seen: string;
+        };
+        /** DevicesErrorResponse */
+        DevicesErrorResponse: {
+            /** Detail */
+            detail: string;
+            /** Devices */
+            devices: components["schemas"]["DeviceInfo"][];
+        };
+        /** GenreResponse */
+        GenreResponse: {
+            /** Genres */
+            genres: string[];
+        };
         /** GoogleLoginRequest */
         GoogleLoginRequest: {
             /** Token */
@@ -529,10 +563,127 @@ export interface components {
              */
             device_name: string;
         };
+        /** LoginResponse */
+        LoginResponse: {
+            /** Access Token */
+            access_token: string;
+            user: components["schemas"]["UserInfo"];
+        };
+        /** MessageResponse */
+        MessageResponse: {
+            /** Message */
+            message: string;
+        };
+        /** MovieDetailResponse */
+        MovieDetailResponse: {
+            /** Id */
+            id: string;
+            /** Title */
+            title: string;
+            /** Director */
+            director: string;
+            /** Duration Minutes */
+            duration_minutes: number;
+            /** Rating Classification */
+            rating_classification: string;
+            /** Release Date */
+            release_date: string;
+            /** Poster Url */
+            poster_url: string;
+            /** Genres */
+            genres: string[];
+            /**
+             * Synopsis
+             * @default
+             */
+            synopsis: string;
+            /**
+             * Trailer Url
+             * @default
+             */
+            trailer_url: string;
+            /** Screenings */
+            screenings: components["schemas"]["ScreeningResponse"][];
+        };
+        /** MovieResponse */
+        MovieResponse: {
+            /** Id */
+            id: string;
+            /** Title */
+            title: string;
+            /** Director */
+            director: string;
+            /** Duration Minutes */
+            duration_minutes: number;
+            /** Rating Classification */
+            rating_classification: string;
+            /** Release Date */
+            release_date: string;
+            /** Poster Url */
+            poster_url: string;
+            /** Genres */
+            genres: string[];
+            /**
+             * Synopsis
+             * @default
+             */
+            synopsis: string;
+            /**
+             * Trailer Url
+             * @default
+             */
+            trailer_url: string;
+        };
+        /** MovieScreeningsResponse */
+        MovieScreeningsResponse: {
+            /** Movie */
+            movie: Record<string, never>;
+            /** Screenings */
+            screenings: components["schemas"]["ScreeningResponse"][];
+            /** Ticket Types */
+            ticket_types: components["schemas"]["TicketTypeResponse"][];
+        };
         /** NotInterestedRequest */
         NotInterestedRequest: {
             /** User Id */
             user_id: string;
+        };
+        /** OrderHistoryItem */
+        OrderHistoryItem: {
+            /** Id */
+            id: string;
+            /** User Id */
+            user_id: string;
+            /** Movie Title */
+            movie_title: string;
+            /** Poster Url */
+            poster_url: string;
+            /** Room Name */
+            room_name: string;
+            /** Start Time */
+            start_time: string;
+            /** Seat Labels */
+            seat_labels: string[];
+            /** Total Price */
+            total_price: number;
+            /** Status */
+            status: string;
+            /** Created At */
+            created_at: string;
+            /** Tickets */
+            tickets: components["schemas"]["OrderTicket"][];
+        };
+        /** OrderHistoryResponse */
+        OrderHistoryResponse: {
+            /** Orders */
+            orders: components["schemas"]["OrderHistoryItem"][];
+        };
+        /** OrderTicket */
+        OrderTicket: {
+            /** Seat Id */
+            seat_id: string;
+            /** Qr Code */
+            qr_code: string;
         };
         /** PasswordResetConfirm */
         PasswordResetConfirm: {
@@ -567,6 +718,17 @@ export interface components {
             /** Invoice Total */
             invoice_total: number;
         };
+        /** PurchaseResponse */
+        PurchaseResponse: {
+            /** Order Id */
+            order_id: string;
+            /** Status */
+            status: string;
+            /** Method */
+            method: string;
+            /** Tickets */
+            tickets: components["schemas"]["OrderTicket"][];
+        };
         /** RatingRequest */
         RatingRequest: {
             /** User Id */
@@ -576,6 +738,21 @@ export interface components {
             /** Score */
             score: number;
         };
+        /** RefreshResponse */
+        RefreshResponse: {
+            /** Access Token */
+            access_token: string;
+        };
+        /** RegisterResponse */
+        RegisterResponse: {
+            /** Message */
+            message: string;
+            /** Redirect */
+            redirect: string;
+            /** Access Token */
+            access_token: string;
+            user: components["schemas"]["UserInfo"];
+        };
         /** ReviewRequest */
         ReviewRequest: {
             /** User Id */
@@ -584,6 +761,65 @@ export interface components {
             user_name: string;
             /** Text */
             text: string;
+        };
+        /** ScreeningResponse */
+        ScreeningResponse: {
+            /** Id */
+            id: string;
+            /** Start Time */
+            start_time: string;
+            /** Room */
+            room: string;
+            /** Format */
+            format: string;
+            /** Language */
+            language: string;
+        };
+        /** ScreeningSeatsResponse */
+        ScreeningSeatsResponse: {
+            /** Movie */
+            movie: Record<string, never>;
+            /** Screening */
+            screening: Record<string, never>;
+            /** Ticket Types */
+            ticket_types: components["schemas"]["TicketTypeResponse"][];
+            /** Seats */
+            seats: components["schemas"]["SeatResponse"][];
+            /** Active Lock Ttl */
+            active_lock_ttl: number | null;
+        };
+        /** SeatResponse */
+        SeatResponse: {
+            /** Id */
+            id: string;
+            /** Row */
+            row: string;
+            /** Col */
+            col: number;
+            /** Type */
+            type: string;
+            /** Status */
+            status: string;
+        };
+        /** TicketTypeResponse */
+        TicketTypeResponse: {
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Price */
+            price: number;
+        };
+        /** UserInfo */
+        UserInfo: {
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Email */
+            email: string;
+            /** Role */
+            role: string;
         };
         /** UserRegisterRequest */
         UserRegisterRequest: {
@@ -652,7 +888,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["RegisterResponse"];
                 };
             };
             /** @description Validation Error */
@@ -685,7 +921,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["LoginResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DevicesErrorResponse"];
                 };
             };
             /** @description Validation Error */
@@ -718,7 +963,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["LoginResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DevicesErrorResponse"];
                 };
             };
             /** @description Validation Error */
@@ -749,7 +1003,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["MessageResponse"];
                 };
             };
             /** @description Validation Error */
@@ -778,7 +1032,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["RefreshResponse"];
                 };
             };
         };
@@ -798,7 +1052,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["MessageResponse"];
                 };
             };
         };
@@ -822,7 +1076,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": Record<string, never>;
                 };
             };
             /** @description Validation Error */
@@ -855,7 +1109,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["MessageResponse"];
                 };
             };
             /** @description Validation Error */
@@ -890,7 +1144,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": Record<string, never>;
                 };
             };
             /** @description Validation Error */
@@ -926,7 +1180,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["CatalogResponse"];
                 };
             };
             /** @description Validation Error */
@@ -955,7 +1209,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["GenreResponse"];
                 };
             };
         };
@@ -977,7 +1231,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["MovieDetailResponse"];
                 };
             };
             /** @description Validation Error */
@@ -1008,7 +1262,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["MovieScreeningsResponse"];
                 };
             };
             /** @description Validation Error */
@@ -1041,7 +1295,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["ScreeningSeatsResponse"];
                 };
             };
             /** @description Validation Error */
@@ -1144,7 +1398,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["PurchaseResponse"];
                 };
             };
             /** @description Validation Error */
@@ -1175,7 +1429,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["OrderHistoryResponse"];
                 };
             };
             /** @description Validation Error */
@@ -1208,7 +1462,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["OrderHistoryItem"];
                 };
             };
             /** @description Validation Error */

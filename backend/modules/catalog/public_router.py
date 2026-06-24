@@ -30,7 +30,89 @@ class PurchaseRequest(BaseModel):
     user_id: str
     invoice_total: float
 
-@router.get("/movies")
+class MovieResponse(BaseModel):
+    id: str
+    title: str
+    director: str
+    duration_minutes: int
+    rating_classification: str
+    release_date: str
+    poster_url: str
+    genres: List[str]
+    synopsis: str = ""
+    trailer_url: str = ""
+
+class CatalogResponse(BaseModel):
+    items: List[MovieResponse]
+    total: int
+    page: int
+    size: int
+    pages: int
+
+class GenreResponse(BaseModel):
+    genres: List[str]
+
+class ScreeningResponse(BaseModel):
+    id: str
+    start_time: str
+    room: str
+    format: str
+    language: str
+
+class MovieDetailResponse(MovieResponse):
+    screenings: List[ScreeningResponse]
+
+class TicketTypeResponse(BaseModel):
+    id: str
+    name: str
+    price: float
+
+class MovieScreeningsResponse(BaseModel):
+    movie: dict
+    screenings: List[ScreeningResponse]
+    ticket_types: List[TicketTypeResponse]
+
+class SeatResponse(BaseModel):
+    id: str
+    row: str
+    col: int
+    type: str
+    status: str
+
+class ScreeningSeatsResponse(BaseModel):
+    movie: dict
+    screening: dict
+    ticket_types: List[TicketTypeResponse]
+    seats: List[SeatResponse]
+    active_lock_ttl: Optional[int]
+
+class OrderTicket(BaseModel):
+    seat_id: str
+    qr_code: str
+
+class PurchaseResponse(BaseModel):
+    order_id: str
+    status: str
+    method: str
+    tickets: List[OrderTicket]
+
+class OrderHistoryItem(BaseModel):
+    id: str
+    user_id: str
+    movie_title: str
+    poster_url: str
+    room_name: str
+    start_time: str
+    seat_labels: List[str]
+    total_price: float
+    status: str
+    created_at: str
+    tickets: List[OrderTicket]
+
+class OrderHistoryResponse(BaseModel):
+    orders: List[OrderHistoryItem]
+
+@router.get("/movies", response_model=CatalogResponse)
 def get_public_movies(
     page: int = Query(1, ge=1), 
     size: int = Query(12, ge=1, le=50),
@@ -98,7 +180,7 @@ def get_public_movies(
         print(f"Elasticsearch Error: {e}")
         raise HTTPException(status_code=500, detail="Error interno al buscar en la cartelera")
     
-@router.get("/genres")
+@router.get("/genres", response_model=GenreResponse)
 def get_public_genres(db: Session = Depends(get_business_db)):
     try:
         query = text("SELECT name FROM catalog_genre ORDER BY name ASC")
@@ -115,7 +197,7 @@ def get_public_genres(db: Session = Depends(get_business_db)):
         print(f"Error al obtener géneros: {e}")
         return {"genres": []}
     
-@router.get("/movies/{movie_id}")
+@router.get("/movies/{movie_id}", response_model=MovieDetailResponse)
 def get_movie_detail(movie_id: str, db: Session = Depends(get_business_db)):
     try:
         movie_query = text("""
@@ -185,7 +267,7 @@ def get_movie_detail(movie_id: str, db: Session = Depends(get_business_db)):
         print(f"[CRITICAL] Error en /movies/{movie_id}: {str(e)}")
         raise HTTPException(status_code=500, detail="Error interno al cargar la película")
     
-@router.get("/movies/{movie_id}/screenings")
+@router.get("/movies/{movie_id}/screenings", response_model=MovieScreeningsResponse)
 def get_movie_screenings(movie_id: str, db: Session = Depends(get_business_db)):
     try:
         movie_query = text("""
@@ -267,7 +349,7 @@ def get_movie_screenings(movie_id: str, db: Session = Depends(get_business_db)):
         print(f"[CRITICAL] Error en /movies/{movie_id}/screenings: {str(e)}")
         raise HTTPException(status_code=500, detail="Error interno al cargar los horarios")
     
-@router.get("/screenings/{screening_id}/seats")
+@router.get("/screenings/{screening_id}/seats", response_model=ScreeningSeatsResponse)
 def get_screening_seats(screening_id: str, user_id: Optional[str] = Query(None), db: Session = Depends(get_business_db)):
     try:
         scr_query = text("""
@@ -391,7 +473,7 @@ def unlock_seats(screening_id: str, user_id: str = Query(...)):
             
     return {"message": f"{freed_count} butacas liberadas."}
 
-@router.post("/screenings/{screening_id}/purchase")
+@router.post("/screenings/{screening_id}/purchase", response_model=PurchaseResponse)
 def process_purchase(screening_id: str, req: PurchaseRequest, db: Session = Depends(get_business_db)):    
     for sid in req.seat_ids:
         check_query = text("""
@@ -474,7 +556,7 @@ def process_purchase(screening_id: str, req: PurchaseRequest, db: Session = Depe
         "tickets": tickets_info
     }
 
-@router.get("/me/orders")
+@router.get("/me/orders", response_model=OrderHistoryResponse)
 def get_my_orders(user_id: str = Query(...)):
     """Obtiene todas las órdenes de un usuario de la caché (Cronológico inverso)."""
     order_ids = redis_client.smembers(f"user_orders:{user_id}")
@@ -487,7 +569,7 @@ def get_my_orders(user_id: str = Query(...)):
     orders.sort(key=lambda x: x["created_at"], reverse=True)
     return {"orders": orders}
 
-@router.get("/me/orders/{order_id}")
+@router.get("/me/orders/{order_id}", response_model=OrderHistoryItem)
 def get_order_detail(order_id: str, user_id: str = Query(...)):
     odata = redis_client.get(f"order:{order_id}")
     if not odata:

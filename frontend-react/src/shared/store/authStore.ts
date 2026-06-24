@@ -1,11 +1,8 @@
 import { create } from 'zustand';
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-}
+import type { components } from '../api/schema';
+
+export type User = components['schemas']['UserInfo'];
 
 interface AuthState {
   user: User | null;

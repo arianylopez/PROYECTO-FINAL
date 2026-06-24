@@ -1,81 +1,14 @@
 import { apiClient } from '../../shared/api/apiClient';
+import type { components } from '../../shared/api/schema';
 
-export interface Movie {
-  id: string;
-  title: string;
-  synopsis: string;
-  genres: string[];
-  director: string;
-  duration_minutes: number;
-  rating_classification: string;
-  release_date: string;
-  poster_url: string;
-  trailer_url: string;
-}
-
-export interface CatalogResponse {
-  items: Movie[];
-  total: number;
-  page: number;
-  size: number;
-  pages: number;
-}
-
-export interface Screening {
-  id: string;
-  start_time: string;
-  room: string;
-  format: string;
-  language: string;
-}
-
-export interface MovieDetail extends Movie {
-  screenings: Screening[];
-}
-
-export interface TicketType {
-  id: string;
-  name: string;
-  price: number;
-}
-
-export interface Seat {
-  id: string;
-  row: string;
-  col: number;
-  type: 'normal' | 'vip' | 'wheelchair' | 'corridor';
-  status: 'available' | 'locked' | 'locked_by_me' | 'sold'; 
-}
-
-export interface ScreeningSeatsResponse {
-  movie: {
-    id: string;
-    title: string;
-    poster_url: string;
-    duration_minutes: number;
-    rating_classification: string;
-  };
-  screening: {
-    id: string;
-    start_time: string;
-    room_name: string;
-  };
-  ticket_types: TicketType[];
-  seats: Seat[];
-  active_lock_ttl?: number;
-}
-
-export interface MovieScreeningsResponse {
-  movie: {
-    id: string;
-    title: string;
-    duration_minutes: number;
-    rating_classification: string;
-    poster_url: string;
-  };
-  screenings: Screening[];
-  ticket_types: TicketType[];
-}
+export type Movie = components['schemas']['MovieResponse'];
+export type CatalogResponse = components['schemas']['CatalogResponse'];
+export type Screening = components['schemas']['ScreeningResponse'];
+export type MovieDetail = components['schemas']['MovieDetailResponse'];
+export type TicketType = components['schemas']['TicketTypeResponse'];
+export type Seat = components['schemas']['SeatResponse'];
+export type ScreeningSeatsResponse = components['schemas']['ScreeningSeatsResponse'];
+export type MovieScreeningsResponse = components['schemas']['MovieScreeningsResponse'];
 
 export const fetchMovies = async (
   page: number = 1, 
@@ -151,23 +84,8 @@ export const processScreeningPurchase = async (
   return response.data;
 };
 
-export interface OrderTicket {
-  seat_id: string;
-  qr_code: string;
-}
-
-export interface OrderHistoryItem {
-  id: string;
-  movie_title: string;
-  poster_url: string;
-  room_name: string;
-  start_time: string;
-  seat_labels: string[];
-  total_price: number;
-  status: string;
-  created_at: string;
-  tickets: OrderTicket[];
-}
+export type OrderTicket = components['schemas']['OrderTicket'];
+export type OrderHistoryItem = components['schemas']['OrderHistoryItem'];
 
 export const fetchMyOrders = async (userId: string): Promise<OrderHistoryItem[]> => {
   const response = await apiClient.get<{orders: OrderHistoryItem[]}>(`/api/v1/catalog/me/orders?user_id=${userId}`);
