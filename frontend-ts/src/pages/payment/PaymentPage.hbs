@@ -62,30 +62,30 @@
               <div>
                 <label style="display: block; color: #9ca3af; margin-bottom: 0.5rem; font-size: 0.9rem;">Número de Tarjeta</label>
                 <div style="position: relative;">
-                  <input type="text" id="card-number" value="{{cardNumber}}" placeholder="0000 0000 0000 0000" style="width: 100%; padding: 1rem; background-color: #0f1115; border: 1px solid {{#if luhnError}}#ef4444{{else}}#374151{{/if}}; border-radius: 8px; color: #fff; outline: none; font-size: 1.1rem;" />
-                  <span style="position: absolute; right: 15px; top: 15px; color: #f4e951; font-weight: bold;">{{#if (not (eq cardBrand 'Unknown'))}}{{cardBrand}}{{else}}💳{{/if}}</span>
+                  <input type="text" id="card-number" placeholder="0000 0000 0000 0000" style="width: 100%; padding: 1rem; background-color: #0f1115; border: 1px solid #374151; border-radius: 8px; color: #fff; outline: none; font-size: 1.1rem;" />
+                  <span id="card-brand-display" style="position: absolute; right: 15px; top: 15px; color: #f4e951; font-weight: bold;">💳</span>
                 </div>
-                {{#if luhnError}}<span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.4rem; display: block;">Número de tarjeta inválido</span>{{/if}}
+                <span id="card-luhn-error" style="color: #ef4444; font-size: 0.8rem; margin-top: 0.4rem; display: none;">Número de tarjeta inválido</span>
               </div>
 
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                 <div>
                   <label style="display: block; color: #9ca3af; margin-bottom: 0.5rem; font-size: 0.9rem;">Vencimiento (MM / AA)</label>
                   <div style="display: flex; gap: 0.5rem;">
-                    <input type="text" id="card-month" placeholder="MM" value="{{cardMonth}}" style="width: 100%; padding: 1rem; background-color: #0f1115; border: 1px solid #374151; border-radius: 8px; color: #fff; text-align: center;" />
-                    <input type="text" id="card-year" placeholder="AA" value="{{cardYear}}" style="width: 100%; padding: 1rem; background-color: #0f1115; border: 1px solid #374151; border-radius: 8px; color: #fff; text-align: center;" />
+                    <input type="text" id="card-month" placeholder="MM" style="width: 100%; padding: 1rem; background-color: #0f1115; border: 1px solid #374151; border-radius: 8px; color: #fff; text-align: center;" />
+                    <input type="text" id="card-year" placeholder="AA" style="width: 100%; padding: 1rem; background-color: #0f1115; border: 1px solid #374151; border-radius: 8px; color: #fff; text-align: center;" />
                   </div>
-                  {{#if expired}}<span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.4rem; display: block;">La tarjeta está vencida</span>{{/if}}
+                  <span id="card-expired-error" style="color: #ef4444; font-size: 0.8rem; margin-top: 0.4rem; display: none;">La tarjeta está vencida</span>
                 </div>
                 <div>
                   <label style="display: block; color: #9ca3af; margin-bottom: 0.5rem; font-size: 0.9rem;">CVV</label>
-                  <input type="password" id="card-cvv" value="{{cardCvv}}" placeholder="{{#if (eq cardBrand 'Amex')}}1234{{else}}123{{/if}}" style="width: 100%; padding: 1rem; background-color: #0f1115; border: 1px solid #374151; border-radius: 8px; color: #fff;" />
+                  <input type="password" id="card-cvv" placeholder="123" style="width: 100%; padding: 1rem; background-color: #0f1115; border: 1px solid #374151; border-radius: 8px; color: #fff;" />
                 </div>
               </div>
 
               <div>
                 <label style="display: block; color: #9ca3af; margin-bottom: 0.5rem; font-size: 0.9rem;">Nombre del Titular</label>
-                <input type="text" id="card-name" value="{{cardName}}" placeholder="COMO APARECE EN LA TARJETA" style="width: 100%; padding: 1rem; background-color: #0f1115; border: 1px solid #374151; border-radius: 8px; color: #fff; text-transform: uppercase;" />
+                <input type="text" id="card-name" placeholder="COMO APARECE EN LA TARJETA" style="width: 100%; padding: 1rem; background-color: #0f1115; border: 1px solid #374151; border-radius: 8px; color: #fff; text-transform: uppercase;" />
               </div>
             </div>
           {{/if}}

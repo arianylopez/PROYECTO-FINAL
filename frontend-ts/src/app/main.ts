@@ -41,9 +41,9 @@ routerInstance
   .use('/preferences', OnboardingPreferencesPage, { requireAuth: true })
   .use('/movie/:id', withMainLayout(MovieDetailPage))
   .use('/movie/:id/screenings', withMainLayout(ScreeningSelectionPage))
-  .use('/booking/:id/seats', SeatSelectionPage, { requireAuth: true })
-  .use('/booking/:id/payment', PaymentPage, { requireAuth: true })
-  .use('/booking/:id/ticket', TicketPage, { requireAuth: true })
+  .use('/booking/:id/seats', withMainLayout(SeatSelectionPage), { requireAuth: true })
+  .use('/booking/:id/payment', withMainLayout(PaymentPage), { requireAuth: true })
+  .use('/booking/:id/ticket', withMainLayout(TicketPage), { requireAuth: true })
   .use('/me/orders', withMainLayout(OrdersHistoryPage), { requireAuth: true })
   .start();
 

@@ -17,16 +17,6 @@ export class PaymentPage extends Block {
       data: null,
       
       paymentMethod: 'card',
-      cardNumber: '',
-      cardMonth: '',
-      cardYear: '',
-      cardCvv: '',
-      cardName: '',
-      
-      cardBrand: 'Unknown',
-      luhnError: false,
-      expired: false,
-      btnDisabled: true,
 
       durationHours: 0,
       durationMins: 0,
@@ -111,11 +101,55 @@ export class PaymentPage extends Block {
   }
 
   private updateBtnState() {
-    const { paymentMethod, cardNumber, cardMonth, cardYear, cardCvv, luhnError } = this.props;
-    const expired = isCardExpired(cardMonth, cardYear);
-    const btnDisabled = paymentMethod === 'card' && (expired || luhnError || !cardNumber || !cardCvv);
+    if (this.props.paymentMethod !== 'card') {
+      this.updateDOMBtn(false);
+      return;
+    }
+
+    const cardNumEl = this.element?.querySelector('#card-number') as HTMLInputElement;
+    const cardMonthEl = this.element?.querySelector('#card-month') as HTMLInputElement;
+    const cardYearEl = this.element?.querySelector('#card-year') as HTMLInputElement;
+    const cardCvvEl = this.element?.querySelector('#card-cvv') as HTMLInputElement;
+
+    const cardNumber = cardNumEl?.value.replace(/\\D/g, '') || '';
+    const cardMonth = cardMonthEl?.value.replace(/\\D/g, '') || '';
+    const cardYear = cardYearEl?.value.replace(/\\D/g, '') || '';
+    const cardCvv = cardCvvEl?.value.replace(/\\D/g, '') || '';
     
-    this.setProps({ expired, btnDisabled });
+    let luhnError = false;
+    if (cardNumber.length >= 13) {
+      luhnError = !validateLuhn(cardNumber);
+    }
+    
+    const expired = isCardExpired(cardMonth, cardYear);
+
+    const luhnErrorEl = this.element?.querySelector('#card-luhn-error');
+    if (luhnErrorEl) luhnErrorEl.setAttribute('style', `color: #ef4444; font-size: 0.8rem; margin-top: 0.4rem; display: ${luhnError ? 'block' : 'none'};`);
+    
+    if (cardNumEl) cardNumEl.style.borderColor = luhnError ? '#ef4444' : '#374151';
+
+    const expiredErrorEl = this.element?.querySelector('#card-expired-error');
+    if (expiredErrorEl) expiredErrorEl.setAttribute('style', `color: #ef4444; font-size: 0.8rem; margin-top: 0.4rem; display: ${expired ? 'block' : 'none'};`);
+
+    const btnDisabled = expired || luhnError || !cardNumber || !cardCvv;
+    this.updateDOMBtn(btnDisabled);
+  }
+
+  private updateDOMBtn(disabled: boolean) {
+    const btn = this.element?.querySelector('#btn-pay') as HTMLButtonElement;
+    if (btn) {
+      if (disabled) {
+        btn.setAttribute('disabled', 'true');
+        btn.style.backgroundColor = '#374151';
+        btn.style.color = '#9ca3af';
+        btn.style.cursor = 'not-allowed';
+      } else {
+        btn.removeAttribute('disabled');
+        btn.style.backgroundColor = '#f4e951';
+        btn.style.color = '#000';
+        btn.style.cursor = 'pointer';
+      }
+    }
   }
 
   protected events = {
@@ -129,37 +163,36 @@ export class PaymentPage extends Block {
     input: (e: Event) => {
       const target = e.target as HTMLInputElement;
       if (target.id === 'card-number') {
-        const val = target.value.replace(/\D/g, '');
+        const val = target.value.replace(/\\D/g, '');
         const brand = detectCardBrand(val);
-        if (brand === 'Amex' && val.length > 15) return;
-        if (brand !== 'Amex' && val.length > 16) return;
-        this.setProps({ cardNumber: val, cardBrand: brand, luhnError: false });
-        this.updateBtnState();
+        if (brand === 'Amex' && val.length > 15) target.value = val.slice(0, 15);
+        else if (brand !== 'Amex' && val.length > 16) target.value = val.slice(0, 16);
+        else target.value = val;
+        
+        const brandSpan = this.element?.querySelector('#card-brand-display');
+        if (brandSpan) brandSpan.textContent = brand !== 'Unknown' ? brand : '💳';
+        
+        const cvvInput = this.element?.querySelector('#card-cvv') as HTMLInputElement;
+        if (cvvInput) {
+          cvvInput.placeholder = brand === 'Amex' ? '1234' : '123';
+          if (brand === 'Amex' && cvvInput.value.length > 4) cvvInput.value = cvvInput.value.slice(0, 4);
+          if (brand !== 'Amex' && cvvInput.value.length > 3) cvvInput.value = cvvInput.value.slice(0, 3);
+        }
       }
-      if (target.id === 'card-month') {
-        this.setProps({ cardMonth: target.value.replace(/\D/g, '').slice(0, 2) });
-        this.updateBtnState();
-      }
-      if (target.id === 'card-year') {
-        this.setProps({ cardYear: target.value.replace(/\D/g, '').slice(0, 2) });
-        this.updateBtnState();
-      }
+      if (target.id === 'card-month') target.value = target.value.replace(/\\D/g, '').slice(0, 2);
+      if (target.id === 'card-year') target.value = target.value.replace(/\\D/g, '').slice(0, 2);
       if (target.id === 'card-cvv') {
-        const length = this.props.cardBrand === 'Amex' ? 4 : 3;
-        this.setProps({ cardCvv: target.value.replace(/\D/g, '').slice(0, length) });
-        this.updateBtnState();
+        const cardNumEl = this.element?.querySelector('#card-number') as HTMLInputElement;
+        const brand = detectCardBrand(cardNumEl ? cardNumEl.value.replace(/\\D/g, '') : '');
+        const length = brand === 'Amex' ? 4 : 3;
+        target.value = target.value.replace(/\\D/g, '').slice(0, length);
       }
-      if (target.id === 'card-name') {
-        this.props.cardName = target.value; 
-      }
+      this.updateBtnState();
     },
     focusout: (e: Event) => {
       const target = e.target as HTMLInputElement;
       if (target.id === 'card-number') {
-        if (this.props.cardNumber.length >= 13) {
-          this.setProps({ luhnError: !validateLuhn(this.props.cardNumber) });
-          this.updateBtnState();
-        }
+        this.updateBtnState();
       }
     },
     click: async (e: Event) => {
@@ -168,11 +201,27 @@ export class PaymentPage extends Block {
         if (target.hasAttribute('disabled')) return;
         
         if (this.props.paymentMethod === 'card') {
-          if (this.props.luhnError || this.props.cardNumber.length < 13) { alert('Número de tarjeta inválido.'); return; }
-          if (isCardExpired(this.props.cardMonth, this.props.cardYear)) { alert('La tarjeta está vencida.'); return; }
-          if (!this.props.cardName) { alert('Ingresa el nombre del titular.'); return; }
-          const cvvLength = this.props.cardBrand === 'Amex' ? 4 : 3;
-          if (this.props.cardCvv.length !== cvvLength) { alert(`El CVV debe tener ${cvvLength} dígitos.`); return; }
+          const cardNumEl = this.element?.querySelector('#card-number') as HTMLInputElement;
+          const cardMonthEl = this.element?.querySelector('#card-month') as HTMLInputElement;
+          const cardYearEl = this.element?.querySelector('#card-year') as HTMLInputElement;
+          const cardCvvEl = this.element?.querySelector('#card-cvv') as HTMLInputElement;
+          const cardNameEl = this.element?.querySelector('#card-name') as HTMLInputElement;
+          
+          const cardNumber = cardNumEl?.value.replace(/\\D/g, '') || '';
+          const cardMonth = cardMonthEl?.value.replace(/\\D/g, '') || '';
+          const cardYear = cardYearEl?.value.replace(/\\D/g, '') || '';
+          const cardCvv = cardCvvEl?.value.replace(/\\D/g, '') || '';
+          const cardName = cardNameEl?.value || '';
+          
+          let luhnError = false;
+          if (cardNumber.length >= 13) luhnError = !validateLuhn(cardNumber);
+
+          if (luhnError || cardNumber.length < 13) { alert('Número de tarjeta inválido.'); return; }
+          if (isCardExpired(cardMonth, cardYear)) { alert('La tarjeta está vencida.'); return; }
+          if (!cardName) { alert('Ingresa el nombre del titular.'); return; }
+          const brand = detectCardBrand(cardNumber);
+          const cvvLength = brand === 'Amex' ? 4 : 3;
+          if (cardCvv.length !== cvvLength) { alert(`El CVV debe tener ${cvvLength} dígitos.`); return; }
         }
 
         this.setProps({ isLoading: true });
