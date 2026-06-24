@@ -178,15 +178,13 @@ export const LoginForm = () => {
 
           <div className="register-form__field">
             <label className="register-form__label">Password</label>
-            <div style={{ position: 'relative' }}>
-              <input className="register-form__input" type="password" placeholder="Enter your password" style={{ width: '100%' }} {...register('password')} disabled={isLoading} />
+            <div className="register-form__input-wrapper">
+              <input className="register-form__input" type="password" placeholder="Enter your password" {...register('password')} disabled={isLoading} />
             </div>
             {errors.password && <span className="register-form__error">{errors.password.message}</span>}
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '-0.5rem' }}>
-            <Link to="/forgot-password" className="register-form__link" style={{ fontSize: '0.8rem' }}>¿Olvidaste tu contraseña?</Link>
-          </div>
+          <Link to="/forgot-password" className="register-form__link register-form__link--forgot">¿Olvidaste tu contraseña?</Link>
 
           <button className="register-form__submit" type="submit" disabled={isLoading}>
             {isLoading ? 'Verificando...' : 'Sign in'}
@@ -214,29 +212,29 @@ export const LoginForm = () => {
 
       {/* MODAL 1: Límite de Dispositivos */}
       {devicesLimit.length > 0 && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h3 style={{color: '#ff4d4d', marginTop: 0}}>Límite de dispositivos (3/3)</h3>
-            <p style={{fontSize: '0.9rem', color: '#a0a0a0', marginBottom: '1.5rem'}}>Revoca una sesión activa para ingresar desde este nuevo dispositivo.</p>
+        <div className="auth-modal">
+          <div className="auth-modal__content">
+            <h3 className="auth-modal__title auth-modal__title--error">Límite de dispositivos (3/3)</h3>
+            <p className="auth-modal__desc auth-modal__desc--muted">Revoca una sesión activa para ingresar desde este nuevo dispositivo.</p>
             {devicesLimit.map(d => (
-              <div key={d.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 0', borderBottom: '1px solid #2a2c36' }}>
+              <div key={d.id} className="auth-modal__device">
                 <div>
-                  <strong style={{ display: 'block', fontSize: '0.95rem' }}>{d.name}</strong>
-                  <span style={{fontSize: '0.75rem', color: '#666'}}>Última vez: {new Date(d.last_seen).toLocaleDateString()}</span>
+                  <strong className="auth-modal__device-name">{d.name}</strong>
+                  <span className="auth-modal__device-date">Última vez: {new Date(d.last_seen).toLocaleDateString()}</span>
                 </div>
-                <button type="button" onClick={() => handleRevoke(d.id)} style={{ background: '#f4e951', color: '#000', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.85rem' }}>Revocar</button>
+                <button type="button" onClick={() => handleRevoke(d.id)} className="auth-modal__btn-revoke">Revocar</button>
               </div>
             ))}
-            <button type="button" onClick={() => setDevicesLimit([])} style={{ marginTop: '1.5rem', background: 'transparent', color: 'white', border: '1px solid #3d405b', width: '100%', padding: '0.75rem', borderRadius: '4px', cursor: 'pointer' }}>Cancelar</button>
+            <button type="button" onClick={() => setDevicesLimit([])} className="auth-modal__btn-cancel">Cancelar</button>
           </div>
         </div>
       )}
 
       {showBirthModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h3 style={{color: '#f4e951', marginTop: 0}}>¡Casi listo, {pendingGoogleData?.name}!</h3>
-            <p style={{fontSize: '0.9rem', color: '#e0e0e0', marginBottom: '1.5rem'}}>Para proteger a nuestra comunidad, necesitamos verificar tu edad antes de completar el registro.</p>
+        <div className="auth-modal">
+          <div className="auth-modal__content">
+            <h3 className="auth-modal__title">¡Casi listo, {pendingGoogleData?.name}!</h3>
+            <p className="auth-modal__desc">Para proteger a nuestra comunidad, necesitamos verificar tu edad antes de completar el registro.</p>
             
             {modalError && <div className="register-form__alert register-form__alert--error" style={{marginBottom: '1rem'}}>{modalError}</div>}
             
@@ -248,7 +246,7 @@ export const LoginForm = () => {
             <button type="button" className="register-form__submit" onClick={handleGoogleRegisterComplete} disabled={isGoogleLoading} style={{width: '100%'}}>
               {isGoogleLoading ? 'Procesando...' : 'Finalizar registro'}
             </button>
-            <button type="button" onClick={() => setShowBirthModal(false)} style={{ marginTop: '1rem', background: 'transparent', color: '#a0a0a0', border: 'none', width: '100%', cursor: 'pointer' }}>Cancelar</button>
+            <button type="button" onClick={() => setShowBirthModal(false)} className="auth-modal__btn-cancel auth-modal__btn-cancel--muted">Cancelar</button>
           </div>
         </div>
       )}

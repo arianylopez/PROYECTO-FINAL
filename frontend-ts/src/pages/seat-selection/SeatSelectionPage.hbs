@@ -1,168 +1,168 @@
 {{#if isLoading}}
-  <div style="height: 100vh; display: flex; justify-content: center; align-items: center; background-color: #0f1115; color: #f4e951; font-family: system-ui;">Cargando experiencia...</div>
+  <div class="seat-page__loading">Cargando experiencia...</div>
 {{else}}
   {{#if errorMsgGlobal}}
-    <div style="height: 100vh; background-color: #0f1115; color: #ffffff; display: flex; justify-content: center; align-items: center;">Error cargando datos.</div>
+    <div class="seat-page__error">Error cargando datos.</div>
   {{else}}
-    <div style="position: relative; min-height: 100vh; color: #ffffff; font-family: 'Inter', system-ui, sans-serif; overflow: hidden;">
+    <div class="seat-page">
       
-      <div style="position: fixed; inset: 0; z-index: -1;">
-        <div style="position: absolute; inset: 0; background-image: url('{{data.movie.poster_url}}'); background-size: cover; background-position: center; filter: blur(45px) brightness(0.2);"></div>
-        <div style="position: absolute; inset: 0; background-color: rgba(15, 17, 21, 0.75);"></div>
+      <div class="seat-page__bg-container">
+        <div class="seat-page__bg-image" style="background-image: url('{{data.movie.poster_url}}');"></div>
+        <div class="seat-page__bg-overlay"></div>
       </div>
 
-      <div style="max-width: 1440px; margin: 0 auto; padding: 2rem;">
+      <div class="seat-page__content">
         
         {{#if hasActiveReservation}}
-           <div style="background-color: rgba(244, 233, 81, 0.1); border: 1px solid #f4e951; color: #fff; padding: 1rem 2rem; border-radius: 12px; margin-bottom: 2rem; display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(244, 233, 81, 0.1);">
+           <div class="reservation-alert">
               <div>
-                 <h3 style="margin: 0; color: #f4e951; font-size: 1.2rem; font-weight: 900;">¡Tienes una reserva pendiente!</h3>
-                 <p style="margin: 0.2rem 0 0; color: #d1d5db; font-size: 0.9rem;">El sistema ha recuperado tus asientos. Completa el pago antes de que expire la reserva.</p>
+                 <h3 class="reservation-alert__title">¡Tienes una reserva pendiente!</h3>
+                 <p class="reservation-alert__desc">El sistema ha recuperado tus asientos. Completa el pago antes de que expire la reserva.</p>
               </div>
-              <div style="display: flex; align-items: center; gap: 1.5rem;">
-                 <strong style="font-size: 2.2rem; color: #f4e951; font-family: monospace; letter-spacing: 2px;" id="lock-timer-display">
+              <div class="reservation-alert__actions">
+                 <strong class="reservation-alert__timer" id="lock-timer-display">
                     {{lockTimerFormatted}}
                  </strong>
-                 <button id="btn-cancel-reservation" style="background-color: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 0.7rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: all 0.2s;">
+                 <button id="btn-cancel-reservation" class="reservation-alert__btn-cancel">
                    Cancelar Reserva
                  </button>
               </div>
            </div>
         {{/if}}
 
-        <div style="display: flex; justify-content: center; align-items: center; gap: 2rem; margin-bottom: 3rem;">
-          <div style="display: flex; flex-direction: column; align-items: center; color: #f4e951; font-weight: bold;">
-            <div style="width: 12px; height: 12px; border-radius: 50%; background-color: #f4e951; margin-bottom: 0.5rem; box-shadow: 0 0 10px #f4e951;"></div>
+        <div class="booking-steps">
+          <div class="step step--active">
+            <div class="step__dot"></div>
             Selección de Asientos
           </div>
-          <div style="width: 80px; height: 2px; background-color: #374151;"></div>
-          <div style="display: flex; flex-direction: column; align-items: center; color: #6b7280; font-weight: bold;">
-            <div style="width: 12px; height: 12px; border-radius: 50%; background-color: #374151; margin-bottom: 0.5rem;"></div>
+          <div class="booking-steps__line"></div>
+          <div class="step step--inactive">
+            <div class="step__dot"></div>
             Pago
           </div>
-          <div style="width: 80px; height: 2px; background-color: #374151;"></div>
-          <div style="display: flex; flex-direction: column; align-items: center; color: #6b7280; font-weight: bold;">
-            <div style="width: 12px; height: 12px; border-radius: 50%; background-color: #374151; margin-bottom: 0.5rem;"></div>
+          <div class="booking-steps__line"></div>
+          <div class="step step--inactive">
+            <div class="step__dot"></div>
             Confirmación
           </div>
         </div>
 
-        <div style="display: flex; flex-wrap: wrap; gap: 2.5rem; align-items: flex-start;">
+        <div class="layout-grid">
           
-          <div style="flex: 1 1 250px; max-width: 320px; display: flex; flex-direction: column; gap: 1rem;">
-            <img src="{{data.movie.poster_url}}" alt="{{data.movie.title}}" style="width: 100%; border-radius: 12px; box-shadow: 0 15px 30px rgba(0,0,0,0.5); border: 1px solid #262932; margin-bottom: 1rem;" />
+          <div class="movie-poster-card">
+            <img src="{{data.movie.poster_url}}" alt="{{data.movie.title}}" class="movie-poster-card__img" />
             
-            <h1 style="font-size: 2rem; font-weight: 900; margin: 0; text-transform: uppercase; line-height: 1.1;">{{data.movie.title}}</h1>
+            <h1 class="movie-poster-card__title">{{data.movie.title}}</h1>
             
-            <div style="display: flex; align-items: center; gap: 0.8rem; color: #9ca3af; font-size: 0.9rem; font-weight: bold;">
+            <div class="movie-poster-card__meta">
               <span>{{data.movie.durationHours}}h {{data.movie.durationMins}}m</span>
               <span>|</span>
-              <span style="border: 1px solid #4b5563; padding: 0.1rem 0.4rem; border-radius: 4px; color: #fff;">{{data.movie.rating_classification}}</span>
+              <span class="movie-poster-card__rating">{{data.movie.rating_classification}}</span>
             </div>
 
-            <div style="margin-top: 1.5rem; padding: 1.5rem; background-color: rgba(23, 26, 33, 0.6); border-radius: 12px; border: 1px solid #262932;">
-              <p style="margin: 0 0 0.5rem; color: #9ca3af; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">{{data.screening.room_name}}</p>
-              <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800;">
+            <div class="movie-poster-card__session">
+              <p class="movie-poster-card__room">{{data.screening.room_name}</p>
+              <h3 class="movie-poster-card__date">
                 {{screenDateString}}
               </h3>
-              <h2 style="margin: 0.5rem 0 0; color: #f4e951; font-size: 1.8rem; font-weight: 900;">
+              <h2 class="movie-poster-card__time">
                 {{screenTimeString}}
               </h2>
             </div>
           </div>
 
-          <div style="flex: 2 1 500px; display: flex; flex-direction: column; align-items: center; background-color: rgba(15, 17, 21, 0.8); padding: 3rem 2rem; border-radius: 16px; border: 1px solid #262932; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+          <div class="seat-map-section">
             
-            <div style="width: 80%; max-width: 400px; height: 40px; background-color: rgba(255,255,255,0.05); clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%); display: flex; justify-content: center; align-items: center; color: #6b7280; letter-spacing: 8px; font-weight: 900; font-size: 0.85rem; margin-bottom: 4rem; box-shadow: 0 10px 20px rgba(255,255,255,0.02);">
+            <div class="seat-map-section__screen">
               PANTALLA
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="seat-grid">
               {{#each renderRows}}
-                <div style="display: flex; align-items: center; gap: 12px;">
-                  <div style="width: 25px; font-weight: bold; color: #6b7280; text-align: right; font-size: 0.9rem;">{{this.row}}</div>
+                <div class="seat-row">
+                  <div class="seat-row__label seat-row__label--left">{{this.row}}</div>
                   
-                  <div style="display: flex; gap: 8px;">
+                  <div class="seat-row__seats">
                     {{#each this.seats}}
                       {{#if this.isCorridor}}
-                        <div style="width: 32px; height: 32px;"></div>
+                        <div class="seat-item seat-item--corridor"></div>
                       {{else}}
-                        <div class="seat-item" data-id="{{this.id}}" title="{{../row}}-{{this.col}}" style="width: 32px; height: 32px; background-color: {{this.bgColor}}; border: {{#if this.borderColor}}2px solid {{this.borderColor}}{{else}}none{{/if}}; border-radius: 6px 6px 3px 3px; cursor: {{this.cursor}}; display: flex; justify-content: center; align-items: center; color: {{this.fontColor}}; font-weight: 800; font-size: 0.75rem; transition: all 0.15s; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15); opacity: {{this.opacity}};">
+                        <div class="seat-item" data-id="{{this.id}}" title="{{../row}}-{{this.col}}" style="background-color: {{this.bgColor}}; border: {{#if this.borderColor}}2px solid {{this.borderColor}}{{else}}none{{/if}}; cursor: {{this.cursor}}; color: {{this.fontColor}}; opacity: {{this.opacity}};">
                           {{#if this.showLabel}}{{this.col}}{{/if}}
                         </div>
                       {{/if}}
                     {{/each}}
                   </div>
                   
-                  <div style="width: 25px; font-weight: bold; color: #6b7280; text-align: left; font-size: 0.9rem;">{{this.row}}</div>
+                  <div class="seat-row__label seat-row__label--right">{{this.row}}</div>
                 </div>
               {{/each}}
             </div>
 
-            <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 4rem; color: #9ca3af; font-size: 0.85rem; font-weight: 600; justify-content: center;">
-              <div style="display: flex; align-items: center; gap: 0.5rem;"><div style="width: 14px; height: 14px; background-color: #e5e7eb; border-radius: 3px;"></div> Disponible</div>
-              <div style="display: flex; align-items: center; gap: 0.5rem;"><div style="width: 14px; height: 14px; background-color: #14532d; border-radius: 3px;"></div> En proceso de compra (Otro)</div>
-              <div style="display: flex; align-items: center; gap: 0.5rem;"><div style="width: 14px; height: 14px; background-color: #f4e951; border-radius: 3px;"></div> Tu Reserva</div>
-              <div style="display: flex; align-items: center; gap: 0.5rem;"><div style="width: 14px; height: 14px; background-color: #374151; border-radius: 3px;"></div> Ocupado</div>
+            <div class="seat-legend">
+              <div class="seat-legend__item"><div class="seat-legend__box seat-legend__box--available"></div> Disponible</div>
+              <div class="seat-legend__item"><div class="seat-legend__box seat-legend__box--locked"></div> En proceso (Otro)</div>
+              <div class="seat-legend__item"><div class="seat-legend__box seat-legend__box--selected"></div> Tu Reserva</div>
+              <div class="seat-legend__item"><div class="seat-legend__box seat-legend__box--sold"></div> Ocupado</div>
             </div>
           </div>
 
-          <div style="flex: 1 1 300px; max-width: 380px; background-color: rgba(23, 26, 33, 0.8); border: 1px solid #262932; padding: 2.5rem 2rem; border-radius: 16px; backdrop-filter: blur(10px);">
+          <div class="booking-summary">
             
             {{#if errorMsg}}
-               <div style="background-color: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; border: 1px solid rgba(239, 68, 68, 0.3);">
+               <div class="booking-summary__error">
                  {{errorMsg}}
                </div>
             {{/if}}
 
-            <h3 style="font-size: 1.2rem; color: #9ca3af; margin-bottom: 1.5rem; font-weight: 700;">Boletos seleccionados</h3>
+            <h3 class="booking-summary__title">Boletos seleccionados</h3>
             
-            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid #374151; padding-bottom: 1.5rem;">
+            <div class="booking-summary__items">
               {{#each purchaseSummary.items}}
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span style="font-size: 1.05rem; font-weight: 600;">{{this.name}} <span style="color: #9ca3af;">x{{this.qty}}</span></span>
-                  <span style="font-weight: bold;">Bs. {{formatPrice this.total}}</span>
+                <div class="booking-summary__item">
+                  <span class="booking-summary__item-name">{{this.name}} <span class="booking-summary__item-qty">x{{this.qty}}</span></span>
+                  <span class="booking-summary__item-total">Bs. {{formatPrice this.total}}</span>
                 </div>
               {{/each}}
             </div>
 
-            <h3 style="font-size: 1.2rem; color: #9ca3af; margin-bottom: 1rem; font-weight: 700;">Asientos seleccionados</h3>
-            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; min-height: 60px; margin-bottom: 2rem; border-bottom: 1px solid #374151; padding-bottom: 1.5rem;">
+            <h3 class="booking-summary__title">Asientos seleccionados</h3>
+            <div class="booking-summary__seats">
               {{#if selectedSeats.length}}
                 {{#each selectedSeats}}
-                  <span style="color: #f4e951; font-weight: 900; font-size: 1.1rem;">
+                  <span class="booking-summary__seat-badge">
                     {{this.row}}{{this.col}}{{#unless @last}},{{/unless}}
                   </span>
                 {{/each}}
               {{else}}
-                <span style="color: #6b7280; font-size: 0.95rem;">Aún no has seleccionado asientos.</span>
+                <span class="booking-summary__no-seats">Aún no has seleccionado asientos.</span>
               {{/if}}
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
-              <span style="font-size: 1.2rem; color: #9ca3af; font-weight: 700;">Total a pagar:</span>
-              <span style="font-size: 1.8rem; font-weight: 900; color: #ffffff;">Bs. {{formatPrice purchaseSummary.totalPrice}}</span>
+            <div class="booking-summary__total-row">
+              <span class="booking-summary__total-label">Total a pagar:</span>
+              <span class="booking-summary__total-val">Bs. {{formatPrice purchaseSummary.totalPrice}}</span>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="booking-summary__actions">
               {{#if hasActiveReservation}}
                  <button 
                   id="btn-continue-payment"
-                  style="width: 100%; padding: 1.1rem; border-radius: 8px; border: none; font-weight: 900; font-size: 1.05rem; text-transform: uppercase; letter-spacing: 1px; background-color: #f4e951; color: #000000; cursor: pointer; transition: background-color 0.2s;">
+                  class="btn-primary">
                   Retomar Pago
                 </button>
               {{else}}
                 <button 
                   id="btn-lock-seats"
                   {{#unless canContinue}}disabled{{/unless}}
-                  style="width: 100%; padding: 1.1rem; border-radius: 8px; border: none; font-weight: 900; font-size: 1.05rem; text-transform: uppercase; letter-spacing: 1px; background-color: {{#if canContinue}}#f4e951{{else}}#374151{{/if}}; color: {{#if canContinue}}#000000{{else}}#9ca3af{{/if}}; cursor: {{#if canContinue}}pointer{{else}}not-allowed{{/if}}; transition: background-color 0.2s;">
+                  class="btn-primary">
                   Continuar
                 </button>
               {{/if}}
               
               <button 
                 id="btn-go-back"
-                style="width: 100%; padding: 1.1rem; border-radius: 8px; background-color: transparent; border: 1px solid #4b5563; color: #ffffff; font-weight: 700; font-size: 1rem; text-transform: uppercase; cursor: pointer;">
+                class="btn-secondary">
                 {{#if hasActiveReservation}}Volver{{else}}Cancelar{{/if}}
               </button>
             </div>

@@ -1,43 +1,43 @@
-<div class="movie-detail-page">
+<div class="movie-detail">
   
   {{#if isMovieLoading}}
-    <div style="min-height: 100vh; display: flex; justify-content: center; align-items: center; color: var(--accent-color);">
+    <div class="movie-detail__loading">
       Cargando película...
     </div>
   {{else}}
     {{#if error}}
-      <div style="min-height: 100vh; color: #fff; padding: 2rem; text-align: center;">
+      <div class="movie-detail__error">
         Película no encontrada o error de conexión.
       </div>
     {{else}}
       <div class="movie-detail__hero">
-        <div class="movie-detail__bg-blur" style="background-image: url({{movie.poster_url}})"></div>
-        <div class="movie-detail__content">
+        <div class="movie-detail__hero-bg" style="background-image: url({{movie.poster_url}})"></div>
+        <div class="movie-detail__hero-content">
           <img src="{{movie.poster_url}}" alt="{{movie.title}}" class="movie-detail__poster" />
           
           <div class="movie-detail__info">
             <h1 class="movie-detail__title">{{movie.title}}</h1>
             
             <div class="movie-detail__meta">
-              <span>{{movie.director}}</span>
+              <span class="movie-detail__meta-item">{{movie.director}}</span>
               <span class="movie-detail__meta-dot">•</span>
-              <span>{{movie.duration_hours}}h {{movie.duration_mins}}m</span>
+              <span class="movie-detail__meta-item">{{movie.duration_hours}}h {{movie.duration_mins}}m</span>
               <span class="movie-detail__meta-dot">•</span>
-              <span class="movie-detail__rating-badge">{{movie.rating_classification}}</span>
+              <span class="movie-detail__meta-badge">{{movie.rating_classification}}</span>
             </div>
 
             <div class="movie-detail__genres">
               {{#each movie.genres}}
-                <span class="movie-detail__genre-tag">{{this}}</span>
+                <span class="movie-detail__genre">{{this}}</span>
               {{/each}}
             </div>
 
             <p class="movie-detail__synopsis">{{movie.synopsis}}</p>
             
             <div class="movie-detail__actions">
-              <button class="btn-buy-ticket" id="btn-buy-ticket">Comprar entradas</button>
+              <button class="movie-detail__btn" id="btn-buy-ticket">Comprar entradas</button>
 
-              <button class="btn-watchlist {{#if isWatchlisted}}btn-watchlist--added{{else}}btn-watchlist--add{{/if}}" id="btn-watchlist">
+              <button class="movie-detail__btn--secondary {{#if isWatchlisted}}active{{/if}}" id="btn-watchlist">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="{{#if isWatchlisted}}currentColor{{else}}none{{/if}}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                 </svg>
@@ -48,103 +48,102 @@
         </div>
       </div>
 
-      <div style="max-width: 1200px; margin: 0 auto; padding: 4rem 4%;">
-        <h2 style="font-size: 2rem; font-weight: 900; text-transform: uppercase; margin-bottom: 2rem; border-bottom: 2px solid #262932; padding-bottom: 1rem; display: inline-block;">Opiniones de la Audiencia</h2>
+      <div class="reviews-section">
+        <h2 class="reviews-section__title">Opiniones de la Audiencia</h2>
         
-        <div style="display: flex; flex-direction: column; gap: 3rem;">
+        <div class="reviews-section__container">
           
-          <div style="display: flex; flex-wrap: wrap; gap: 3rem; background-color: #171a21; padding: 2.5rem; border-radius: 16px; border: 1px solid #262932; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+          <div class="reviews-section__summary">
             
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 220px; border-right: 1px solid #374151; padding-right: 3rem;">
-              <div style="font-size: 5rem; font-weight: 900; color: #fff; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+            <div class="reviews-section__stats">
+              <div class="reviews-section__stats-score">
                 {{reviewsStats.avg_score_formatted}}
               </div>
-              <div style="display: flex; gap: 4px; color: #f4e951; margin: 0.8rem 0 1rem;">
+              <div class="reviews-section__stats-stars">
                 {{{reviewsStats.stars_html}}}
               </div>
-              <div style="color: #fff; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; margin-bottom: 0.4rem;">
+              <div class="reviews-section__stats-label">
                 {{reviewsStats.sentiment_label}}
               </div>
-              <div style="color: #6b7280; font-size: 0.85rem;">Basado en {{reviewsStats.total_ratings}} calificaciones</div>
+              <div class="reviews-section__stats-total">Basado en {{reviewsStats.total_ratings}} calificaciones</div>
             </div>
 
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 1.2rem; justify-content: center; min-width: 280px;">
+            <div class="reviews-section__bars">
               
-              <div style="display: flex; align-items: center; gap: 1rem;">
-                <span style="width: 90px; color: #d1d5db; font-size: 0.95rem; font-weight: 700;">Positivas</span>
-                <div style="flex: 1; height: 10px; background-color: #262932; border-radius: 5px; overflow: hidden;">
-                  <div style="width: {{reviewsStats.posPct}}%; height: 100%; background-color: #4ade80; border-radius: 5px; transition: width 0.5s ease-out;"></div>
+              <div class="reviews-section__bar-row">
+                <span class="reviews-section__bar-label">Positivas</span>
+                <div class="reviews-section__bar-track">
+                  <div class="reviews-section__bar-fill reviews-section__bar-fill--pos" style="width: {{reviewsStats.posPct}}%;"></div>
                 </div>
-                <span style="width: 45px; text-align: right; color: #9ca3af; font-size: 0.9rem; font-weight: bold;">{{reviewsStats.posPct}}%</span>
+                <span class="reviews-section__bar-pct">{{reviewsStats.posPct}}%</span>
               </div>
               
-              <div style="display: flex; align-items: center; gap: 1rem;">
-                <span style="width: 90px; color: #d1d5db; font-size: 0.95rem; font-weight: 700;">Neutrales</span>
-                <div style="flex: 1; height: 10px; background-color: #262932; border-radius: 5px; overflow: hidden;">
-                  <div style="width: {{reviewsStats.neuPct}}%; height: 100%; background-color: #facc15; border-radius: 5px; transition: width 0.5s ease-out;"></div>
+              <div class="reviews-section__bar-row">
+                <span class="reviews-section__bar-label">Neutrales</span>
+                <div class="reviews-section__bar-track">
+                  <div class="reviews-section__bar-fill reviews-section__bar-fill--neu" style="width: {{reviewsStats.neuPct}}%;"></div>
                 </div>
-                <span style="width: 45px; text-align: right; color: #9ca3af; font-size: 0.9rem; font-weight: bold;">{{reviewsStats.neuPct}}%</span>
+                <span class="reviews-section__bar-pct">{{reviewsStats.neuPct}}%</span>
               </div>
               
-              <div style="display: flex; align-items: center; gap: 1rem;">
-                <span style="width: 90px; color: #d1d5db; font-size: 0.95rem; font-weight: 700;">Negativas</span>
-                <div style="flex: 1; height: 10px; background-color: #262932; border-radius: 5px; overflow: hidden;">
-                  <div style="width: {{reviewsStats.negPct}}%; height: 100%; background-color: #f87171; border-radius: 5px; transition: width 0.5s ease-out;"></div>
+              <div class="reviews-section__bar-row">
+                <span class="reviews-section__bar-label">Negativas</span>
+                <div class="reviews-section__bar-track">
+                  <div class="reviews-section__bar-fill reviews-section__bar-fill--neg" style="width: {{reviewsStats.negPct}}%;"></div>
                 </div>
-                <span style="width: 45px; text-align: right; color: #9ca3af; font-size: 0.9rem; font-weight: bold;">{{reviewsStats.negPct}}%</span>
+                <span class="reviews-section__bar-pct">{{reviewsStats.negPct}}%</span>
               </div>
 
             </div>
           </div>
 
-          <div style="background-color: #1f222b; padding: 2.5rem; border-radius: 16px; border: 1px solid #374151; position: relative; overflow: hidden;">
-            <div style="position: absolute; top: 0; left: 0; width: 4px; height: 100%; background-color: #f4e951;"></div>
-            <h3 style="font-size: 1.4rem; font-weight: 900; margin-bottom: 1.5rem; color: #fff;">Comparte tu experiencia</h3>
+          <div class="reviews-section__form-container">
+            <h3 class="reviews-section__form-title">Comparte tu experiencia</h3>
             
             {{#if user}}
-              <form id="review-form" style="display: flex; flex-direction: column; gap: 1.8rem;">
+              <form id="review-form" class="reviews-section__form">
                 {{#if reviewErrorMsg}}
-                  <div style="background-color: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 1rem 1.5rem; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3); font-weight: bold;">
+                  <div class="reviews-section__form-error">
                     ⚠️ {{reviewErrorMsg}}
                   </div>
                 {{/if}}
                 
-                <div>
-                  <label style="display: block; color: #d1d5db; margin-bottom: 0.8rem; font-weight: 700; font-size: 1.05rem;">Tu Calificación <span style="color: #ef4444;">*</span></label>
-                  <div class="star-rating-input" style="display: flex; gap: 0.4rem;" role="radiogroup" aria-label="Calificar película">
+                <div class="reviews-section__form-group">
+                  <label class="reviews-section__form-label">Tu Calificación <span>*</span></label>
+                  <div class="star-rating" role="radiogroup" aria-label="Calificar película">
                     {{{formStarsHtml}}}
                   </div>
                 </div>
 
-                <div>
-                  <label style="display: block; color: #d1d5db; margin-bottom: 0.8rem; font-weight: 700; font-size: 1.05rem;">Tu Reseña <span style="color: #9ca3af; font-weight: normal; font-size: 0.9rem;">(Opcional)</span></label>
+                <div class="reviews-section__form-group">
+                  <label class="reviews-section__form-label">Tu Reseña <span class="optional">(Opcional)</span></label>
                   <textarea 
                     id="review-textarea" 
                     placeholder="¿Qué te pareció la película? Escribe tu opinión aquí..."
                     maxlength="500"
                     rows="4"
-                    style="width: 100%; background-color: rgba(0,0,0,0.2); border: 1px solid #374151; border-radius: 12px; color: #fff; padding: 1.2rem; font-family: inherit; resize: vertical; outline: none; font-size: 1rem; line-height: 1.5;"
+                    class="reviews-section__form-textarea"
                   >{{reviewText}}</textarea>
-                  <div style="text-align: right; color: #6b7280; font-size: 0.85rem; margin-top: 0.5rem; font-weight: 600;">
+                  <div class="reviews-section__form-count">
                     <span id="review-char-count">{{reviewTextLength}}</span> / 500
                   </div>
                 </div>
 
-                <div style="display: flex; justify-content: flex-end;">
+                <div class="reviews-section__form-actions">
                   <button 
                     type="submit" 
                     id="submit-review-btn"
                     {{#if isSubmitting}}disabled{{/if}}
-                    style="background-color: {{#if isSubmitting}}#374151{{else}}#f4e951{{/if}}; color: {{#if isSubmitting}}#9ca3af{{else}}#000{{/if}}; padding: 1rem 3rem; border-radius: 30px; font-weight: 900; text-transform: uppercase; border: none; cursor: {{#if isSubmitting}}not-allowed{{else}}pointer{{/if}}; transition: all 0.2s; letter-spacing: 1px;"
+                    class="reviews-section__form-submit"
                   >
                     {{#if isSubmitting}}Procesando...{{else}}Publicar{{/if}}
                   </button>
                 </div>
               </form>
             {{else}}
-              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; background-color: rgba(0,0,0,0.2); padding: 1.5rem; border-radius: 12px;">
-                <p style="color: #9ca3af; margin: 0; font-size: 1.05rem;">Debes iniciar sesión para calificar y publicar una reseña.</p>
-                <button id="login-prompt-btn" style="background-color: #f4e951; color: #000; padding: 0.9rem 2.5rem; border-radius: 30px; font-weight: 900; border: none; cursor: pointer; text-transform: uppercase; font-size: 0.9rem;">
+              <div class="reviews-section__form-login">
+                <p>Debes iniciar sesión para calificar y publicar una reseña.</p>
+                <button id="login-prompt-btn" class="reviews-section__form-btn">
                   Iniciar Sesión
                 </button>
               </div>
@@ -152,40 +151,40 @@
           </div>
 
           <div>
-            <div style="display: flex; gap: 0.8rem; overflow-x: auto; padding-bottom: 1rem; border-bottom: 1px solid #262932; margin-bottom: 2rem; scrollbar-width: none;">
-              <button class="review-filter-btn" data-filter="ALL" style="background: {{#if (eq reviewFilter 'ALL')}}#f4e951{{else}}#171a21{{/if}}; color: {{#if (eq reviewFilter 'ALL')}}#000{{else}}#9ca3af{{/if}}; border: {{#if (eq reviewFilter 'ALL')}}none{{else}}1px solid #374151{{/if}}; padding: 0.7rem 1.5rem; border-radius: 30px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: all 0.2s;">Todas ({{reviewsStats.total_all}})</button>
-              <button class="review-filter-btn" data-filter="POSITIVE" style="background: {{#if (eq reviewFilter 'POSITIVE')}}#f4e951{{else}}#171a21{{/if}}; color: {{#if (eq reviewFilter 'POSITIVE')}}#000{{else}}#9ca3af{{/if}}; border: {{#if (eq reviewFilter 'POSITIVE')}}none{{else}}1px solid #374151{{/if}}; padding: 0.7rem 1.5rem; border-radius: 30px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: all 0.2s;">Positivas ({{reviewsStats.total_pos}})</button>
-              <button class="review-filter-btn" data-filter="NEUTRAL" style="background: {{#if (eq reviewFilter 'NEUTRAL')}}#f4e951{{else}}#171a21{{/if}}; color: {{#if (eq reviewFilter 'NEUTRAL')}}#000{{else}}#9ca3af{{/if}}; border: {{#if (eq reviewFilter 'NEUTRAL')}}none{{else}}1px solid #374151{{/if}}; padding: 0.7rem 1.5rem; border-radius: 30px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: all 0.2s;">Neutrales ({{reviewsStats.total_neu}})</button>
-              <button class="review-filter-btn" data-filter="NEGATIVE" style="background: {{#if (eq reviewFilter 'NEGATIVE')}}#f4e951{{else}}#171a21{{/if}}; color: {{#if (eq reviewFilter 'NEGATIVE')}}#000{{else}}#9ca3af{{/if}}; border: {{#if (eq reviewFilter 'NEGATIVE')}}none{{else}}1px solid #374151{{/if}}; padding: 0.7rem 1.5rem; border-radius: 30px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: all 0.2s;">Negativas ({{reviewsStats.total_neg}})</button>
+            <div class="reviews-section__filters">
+              <button class="review-filter-btn reviews-section__filter-btn {{#if (eq reviewFilter 'ALL')}}reviews-section__filter-btn--active{{/if}}" data-filter="ALL">Todas ({{reviewsStats.total_all}})</button>
+              <button class="review-filter-btn reviews-section__filter-btn {{#if (eq reviewFilter 'POSITIVE')}}reviews-section__filter-btn--active{{/if}}" data-filter="POSITIVE">Positivas ({{reviewsStats.total_pos}})</button>
+              <button class="review-filter-btn reviews-section__filter-btn {{#if (eq reviewFilter 'NEUTRAL')}}reviews-section__filter-btn--active{{/if}}" data-filter="NEUTRAL">Neutrales ({{reviewsStats.total_neu}})</button>
+              <button class="review-filter-btn reviews-section__filter-btn {{#if (eq reviewFilter 'NEGATIVE')}}reviews-section__filter-btn--active{{/if}}" data-filter="NEGATIVE">Negativas ({{reviewsStats.total_neg}})</button>
             </div>
 
             {{#if (eq filteredReviews.length 0)}}
-              <div style="text-align: center; padding: 4rem 0; color: #6b7280; font-size: 1.1rem;">
+              <div class="reviews-section__empty">
                 No hay reseñas escritas en esta categoría.
               </div>
             {{else}}
-              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; align-items: start;">
+              <div class="reviews-section__grid">
                 {{#each filteredReviews}}
-                  <div style="background-color: #171a21; padding: 1.5rem; border-radius: 12px; border: 1px solid #262932; display: flex; flex-direction: column; gap: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                      <div style="display: flex; align-items: center; gap: 0.8rem;">
-                        <div style="width: 42px; height: 42px; border-radius: 50%; background-color: #f4e951; color: #0f1115; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.2rem;">
+                  <div class="review-card">
+                    <div class="review-card__header">
+                      <div class="review-card__user-info">
+                        <div class="review-card__avatar">
                           {{this.first_letter}}
                         </div>
-                        <div>
-                          <div style="font-weight: 800; color: #fff;">{{this.user_name}}</div>
-                          <div style="color: #6b7280; font-size: 0.8rem;">{{this.formatted_date}}</div>
+                        <div class="review-card__user-details">
+                          <div class="review-card__username">{{this.user_name}}</div>
+                          <div class="review-card__date">{{this.formatted_date}}</div>
                         </div>
                       </div>
-                      <div style="display: flex; gap: 2px; color: #f4e951;">
+                      <div class="review-card__stars">
                         {{{this.stars_html}}}
                       </div>
                     </div>
                     {{#if this.text}}
-                      <p style="color: #d1d5db; line-height: 1.6; font-size: 0.95rem; margin: 0; white-space: pre-wrap;">
+                      <p class="review-card__text">
                         {{this.display_text}}
                         {{#if this.isLong}}
-                          <button class="review-card__more-btn" data-review-id="{{this.id}}" style="background: none; border: none; color: #f4e951; cursor: pointer; font-weight: bold; margin-left: 5px;">
+                          <button class="review-card__toggle review-card__more-btn" data-review-id="{{this.id}}">
                             {{#if this.expanded}} Ver menos{{else}} Leer más{{/if}}
                           </button>
                         {{/if}}

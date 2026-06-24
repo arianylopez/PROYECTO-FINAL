@@ -56,9 +56,9 @@ export const ForgotPasswordForm = () => {
           </button>
 
           {demoLink && (
-            <div style={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#1a1d24', border: '1px dashed #4285F4', borderRadius: '8px', textAlign: 'center' }}>
-              <p style={{ fontSize: '0.8rem', color: '#a0a0a0', marginBottom: '0.5rem', marginTop: 0 }}></p>
-              <a href={demoLink} className="register-form__submit" style={{ display: 'block', textDecoration: 'none', backgroundColor: '#4285F4', color: 'white' }}>
+            <div className="register-form__demo-box">
+              <p className="register-form__demo-text"></p>
+              <a href={demoLink} className="register-form__submit register-form__demo-link">
                 Hacer clic para recuperar contraseña 
               </a>
             </div>

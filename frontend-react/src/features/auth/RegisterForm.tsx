@@ -238,10 +238,10 @@ export const RegisterForm = () => {
       <div className="auth-layout__cover"></div>
 
       {showBirthModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h3 style={{color: '#f4e951', marginTop: 0}}>¡Casi listo, {pendingGoogleData?.name}!</h3>
-            <p style={{fontSize: '0.9rem', color: '#e0e0e0', marginBottom: '1.5rem'}}>Para proteger a nuestra comunidad, necesitamos verificar tu edad antes de completar el registro.</p>
+        <div className="auth-modal">
+          <div className="auth-modal__content">
+            <h3 className="auth-modal__title">¡Casi listo, {pendingGoogleData?.name}!</h3>
+            <p className="auth-modal__desc">Para proteger a nuestra comunidad, necesitamos verificar tu edad antes de completar el registro.</p>
             
             {modalError && <div className="register-form__alert register-form__alert--error" style={{marginBottom: '1rem'}}>{modalError}</div>}
             
@@ -253,7 +253,7 @@ export const RegisterForm = () => {
             <button type="button" className="register-form__submit" onClick={handleGoogleRegisterComplete} disabled={isGoogleLoading} style={{width: '100%'}}>
               {isGoogleLoading ? 'Procesando...' : 'Finalizar registro'}
             </button>
-            <button type="button" onClick={() => setShowBirthModal(false)} style={{ marginTop: '1rem', background: 'transparent', color: '#a0a0a0', border: 'none', width: '100%', cursor: 'pointer' }} disabled={isGoogleLoading}>
+            <button type="button" onClick={() => setShowBirthModal(false)} className="auth-modal__btn-cancel auth-modal__btn-cancel--muted" disabled={isGoogleLoading}>
               Cancelar
             </button>
           </div>

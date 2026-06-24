@@ -1,130 +1,130 @@
 {{#if isLoading}}
-  <div style="min-height: 100vh; display: flex; justify-content: center; align-items: center; background-color: #0f1115; color: #f4e951;">Procesando...</div>
+  <div class="payment-page__loading">Procesando...</div>
 {{else}}
-  <div style="position: relative; min-height: 100vh; color: #ffffff; font-family: 'Inter', system-ui, sans-serif;">
-    <div style="position: fixed; inset: 0; z-index: -1;">
-      <div style="position: absolute; inset: 0; background-image: url('{{data.movie.poster_url}}'); background-size: cover; filter: blur(40px) brightness(0.2);"></div>
+  <div class="payment-page">
+    <div class="payment-page__bg-container">
+      <div class="payment-page__bg-image" style="background-image: url('{{data.movie.poster_url}}');"></div>
     </div>
 
-    <div style="max-width: 1440px; margin: 0 auto; padding: 2rem;">
+    <div class="payment-page__content">
       
-      <div style="display: flex; justify-content: center; align-items: center; gap: 2rem; margin-bottom: 3rem;">
-        <div style="display: flex; flex-direction: column; align-items: center; color: #6b7280; font-weight: bold;">
-          <div style="width: 12px; height: 12px; border-radius: 50%; background-color: #6b7280; margin-bottom: 0.5rem;"></div>
+      <div class="booking-steps">
+        <div class="step step--inactive">
+          <div class="step__dot"></div>
           Asientos
         </div>
-        <div style="width: 80px; height: 2px; background-color: #f4e951;"></div>
-        <div style="display: flex; flex-direction: column; align-items: center; color: #f4e951; font-weight: bold;">
-          <div style="width: 12px; height: 12px; border-radius: 50%; background-color: #f4e951; margin-bottom: 0.5rem; box-shadow: 0 0 10px #f4e951;"></div>
+        <div class="booking-steps__line"></div>
+        <div class="step step--active">
+          <div class="step__dot"></div>
           Pago
         </div>
-        <div style="width: 80px; height: 2px; background-color: #374151;"></div>
-        <div style="display: flex; flex-direction: column; align-items: center; color: #6b7280; font-weight: bold;">
-          <div style="width: 12px; height: 12px; border-radius: 50%; background-color: #374151; margin-bottom: 0.5rem;"></div>
+        <div class="booking-steps__line"></div>
+        <div class="step step--inactive">
+          <div class="step__dot"></div>
           Entradas
         </div>
       </div>
 
       {{#if errorMsg}}
-        <div style="background-color: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 1rem; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #991b1b; text-align: center;">{{errorMsg}}</div>
+        <div class="payment-page__error">{{errorMsg}}</div>
       {{/if}}
 
-      <div style="display: flex; flex-wrap: wrap; gap: 2.5rem; align-items: stretch;">
+      <div class="payment-layout">
         
-        <div style="flex: 1 1 250px; background-color: rgba(23, 26, 33, 0.6); border: 1px solid #262932; border-radius: 16px; padding: 2rem; backdrop-filter: blur(10px);">
-          <img src="{{data.movie.poster_url}}" style="width: 100px; border-radius: 8px; margin-bottom: 1rem;" alt="Poster" />
-          <h2 style="font-size: 1.5rem; font-weight: 900; margin: 0 0 0.5rem; text-transform: uppercase;">{{data.movie.title}}</h2>
-          <div style="display: flex; gap: 0.5rem; color: #9ca3af; font-size: 0.85rem; margin-bottom: 2rem;">
-            <span>{{durationHours}}h {{durationMins}}m</span> | <span style="border: 1px solid #4b5563; padding: 0 2px;">{{data.movie.rating_classification}}</span>
+        <div class="payment-info">
+          <img src="{{data.movie.poster_url}}" class="payment-info__poster" alt="Poster" />
+          <h2 class="payment-info__title">{{data.movie.title}}</h2>
+          <div class="payment-info__meta">
+            <span>{{durationHours}}h {{durationMins}}m</span> | <span class="payment-info__rating">{{data.movie.rating_classification}}</span>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 1rem; color: #e5e7eb; font-size: 0.95rem;">
-            <div><strong style="color: #9ca3af; display: block; font-size: 0.8rem;">Fecha y Hora</strong> {{screenDateFormatted}}</div>
-            <div><strong style="color: #9ca3af; display: block; font-size: 0.8rem;">Sala</strong> {{data.screening.room_name}}</div>
-            <div><strong style="color: #9ca3af; display: block; font-size: 0.8rem;">Butacas Seleccionadas</strong> {{seatLabelsString}}</div>
+          <div class="payment-info__details">
+            <div><strong class="payment-info__label">Fecha y Hora</strong> {{screenDateFormatted}}</div>
+            <div><strong class="payment-info__label">Sala</strong> {{data.screening.room_name}}</div>
+            <div><strong class="payment-info__label">Butacas Seleccionadas</strong> {{seatLabelsString}}</div>
           </div>
         </div>
 
-        <div style="flex: 2 1 400px; background-color: #171a21; border: 1px solid #262932; border-radius: 16px; padding: 2.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
-          <h2 style="font-size: 1.5rem; font-weight: 900; margin-bottom: 1.5rem;">Método de pago</h2>
+        <div class="payment-form">
+          <h2 class="payment-form__title">Método de pago</h2>
           
-          <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
-            <label style="flex: 1; padding: 1rem; border: 2px solid {{#if (eq paymentMethod 'card')}}#f4e951{{else}}#374151{{/if}}; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; background-color: {{#if (eq paymentMethod 'card')}}rgba(244, 233, 81, 0.05){{else}}transparent{{/if}};">
-              <input type="radio" name="payment-method" value="card" {{#if (eq paymentMethod 'card')}}checked{{/if}} style="accent-color: #f4e951;" /> Tarjeta
+          <div class="payment-methods">
+            <label class="payment-method {{#if (eq paymentMethod 'card')}}payment-method--active{{/if}}">
+              <input type="radio" name="payment-method" value="card" {{#if (eq paymentMethod 'card')}}checked{{/if}} class="payment-method__input" /> Tarjeta
             </label>
-            <label style="flex: 1; padding: 1rem; border: 2px solid {{#if (eq paymentMethod 'qr')}}#f4e951{{else}}#374151{{/if}}; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; background-color: {{#if (eq paymentMethod 'qr')}}rgba(244, 233, 81, 0.05){{else}}transparent{{/if}};">
-              <input type="radio" name="payment-method" value="qr" {{#if (eq paymentMethod 'qr')}}checked{{/if}} style="accent-color: #f4e951;" /> Pago QR
+            <label class="payment-method {{#if (eq paymentMethod 'qr')}}payment-method--active{{/if}}">
+              <input type="radio" name="payment-method" value="qr" {{#if (eq paymentMethod 'qr')}}checked{{/if}} class="payment-method__input" /> Pago QR
             </label>
           </div>
 
           {{#if (eq paymentMethod 'card')}}
-            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-              <div>
-                <label style="display: block; color: #9ca3af; margin-bottom: 0.5rem; font-size: 0.9rem;">Número de Tarjeta</label>
-                <div style="position: relative;">
-                  <input type="text" id="card-number" placeholder="0000 0000 0000 0000" style="width: 100%; padding: 1rem; background-color: #0f1115; border: 1px solid #374151; border-radius: 8px; color: #fff; outline: none; font-size: 1.1rem;" />
-                  <span id="card-brand-display" style="position: absolute; right: 15px; top: 15px; color: #f4e951; font-weight: bold;">💳</span>
+            <div class="card-form">
+              <div class="card-form__group">
+                <label class="card-form__label">Número de Tarjeta</label>
+                <div class="card-form__input-wrapper">
+                  <input type="text" id="card-number" placeholder="0000 0000 0000 0000" class="card-form__input" />
+                  <span id="card-brand-display" class="card-form__brand">💳</span>
                 </div>
-                <span id="card-luhn-error" style="color: #ef4444; font-size: 0.8rem; margin-top: 0.4rem; display: none;">Número de tarjeta inválido</span>
+                <span id="card-luhn-error" class="card-form__error-text" style="display: none;">Número de tarjeta inválido</span>
               </div>
 
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <div>
-                  <label style="display: block; color: #9ca3af; margin-bottom: 0.5rem; font-size: 0.9rem;">Vencimiento (MM / AA)</label>
-                  <div style="display: flex; gap: 0.5rem;">
-                    <input type="text" id="card-month" placeholder="MM" style="width: 100%; padding: 1rem; background-color: #0f1115; border: 1px solid #374151; border-radius: 8px; color: #fff; text-align: center;" />
-                    <input type="text" id="card-year" placeholder="AA" style="width: 100%; padding: 1rem; background-color: #0f1115; border: 1px solid #374151; border-radius: 8px; color: #fff; text-align: center;" />
+              <div class="card-form__row">
+                <div class="card-form__group">
+                  <label class="card-form__label">Vencimiento (MM / AA)</label>
+                  <div class="card-form__date-group">
+                    <input type="text" id="card-month" placeholder="MM" class="card-form__input card-form__input--center" />
+                    <input type="text" id="card-year" placeholder="AA" class="card-form__input card-form__input--center" />
                   </div>
-                  <span id="card-expired-error" style="color: #ef4444; font-size: 0.8rem; margin-top: 0.4rem; display: none;">La tarjeta está vencida</span>
+                  <span id="card-expired-error" class="card-form__error-text" style="display: none;">La tarjeta está vencida</span>
                 </div>
-                <div>
-                  <label style="display: block; color: #9ca3af; margin-bottom: 0.5rem; font-size: 0.9rem;">CVV</label>
-                  <input type="password" id="card-cvv" placeholder="123" style="width: 100%; padding: 1rem; background-color: #0f1115; border: 1px solid #374151; border-radius: 8px; color: #fff;" />
+                <div class="card-form__group">
+                  <label class="card-form__label">CVV</label>
+                  <input type="password" id="card-cvv" placeholder="123" class="card-form__input" />
                 </div>
               </div>
 
-              <div>
-                <label style="display: block; color: #9ca3af; margin-bottom: 0.5rem; font-size: 0.9rem;">Nombre del Titular</label>
-                <input type="text" id="card-name" placeholder="COMO APARECE EN LA TARJETA" style="width: 100%; padding: 1rem; background-color: #0f1115; border: 1px solid #374151; border-radius: 8px; color: #fff; text-transform: uppercase;" />
+              <div class="card-form__group">
+                <label class="card-form__label">Nombre del Titular</label>
+                <input type="text" id="card-name" placeholder="COMO APARECE EN LA TARJETA" class="card-form__input card-form__input--uppercase" />
               </div>
             </div>
           {{/if}}
 
           {{#if (eq paymentMethod 'qr')}}
-            <div style="display: flex; flex-direction: column; align-items: center; background-color: #0f1115; padding: 3rem; border-radius: 12px; border: 1px solid #374151;">
-              <div style="width: 200px; height: 200px; background-color: #fff; display: flex; justify-content: center; align-items: center; padding: 10px; border-radius: 8px;">
+            <div class="qr-payment">
+              <div class="qr-payment__code">
                 <svg width="100%" height="100%" viewBox="0 0 100 100"><rect width="100%" height="100%" fill="#fff"/><rect x="10" y="10" width="30" height="30" fill="#000"/><rect x="60" y="10" width="30" height="30" fill="#000"/><rect x="10" y="60" width="30" height="30" fill="#000"/><path d="M15 15h20v20h-20zM65 15h20v20h-20zM15 65h20v20h-20zM45 10h10v10h-10zM45 25h10v35h-10zM10 45h35v10h-35zM60 45h30v10h-30zM80 60h10v30h-10zM45 70h30v10h-30zM60 85h15v5h-15z" fill="#000"/></svg>
               </div>
-              <p style="margin-top: 1.5rem; color: #9ca3af; font-size: 0.9rem;">Escanea este código con tu aplicación bancaria.</p>
-              <h3 style="margin: 0.5rem 0 0; font-size: 1.8rem; color: #f4e951;">Bs. {{formatPrice invoice.total}}</h3>
+              <p class="qr-payment__text">Escanea este código con tu aplicación bancaria.</p>
+              <h3 class="qr-payment__amount">Bs. {{formatPrice invoice.total}}</h3>
             </div>
           {{/if}}
         </div>
 
-        <div style="flex: 1 1 250px; background-color: rgba(23, 26, 33, 0.6); border: 1px solid #262932; border-radius: 16px; padding: 2rem; display: flex; flex-direction: column;">
-          <h3 style="font-size: 1.2rem; font-weight: 900; margin-bottom: 1.5rem; border-bottom: 1px solid #374151; padding-bottom: 0.8rem;">Resumen</h3>
+        <div class="payment-summary">
+          <h3 class="payment-summary__title">Resumen</h3>
           
-          <div style="margin-bottom: 1.5rem;">
-            <h4 style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 0.5rem;">Entradas</h4>
+          <div class="payment-summary__section">
+            <h4 class="payment-summary__section-title">Entradas</h4>
             {{#each invoice.tickets}}
-              <div style="display: flex; justify-content: space-between; font-size: 0.95rem; margin-bottom: 0.3rem;">
-                <span>{{this.name}} <span style="color: #f4e951;">x{{this.qty}}</span></span>
+              <div class="payment-summary__row">
+                <span>{{this.name}} <span class="payment-summary__highlight">x{{this.qty}}</span></span>
               </div>
             {{/each}}
           </div>
 
-          <div style="margin-bottom: 2rem;">
-            <h4 style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 0.5rem;">Butacas</h4>
-            <span style="font-size: 0.95rem; font-weight: bold;">{{seatLabelsString}}</span>
+          <div class="payment-summary__section">
+            <h4 class="payment-summary__section-title">Butacas</h4>
+            <span class="payment-summary__value">{{seatLabelsString}}</span>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; color: #9ca3af; font-size: 0.9rem; margin-bottom: 1.5rem; border-bottom: 1px solid #374151; padding-bottom: 1.5rem;">
-            <div style="display: flex; justify-content: space-between;"><span>Subtotal</span><span>Bs. {{formatPrice invoice.subtotal}}</span></div>
-            <div style="display: flex; justify-content: space-between;"><span>Impuestos (13%)</span><span>Bs. {{formatPrice invoice.tax}}</span></div>
-            <div style="display: flex; justify-content: space-between;"><span>Comisión servicio</span><span>Bs. {{formatPrice invoice.fee}}</span></div>
+          <div class="payment-summary__breakdown">
+            <div class="payment-summary__row"><span>Subtotal</span><span>Bs. {{formatPrice invoice.subtotal}}</span></div>
+            <div class="payment-summary__row"><span>Impuestos (13%)</span><span>Bs. {{formatPrice invoice.tax}}</span></div>
+            <div class="payment-summary__row"><span>Comisión servicio</span><span>Bs. {{formatPrice invoice.fee}}</span></div>
           </div>
 
-          <div style="display: flex; justify-content: space-between; font-size: 1.5rem; font-weight: 900; color: #ffffff; margin-bottom: 2rem;">
+          <div class="payment-summary__total-row">
             <span>Total</span>
             <span>Bs. {{formatPrice invoice.total}}</span>
           </div>
@@ -132,7 +132,7 @@
           <button 
             id="btn-pay"
             {{#if btnDisabled}}disabled{{/if}}
-            style="width: 100%; padding: 1.25rem; border-radius: 8px; border: none; background-color: {{#if btnDisabled}}#374151{{else}}#f4e951{{/if}}; color: {{#if btnDisabled}}#9ca3af{{else}}#000{{/if}}; font-weight: 900; text-transform: uppercase; font-size: 1rem; cursor: {{#if btnDisabled}}not-allowed{{else}}pointer{{/if}}; transition: background-color 0.2s;"
+            class="payment-summary__btn {{#if btnDisabled}}payment-summary__btn--disabled{{else}}payment-summary__btn--active{{/if}}"
           >
             {{#if (eq paymentMethod 'card')}}Pagar Bs. {{formatPrice invoice.total}}{{else}}Confirmar pago QR{{/if}}
           </button>

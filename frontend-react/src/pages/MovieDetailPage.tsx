@@ -12,6 +12,7 @@ import {
   type ReviewsResponse 
 } from '../features/catalog/catalogApi';
 import { useAuthStore } from '../shared/store/authStore';
+import './MovieDetail.css';
 
 interface StarRatingProps {
   value: number;
@@ -22,7 +23,7 @@ interface StarRatingProps {
 
 const StarRatingInput: React.FC<StarRatingProps> = ({ value, hover, onRate, onHover }) => {
   return (
-    <div style={{ display: 'flex', gap: '0.4rem' }} role="radiogroup" aria-label="Calificar película">
+    <div className="star-rating" role="radiogroup" aria-label="Calificar película">
       {[1, 2, 3, 4, 5].map(star => (
         <button
           type="button"
@@ -35,11 +36,7 @@ const StarRatingInput: React.FC<StarRatingProps> = ({ value, hover, onRate, onHo
           onMouseLeave={() => onHover(0)}
           onClick={() => onRate(star)}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onRate(star); }}
-          style={{
-            background: 'none', border: 'none', cursor: 'pointer', padding: '0.2rem',
-            color: (hover || value) >= star ? '#f4e951' : '#374151',
-            transition: 'color 0.2s', outline: 'none'
-          }}
+          className={`star-rating__btn ${(hover || value) >= star ? 'star-rating__btn--active' : 'star-rating__btn--inactive'}`}
         >
           <svg width="32" height="32" viewBox="0 0 24 24" fill={(hover || value) >= star ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
@@ -56,18 +53,18 @@ const ReviewCard = ({ review }: { review: Review }) => {
   const isLong = review.text && review.text.length > textLimit;
 
   return (
-    <div style={{ backgroundColor: '#171a21', padding: '1.5rem', borderRadius: '12px', border: '1px solid #262932', display: 'flex', flexDirection: 'column', gap: '1rem', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-          <div style={{ width: '42px', height: '42px', borderRadius: '50%', backgroundColor: '#f4e951', color: '#0f1115', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '1.2rem' }}>
+    <div className="review-card">
+      <div className="review-card__header">
+        <div className="review-card__user-info">
+          <div className="review-card__avatar">
             {review.user_name.charAt(0).toUpperCase()}
           </div>
-          <div>
-            <div style={{ fontWeight: '800', color: '#fff' }}>{review.user_name}</div>
-            <div style={{ color: '#6b7280', fontSize: '0.8rem' }}>{new Date(review.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+          <div className="review-card__user-details">
+            <div className="review-card__username">{review.user_name}</div>
+            <div className="review-card__date">{new Date(review.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '2px', color: '#f4e951' }}>
+        <div className="review-card__stars">
           {[1, 2, 3, 4, 5].map(i => (
              <svg key={i} width="16" height="16" viewBox="0 0 24 24" fill={i <= review.score ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
@@ -76,10 +73,10 @@ const ReviewCard = ({ review }: { review: Review }) => {
         </div>
       </div>
       {review.text && (
-        <p style={{ color: '#d1d5db', lineHeight: '1.6', fontSize: '0.95rem', margin: 0, whiteSpace: 'pre-wrap' }}>
+        <p className="review-card__text">
           {expanded || !isLong ? review.text : `${review.text.slice(0, textLimit)}...`}
           {isLong && (
-            <button onClick={() => setExpanded(!expanded)} style={{ background: 'none', border: 'none', color: '#f4e951', cursor: 'pointer', fontWeight: 'bold', marginLeft: '5px' }}>
+            <button onClick={() => setExpanded(!expanded)} className="review-card__toggle">
               {expanded ? ' Ver menos' : ' Leer más'}
             </button>
           )}
@@ -214,48 +211,46 @@ export const MovieDetailPage = () => {
     }
   };
 
-  if (isMovieLoading) return <div style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#0f1115', color: '#f4e951' }}>Cargando película...</div>;
-  if (error || !movie) return <div style={{ minHeight: '100vh', backgroundColor: '#0f1115', color: '#fff', padding: '2rem', textAlign: 'center' }}>Película no encontrada o error de conexión.</div>;
+  if (isMovieLoading) return <div className="movie-detail__loading">Cargando película...</div>;
+  if (error || !movie) return <div className="movie-detail__error">Película no encontrada o error de conexión.</div>;
 
   return (
-    <div style={{ backgroundColor: '#0f1115', minHeight: '100vh', color: '#ffffff', fontFamily: '"Inter", system-ui, sans-serif' }}>
+    <div className="movie-detail">
       
-      <div style={{ position: 'relative', overflow: 'hidden', padding: '5rem 4%' }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${movie.poster_url})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'blur(40px) brightness(0.25)', zIndex: 0 }}></div>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1, display: 'flex', flexWrap: 'wrap', gap: '4rem', alignItems: 'center' }}>
-          <img src={movie.poster_url} alt={movie.title} style={{ width: '320px', borderRadius: '16px', boxShadow: '0 25px 50px rgba(0,0,0,0.8)' }} />
-          <div style={{ flex: 1, minWidth: '300px' }}>
-            <h1 style={{ fontSize: '3.5rem', fontWeight: '900', textTransform: 'uppercase', margin: '0 0 1rem 0', lineHeight: '1.1', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>{movie.title}</h1>
+      <div className="movie-detail__hero">
+        <div className="movie-detail__hero-bg" style={{ backgroundImage: `url(${movie.poster_url})` }}></div>
+        <div className="movie-detail__hero-content">
+          <img src={movie.poster_url} alt={movie.title} className="movie-detail__poster" />
+          <div className="movie-detail__info">
+            <h1 className="movie-detail__title">{movie.title}</h1>
             
-            <div style={{ display: 'flex', gap: '1rem', color: '#d1d5db', fontWeight: 'bold', marginBottom: '1.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-              <span>{movie.director}</span>
-              <span style={{ color: '#4b5563' }}>•</span>
-              <span>{Math.floor(movie.duration_minutes / 60)}h {movie.duration_minutes % 60}m</span>
-              <span style={{ color: '#4b5563' }}>•</span>
-              <span style={{ border: '1px solid #4b5563', padding: '0.2rem 0.6rem', borderRadius: '6px', color: '#fff' }}>{movie.rating_classification}</span>
+            <div className="movie-detail__meta">
+              <span className="movie-detail__meta-item">{movie.director}</span>
+              <span className="movie-detail__meta-dot">•</span>
+              <span className="movie-detail__meta-item">{Math.floor(movie.duration_minutes / 60)}h {movie.duration_minutes % 60}m</span>
+              <span className="movie-detail__meta-dot">•</span>
+              <span className="movie-detail__meta-badge">{movie.rating_classification}</span>
             </div>
 
-            <div style={{ display: 'flex', gap: '0.8rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
+            <div className="movie-detail__genres">
               {movie.genres?.map((g: string) => (
-                <span key={g} style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.4rem 1.2rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold', letterSpacing: '0.5px' }}>{g}</span>
+                <span key={g} className="movie-detail__genre">{g}</span>
               ))}
             </div>
 
-            <p style={{ fontSize: '1.1rem', lineHeight: '1.7', color: '#9ca3af', marginBottom: '3rem', maxWidth: '800px' }}>{movie.synopsis}</p>
+            <p className="movie-detail__synopsis">{movie.synopsis}</p>
             
-            <div style={{ display: 'flex', gap: '1.5rem', maxWidth: '500px', flexWrap: 'wrap' }}>
+            <div className="movie-detail__actions">
               <button 
                 onClick={handleBuyTicket}
-                style={{ flex: 1, backgroundColor: '#f4e951', color: '#0f1115', padding: '1.2rem', borderRadius: '8px', border: 'none', fontWeight: '900', fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '1px', cursor: 'pointer', transition: 'background-color 0.2s', boxShadow: '0 10px 20px rgba(244,233,81,0.2)' }}
-                onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#e2d73f'; }}
-                onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#f4e951'; }}
+                className="movie-detail__btn"
               >
                 Comprar entradas
               </button>
 
               <button 
                 onClick={handleToggleWatchlist}
-                style={{ flex: 1, backgroundColor: isWatchlisted ? '#f4e951' : 'transparent', color: isWatchlisted ? '#0f1115' : '#ffffff', padding: '1.2rem', borderRadius: '8px', border: isWatchlisted ? 'none' : '1px solid #4b5563', fontWeight: '700', fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '0.5px', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+                className={`movie-detail__btn--secondary ${isWatchlisted ? 'active' : ''}`}
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill={isWatchlisted ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
@@ -268,105 +263,102 @@ export const MovieDetailPage = () => {
         </div>
       </div>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '4rem 4%' }}>
-        <h2 style={{ fontSize: '2rem', fontWeight: '900', textTransform: 'uppercase', marginBottom: '2rem', borderBottom: '2px solid #262932', paddingBottom: '1rem', display: 'inline-block' }}>Opiniones de la Audiencia</h2>
+      <div className="reviews-section">
+        <h2 className="reviews-section__title">Opiniones de la Audiencia</h2>
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+        <div className="reviews-section__container">
           
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', backgroundColor: '#171a21', padding: '2.5rem', borderRadius: '16px', border: '1px solid #262932', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
+          <div className="reviews-section__summary">
             
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minWidth: '220px', borderRight: '1px solid #374151', paddingRight: '3rem' }}>
-              <div style={{ fontSize: '5rem', fontWeight: '900', color: '#fff', lineHeight: '1', textShadow: '0 4px 10px rgba(0,0,0,0.5)' }}>
+            <div className="reviews-section__stats">
+              <div className="reviews-section__stats-score">
                 {reviewsData?.stats.avg_score.toFixed(1) || '0.0'}
               </div>
-              <div style={{ display: 'flex', gap: '4px', color: '#f4e951', margin: '0.8rem 0 1rem' }}>
+              <div className="reviews-section__stats-stars">
                 {[1, 2, 3, 4, 5].map(i => (
                   <svg key={i} width="22" height="22" viewBox="0 0 24 24" fill={i <= Math.round(reviewsData?.stats.avg_score || 0) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                   </svg>
                 ))}
               </div>
-              <div style={{ color: '#fff', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.9rem', marginBottom: '0.4rem' }}>
+              <div className="reviews-section__stats-label">
                 {getSentimentLabel(reviewsData?.stats.avg_score || 0)}
               </div>
-              <div style={{ color: '#6b7280', fontSize: '0.85rem' }}>Basado en {reviewsData?.stats.total_ratings || 0} calificaciones</div>
+              <div className="reviews-section__stats-total">Basado en {reviewsData?.stats.total_ratings || 0} calificaciones</div>
             </div>
 
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1.2rem', justifyContent: 'center', minWidth: '280px' }}>
+            <div className="reviews-section__bars">
               
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <span style={{ width: '90px', color: '#d1d5db', fontSize: '0.95rem', fontWeight: '700' }}>Positivas</span>
-                <div style={{ flex: 1, height: '10px', backgroundColor: '#262932', borderRadius: '5px', overflow: 'hidden' }}>
-                  <div style={{ width: `${posPct}%`, height: '100%', backgroundColor: '#4ade80', borderRadius: '5px', transition: 'width 0.5s ease-out' }}></div>
+              <div className="reviews-section__bar-row">
+                <span className="reviews-section__bar-label">Positivas</span>
+                <div className="reviews-section__bar-track">
+                  <div className="reviews-section__bar-fill reviews-section__bar-fill--pos" style={{ width: `${posPct}%` }}></div>
                 </div>
-                <span style={{ width: '45px', textAlign: 'right', color: '#9ca3af', fontSize: '0.9rem', fontWeight: 'bold' }}>{posPct}%</span>
+                <span className="reviews-section__bar-pct">{posPct}%</span>
               </div>
               
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <span style={{ width: '90px', color: '#d1d5db', fontSize: '0.95rem', fontWeight: '700' }}>Neutrales</span>
-                <div style={{ flex: 1, height: '10px', backgroundColor: '#262932', borderRadius: '5px', overflow: 'hidden' }}>
-                  <div style={{ width: `${neuPct}%`, height: '100%', backgroundColor: '#facc15', borderRadius: '5px', transition: 'width 0.5s ease-out' }}></div>
+              <div className="reviews-section__bar-row">
+                <span className="reviews-section__bar-label">Neutrales</span>
+                <div className="reviews-section__bar-track">
+                  <div className="reviews-section__bar-fill reviews-section__bar-fill--neu" style={{ width: `${neuPct}%` }}></div>
                 </div>
-                <span style={{ width: '45px', textAlign: 'right', color: '#9ca3af', fontSize: '0.9rem', fontWeight: 'bold' }}>{neuPct}%</span>
+                <span className="reviews-section__bar-pct">{neuPct}%</span>
               </div>
               
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <span style={{ width: '90px', color: '#d1d5db', fontSize: '0.95rem', fontWeight: '700' }}>Negativas</span>
-                <div style={{ flex: 1, height: '10px', backgroundColor: '#262932', borderRadius: '5px', overflow: 'hidden' }}>
-                  <div style={{ width: `${negPct}%`, height: '100%', backgroundColor: '#f87171', borderRadius: '5px', transition: 'width 0.5s ease-out' }}></div>
+              <div className="reviews-section__bar-row">
+                <span className="reviews-section__bar-label">Negativas</span>
+                <div className="reviews-section__bar-track">
+                  <div className="reviews-section__bar-fill reviews-section__bar-fill--neg" style={{ width: `${negPct}%` }}></div>
                 </div>
-                <span style={{ width: '45px', textAlign: 'right', color: '#9ca3af', fontSize: '0.9rem', fontWeight: 'bold' }}>{negPct}%</span>
+                <span className="reviews-section__bar-pct">{negPct}%</span>
               </div>
 
             </div>
           </div>
 
-          <div style={{ backgroundColor: '#1f222b', padding: '2.5rem', borderRadius: '16px', border: '1px solid #374151', position: 'relative', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', backgroundColor: '#f4e951' }}></div>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: '900', marginBottom: '1.5rem', color: '#fff' }}>Comparte tu experiencia</h3>
+          <div className="reviews-section__form-container">
+            <h3 className="reviews-section__form-title">Comparte tu experiencia</h3>
             
             {!user ? (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.5rem', backgroundColor: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '12px' }}>
-                <p style={{ color: '#9ca3af', margin: 0, fontSize: '1.05rem' }}>Debes iniciar sesión para calificar y publicar una reseña.</p>
-                <button onClick={() => navigate(`/login?redirect=${location.pathname}`)} style={{ backgroundColor: '#f4e951', color: '#000', padding: '0.9rem 2.5rem', borderRadius: '30px', fontWeight: '900', border: 'none', cursor: 'pointer', textTransform: 'uppercase', fontSize: '0.9rem' }}>
+              <div className="reviews-section__form-login">
+                <p>Debes iniciar sesión para calificar y publicar una reseña.</p>
+                <button onClick={() => navigate(`/login?redirect=${location.pathname}`)} className="reviews-section__form-btn">
                   Iniciar Sesión
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleReviewSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.8rem' }}>
+              <form onSubmit={handleReviewSubmit} className="reviews-section__form">
                 {errorMsg && (
-                  <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '1rem 1.5rem', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.3)', fontWeight: 'bold' }}>
+                  <div className="reviews-section__form-error">
                     ⚠️ {errorMsg}
                   </div>
                 )}
                 
-                <div>
-                  <label style={{ display: 'block', color: '#d1d5db', marginBottom: '0.8rem', fontWeight: '700', fontSize: '1.05rem' }}>Tu Calificación <span style={{ color: '#ef4444' }}>*</span></label>
+                <div className="reviews-section__form-group">
+                  <label className="reviews-section__form-label">Tu Calificación <span>*</span></label>
                   <StarRatingInput value={rating} hover={hoverRating} onRate={setRating} onHover={setHoverRating} />
                 </div>
 
-                <div>
-                  <label style={{ display: 'block', color: '#d1d5db', marginBottom: '0.8rem', fontWeight: '700', fontSize: '1.05rem' }}>Tu Reseña <span style={{ color: '#9ca3af', fontWeight: 'normal', fontSize: '0.9rem' }}>(Opcional)</span></label>
+                <div className="reviews-section__form-group">
+                  <label className="reviews-section__form-label">Tu Reseña <span className="optional">(Opcional)</span></label>
                   <textarea 
                     value={reviewText}
                     onChange={(e) => setReviewText(e.target.value)}
                     placeholder="¿Qué te pareció la película? Escribe tu opinión aquí..."
                     maxLength={500}
                     rows={4}
-                    style={{ width: '100%', backgroundColor: 'rgba(0,0,0,0.2)', border: '1px solid #374151', borderRadius: '12px', color: '#fff', padding: '1.2rem', fontFamily: 'inherit', resize: 'vertical', outline: 'none', fontSize: '1rem', lineHeight: '1.5' }}
-                    onFocus={(e) => e.target.style.borderColor = '#f4e951'}
-                    onBlur={(e) => e.target.style.borderColor = '#374151'}
+                    className="reviews-section__form-textarea"
                   />
-                  <div style={{ textAlign: 'right', color: '#6b7280', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '600' }}>
+                  <div className="reviews-section__form-count">
                     {reviewText.length} / 500
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <div className="reviews-section__form-actions">
                   <button 
                     type="submit" 
                     disabled={isSubmitting || rating === 0}
-                    style={{ backgroundColor: (rating === 0 || isSubmitting) ? '#374151' : '#f4e951', color: (rating === 0 || isSubmitting) ? '#9ca3af' : '#000', padding: '1rem 3rem', borderRadius: '30px', fontWeight: '900', textTransform: 'uppercase', border: 'none', cursor: (rating === 0 || isSubmitting) ? 'not-allowed' : 'pointer', transition: 'all 0.2s', letterSpacing: '1px' }}
+                    className="reviews-section__form-submit"
                   >
                     {isSubmitting ? 'Procesando...' : 'Publicar'}
                   </button>
@@ -376,19 +368,19 @@ export const MovieDetailPage = () => {
           </div>
 
           <div>
-            <div style={{ display: 'flex', gap: '0.8rem', overflowX: 'auto', paddingBottom: '1rem', borderBottom: '1px solid #262932', marginBottom: '2rem', scrollbarWidth: 'none' }}>
-              <button onClick={() => setFilter('ALL')} style={{ background: filter === 'ALL' ? '#f4e951' : '#171a21', color: filter === 'ALL' ? '#000' : '#9ca3af', border: filter === 'ALL' ? 'none' : '1px solid #374151', padding: '0.7rem 1.5rem', borderRadius: '30px', fontWeight: '800', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s' }}>Todas ({reviewsData?.reviews.length || 0})</button>
-              <button onClick={() => setFilter('POSITIVE')} style={{ background: filter === 'POSITIVE' ? '#f4e951' : '#171a21', color: filter === 'POSITIVE' ? '#000' : '#9ca3af', border: filter === 'POSITIVE' ? 'none' : '1px solid #374151', padding: '0.7rem 1.5rem', borderRadius: '30px', fontWeight: '800', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s' }}>Positivas ({reviewsData?.stats.positive || 0})</button>
-              <button onClick={() => setFilter('NEUTRAL')} style={{ background: filter === 'NEUTRAL' ? '#f4e951' : '#171a21', color: filter === 'NEUTRAL' ? '#000' : '#9ca3af', border: filter === 'NEUTRAL' ? 'none' : '1px solid #374151', padding: '0.7rem 1.5rem', borderRadius: '30px', fontWeight: '800', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s' }}>Neutrales ({reviewsData?.stats.neutral || 0})</button>
-              <button onClick={() => setFilter('NEGATIVE')} style={{ background: filter === 'NEGATIVE' ? '#f4e951' : '#171a21', color: filter === 'NEGATIVE' ? '#000' : '#9ca3af', border: filter === 'NEGATIVE' ? 'none' : '1px solid #374151', padding: '0.7rem 1.5rem', borderRadius: '30px', fontWeight: '800', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s' }}>Negativas ({reviewsData?.stats.negative || 0})</button>
+            <div className="reviews-section__filters">
+              <button onClick={() => setFilter('ALL')} className={`reviews-section__filter-btn ${filter === 'ALL' ? 'reviews-section__filter-btn--active' : ''}`}>Todas ({reviewsData?.reviews.length || 0})</button>
+              <button onClick={() => setFilter('POSITIVE')} className={`reviews-section__filter-btn ${filter === 'POSITIVE' ? 'reviews-section__filter-btn--active' : ''}`}>Positivas ({reviewsData?.stats.positive || 0})</button>
+              <button onClick={() => setFilter('NEUTRAL')} className={`reviews-section__filter-btn ${filter === 'NEUTRAL' ? 'reviews-section__filter-btn--active' : ''}`}>Neutrales ({reviewsData?.stats.neutral || 0})</button>
+              <button onClick={() => setFilter('NEGATIVE')} className={`reviews-section__filter-btn ${filter === 'NEGATIVE' ? 'reviews-section__filter-btn--active' : ''}`}>Negativas ({reviewsData?.stats.negative || 0})</button>
             </div>
 
             {filteredReviews.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '4rem 0', color: '#6b7280', fontSize: '1.1rem' }}>
+              <div className="reviews-section__empty">
                 No hay reseñas escritas en esta categoría.
               </div>
             ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem', alignItems: 'start' }}>
+              <div className="reviews-section__grid">
                 {filteredReviews.map(r => <ReviewCard key={r.id} review={r} />)}
               </div>
             )}

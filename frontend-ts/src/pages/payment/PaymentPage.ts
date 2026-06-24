@@ -1,5 +1,6 @@
 import Block from '../../shared/lib/block/Block';
 import template from './PaymentPage.hbs?raw';
+import './PaymentPage.css';
 import { routerInstance } from '../../shared/lib/router/Router';
 import { authStore } from '../../shared/store/authStore';
 import { fetchScreeningSeats, processScreeningPurchase, type ScreeningSeatsResponse } from '../../features/catalog/catalogApi';

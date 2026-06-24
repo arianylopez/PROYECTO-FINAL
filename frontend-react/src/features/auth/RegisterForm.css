@@ -194,6 +194,14 @@
   margin-left: 0.25rem;
 }
 
+.register-form__link--forgot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -0.5rem;
+  font-size: 0.8rem;
+  margin-left: 0;
+}
+
 .register-form__link:hover {
   text-decoration: underline;
 }
@@ -218,7 +226,7 @@
   border: 1px solid rgba(244, 233, 81, 0.3);
 }
 
-.modal-overlay {
+.auth-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -232,7 +240,7 @@
   backdrop-filter: blur(4px); 
 }
 
-.modal-content {
+.auth-modal__content {
   background-color: #16181f;
   padding: 2.5rem;
   border-radius: 12px;
@@ -241,4 +249,93 @@
   color: #ffffff;
   border: 1px solid #2a2c36;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.auth-modal__title {
+  color: #f4e951;
+  margin-top: 0;
+}
+
+.auth-modal__title--error {
+  color: #ff4d4d;
+}
+
+.auth-modal__desc {
+  font-size: 0.9rem;
+  color: #e0e0e0;
+  margin-bottom: 1.5rem;
+}
+
+.auth-modal__desc--muted {
+  color: #a0a0a0;
+}
+
+.auth-modal__device {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #2a2c36;
+}
+
+.auth-modal__device-name {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: bold;
+}
+
+.auth-modal__device-date {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.auth-modal__btn-revoke {
+  background: #f4e951;
+  color: #000;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.auth-modal__btn-cancel {
+  margin-top: 1.5rem;
+  background: transparent;
+  color: white;
+  border: 1px solid #3d405b;
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.auth-modal__btn-cancel--muted {
+  color: #a0a0a0;
+  border: none;
+  margin-top: 1rem;
+}
+
+.register-form__demo-box {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #1a1d24;
+  border: 1px dashed #4285F4;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.register-form__demo-text {
+  font-size: 0.8rem;
+  color: #a0a0a0;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+.register-form__demo-link {
+  display: block;
+  text-decoration: none;
+  background-color: #4285F4;
+  color: white;
 }

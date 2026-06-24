@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { fetchMovieScreenings, fetchMovies, type MovieScreeningsResponse, type Screening, type Movie } from '../features/catalog/catalogApi';
 import { useAuthStore } from '../shared/store/authStore';
 import { TicketSelectionModal } from '../features/catalog/components/TicketSelectionModal';
+import './ScreeningSelection.css';
 
 export const ScreeningSelectionPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -111,121 +112,102 @@ export const ScreeningSelectionPage = () => {
     }
   };
 
-  if (isLoading) return <div style={{ minHeight: '70vh', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#f4e951', fontWeight: 'bold' }}>Cargando funciones y cartelera...</div>;
-  if (!data) return <div style={{ minHeight: '70vh', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#ffffff' }}>No se encontraron funciones asociadas.</div>;
+  if (isLoading) return <div className="screening-page__loading">Cargando funciones y cartelera...</div>;
+  if (!data) return <div className="screening-page__error">No se encontraron funciones asociadas.</div>;
 
   const { movie } = data;
 
   return (
-    <div style={{ color: '#ffffff', minHeight: '100vh', maxWidth: '1400px', margin: '0 auto', padding: '2rem' }}>
+    <div className="screening-page">
       
-      <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', backgroundColor: '#171a21', padding: '2rem', borderRadius: '16px', border: '1px solid #262932', marginBottom: '2.5rem' }}>
-        <img src={movie.poster_url} alt={movie.title} style={{ width: '90px', borderRadius: '8px', boxShadow: '0 8px 16px rgba(0,0,0,0.4)' }} />
+      <div className="movie-banner">
+        <img src={movie.poster_url} alt={movie.title} className="movie-banner__poster" />
         <div>
-          <h1 style={{ margin: '0 0 0.5rem 0', fontSize: '2rem', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '-1px' }}>{movie.title}</h1>
-          <div style={{ display: 'flex', gap: '1rem', color: '#9ca3af', fontWeight: '700', fontSize: '0.85rem', alignItems: 'center' }}>
-            <span style={{ border: '1px solid #4b5563', padding: '0.15rem 0.5rem', borderRadius: '4px', color: '#fff' }}>{movie.rating_classification}</span>
+          <h1 className="movie-banner__title">{movie.title}</h1>
+          <div className="movie-banner__meta">
+            <span className="movie-banner__rating">{movie.rating_classification}</span>
             <span>{Math.floor(movie.duration_minutes / 60)}h {movie.duration_minutes % 60}m</span>
           </div>
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', borderBottom: '1px solid #262932', paddingBottom: '1.25rem', marginBottom: '2rem' }}>
+      <div className="date-slider">
+        <button onClick={() => handleScrollSlider('L')} className="date-slider__nav">‹</button>
         
-        
-        <button onClick={() => handleScrollSlider('L')} style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: '1.5rem', cursor: 'pointer' }}>‹</button>
-        
-        <div style={{ display: 'flex', gap: '0.6rem', overflowX: 'auto', scrollbarWidth: 'none' }}>
+        <div className="date-slider__list">
           {availableDates.map(date => (
             <button 
               key={date} onClick={() => { setSelectedDate(date); setActiveScreening(null); }}
-              style={{
-                backgroundColor: selectedDate === date ? '#f4e951' : '#171a21',
-                color: selectedDate === date ? '#0f1115' : '#ffffff',
-                border: selectedDate === date ? 'none' : '1px solid #374151',
-                padding: '0.75rem 1.5rem', borderRadius: '6px', fontWeight: '800', fontSize: '0.85rem', cursor: 'pointer', whiteSpace: 'nowrap'
-              }}
+              className={`date-slider__btn ${selectedDate === date ? 'date-slider__btn--active' : ''}`}
             >
               {date}
             </button>
           ))}
         </div>
         
-        <button onClick={() => handleScrollSlider('R')} style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: '1.5rem', cursor: 'pointer' }}>›</button>
+        <button onClick={() => handleScrollSlider('R')} className="date-slider__nav">›</button>
       </div>
 
-      <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '2.5rem' }}>
+      <div className="formats-filter">
         {formatsList.map(fmt => (
           <button 
             key={fmt} onClick={() => { setSelectedFormat(fmt); setActiveScreening(null); }}
-            style={{
-              backgroundColor: selectedFormat === fmt ? 'rgba(244, 233, 81, 0.1)' : 'transparent',
-              border: selectedFormat === fmt ? '1px solid #f4e951' : '1px solid #374151',
-              color: selectedFormat === fmt ? '#f4e951' : '#9ca3af',
-              padding: '0.4rem 1.25rem', borderRadius: '20px', fontSize: '0.9rem', fontWeight: '700', cursor: 'pointer'
-            }}
+            className={`formats-filter__btn ${selectedFormat === fmt ? 'formats-filter__btn--active' : ''}`}
           >
             {fmt}
           </button>
         ))}
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+      <div className="rooms-list">
         {Object.keys(roomsFiltered).length === 0 ? (
-          <div style={{ padding: '4rem 2rem', textAlign: 'center', backgroundColor: '#171a21', borderRadius: '12px', border: '1px solid #262932' }}>
-            <p style={{ color: '#9ca3af', margin: 0, fontSize: '1.1rem' }}>No hay funciones que coincidan con los filtros seleccionados para este día.</p>
+          <div className="rooms-list__empty">
+            <p className="rooms-list__empty-text">No hay funciones que coincidan con los filtros seleccionados para este día.</p>
           </div>
         ) : (
           Object.entries(roomsFiltered).map(([roomName, screenings]) => (
-            <div key={roomName} style={{ backgroundColor: '#171a21', padding: '2rem', borderRadius: '16px', border: '1px solid #262932', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <div>
-                <h3 style={{ fontSize: '1.3rem', fontWeight: '800', margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+            <div key={roomName} className="room-card">
+              <div className="room-card__header">
+                <h3 className="room-card__title">
                   {roomName}
-                  <span style={{ backgroundColor: '#262932', color: '#f4e951', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>{screenings[0].format}</span>
+                  <span className="room-card__format-badge">{screenings[0].format}</span>
                 </h3>
-                <div style={{ display: 'flex', gap: '1.25rem', color: '#9ca3af', fontSize: '0.85rem', fontWeight: '600' }}>
+                <div className="room-card__features">
                   <span>✓ Asientos Numerados</span>
                   <span>✓ Accesibilidad ♿</span>
                   <span>✓ {screenings[0].language}</span>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '2rem', borderTop: '1px solid #262932', paddingTop: '1.5rem' }}>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+              <div className="room-card__times">
                   {screenings.map(sc => (
                     <button 
                       key={sc.id} onClick={() => handleOpenTicketModal(sc)}
-                      style={{
-                        backgroundColor: '#0f1115', border: '1px solid #4b5563', color: '#ffffff',
-                        padding: '0.75rem 1.75rem', borderRadius: '8px', fontSize: '1.1rem', fontWeight: '800', cursor: 'pointer', transition: 'all 0.2s'
-                      }}
-                      onMouseOver={(e) => { e.currentTarget.style.borderColor = '#f4e951'; e.currentTarget.style.color = '#f4e951'; }}
-                      onMouseOut={(e) => { e.currentTarget.style.borderColor = '#4b5563'; e.currentTarget.style.color = '#ffffff'; }}
+                      className="time-btn"
                     >
                       {new Date(sc.start_time).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
                     </button>
                   ))}
-                </div>
               </div>
             </div>
           ))
         )}
       </div>
 
-      <section style={{ marginTop: '6rem', borderTop: '1px solid #262932', paddingTop: '3rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.8rem', fontWeight: '900', margin: 0, letterSpacing: '0.5px' }}>PRÓXIMAMENTE</h2>
-          <span style={{ color: '#f4e951', fontWeight: 'bold', fontSize: '1rem', cursor: 'pointer', textDecoration: 'underline' }}>Ver todas</span>
+      <section className="upcoming-section">
+        <div className="upcoming-section__header">
+          <h2 className="upcoming-section__title">PRÓXIMAMENTE</h2>
+          <span className="upcoming-section__link">Ver todas</span>
         </div>
 
-        <div style={{ position: 'relative', width: '100%' }}>
-          <div ref={sliderRef} style={{ display: 'flex', gap: '1.5rem', overflowX: 'auto', scrollBehavior: 'smooth', paddingBottom: '1rem' }}>
+        <div className="upcoming-slider">
+          <div ref={sliderRef} className="upcoming-slider__track">
             {upcomingMovies.map(upMovie => (
-              <div key={upMovie.id} onClick={() => { navigate(`/movie/${upMovie.id}`); window.scrollTo(0,0); }} style={{ flex: '0 0 auto', width: '210px', cursor: 'pointer' }}>
-                <img src={upMovie.poster_url} alt={upMovie.title} style={{ width: '100%', height: '310px', objectFit: 'cover', borderRadius: '12px', boxShadow: '0 10px 20px rgba(0,0,0,0.6)', marginBottom: '0.8rem' }} />
-                <h4 style={{ margin: '0 0 0.3rem 0', fontSize: '1.05rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{upMovie.title}</h4>
-                <p style={{ margin: '0 0 0.2rem 0', fontSize: '0.8rem', color: '#9ca3af' }}>{upMovie.genres.slice(0, 2).join(', ')}</p>
-                <p style={{ margin: 0, fontSize: '0.8rem', color: '#f4e951', fontWeight: 'bold' }}>Estreno: {new Date(upMovie.release_date).getFullYear()}</p>
+              <div key={upMovie.id} onClick={() => { navigate(`/movie/${upMovie.id}`); window.scrollTo(0,0); }} className="upcoming-card">
+                <img src={upMovie.poster_url} alt={upMovie.title} className="upcoming-card__poster" />
+                <h4 className="upcoming-card__title">{upMovie.title}</h4>
+                <p className="upcoming-card__genres">{upMovie.genres.slice(0, 2).join(', ')}</p>
+                <p className="upcoming-card__release">Estreno: {new Date(upMovie.release_date).getFullYear()}</p>
               </div>
             ))}
           </div>
