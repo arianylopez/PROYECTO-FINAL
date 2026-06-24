@@ -4,6 +4,9 @@ Proyecto Final de Aplicaciones Web — Plataforma de Servicios
 ## Documentación del Proyecto
 
 
+https://cinemaplus2026.mooo.com/home 
+
+
 ### 1. Modelo C4 
 
 **C1 — Diagrama de contexto**
@@ -57,8 +60,6 @@ Proyecto Final de Aplicaciones Web — Plataforma de Servicios
 
 <img width="3113" height="2718" alt="diagrama_despliegue" src="https://github.com/user-attachments/assets/f3bd7dcc-dd7a-4e9e-9f23-c4134b4e4888" />
 
-
-### 5. Tabla de Trazabilidad
 
 ## Figma del Proyecto
 
