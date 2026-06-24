@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchMovies, type Movie } from '../catalogApi';
 
 export const FeaturedHero = () => {
   const [featuredMovie, setFeaturedMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getFeatured = async () => {
@@ -76,7 +78,9 @@ export const FeaturedHero = () => {
         </p>
         
         <div style={{ display: 'flex', gap: '1.25rem' }}>
-          <button style={{ 
+          <button 
+            onClick={() => navigate(`/movie/${featuredMovie.id}`)}
+            style={{ 
             background: '#f4e951', 
             color: '#0f1115', 
             border: 'none', 
