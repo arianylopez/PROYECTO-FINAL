@@ -42,21 +42,17 @@ export class HomePage extends Block {
   }
 
   protected async componentDidMount() {
-    // 1. Initial State from URL
     const urlParams = new URLSearchParams(window.location.search);
     const q = urlParams.get('q') || '';
     const genre = urlParams.get('genre') || 'Todas';
     this.setProps({ searchQuery: q, selectedGenre: genre });
 
-    // 2. Fetch Initial Data concurrently
     this.fetchFeaturedHero();
     this.fetchGenres();
     this.fetchRecs();
     
-    // 3. Load Movies
     await this.loadMovies(1, true, q, genre);
 
-    // Watch authStore changes for recommendations
     authStore.on('changed', () => {
       this.fetchRecs();
     });
@@ -157,7 +153,6 @@ export class HomePage extends Block {
     }
   }
 
-  // Detect URL parameter changes and reload catalog
   public updateUrlParams() {
     const urlParams = new URLSearchParams(window.location.search);
     const q = urlParams.get('q') || '';
@@ -176,7 +171,6 @@ export class HomePage extends Block {
         const genre = target.value;
         this.setProps({ selectedGenre: genre, page: 1 });
         
-        // Update URL
         const newParams = new URLSearchParams(window.location.search);
         if (genre !== 'Todas') newParams.set('genre', genre);
         else newParams.delete('genre');
@@ -190,7 +184,6 @@ export class HomePage extends Block {
     click: async (e: Event) => {
       const target = e.target as HTMLElement;
 
-      // Handle navigate links inside cards
       const navigateElement = target.closest('[data-navigate]');
       if (navigateElement) {
         const path = navigateElement.getAttribute('data-navigate');
@@ -198,7 +191,6 @@ export class HomePage extends Block {
         return;
       }
 
-      // Handle Load More
       if (target.id === 'load-more-btn') {
         if (this.props.isFetchingMore) return;
         const nextPage = this.props.page + 1;
@@ -207,7 +199,6 @@ export class HomePage extends Block {
         return;
       }
 
-      // Handle Clear Filters
       if (target.id === 'clear-filters-btn') {
         this.setProps({ selectedGenre: 'Todas', searchQuery: '', page: 1 });
         window.history.pushState({}, '', '/home');
@@ -215,13 +206,11 @@ export class HomePage extends Block {
         return;
       }
 
-      // Handle Retry
       if (target.id === 'retry-btn') {
         this.loadMovies(1, true, this.props.searchQuery, this.props.selectedGenre);
         return;
       }
 
-      // Handle Dismiss Recommendation
       const dismissBtn = target.closest('.dismiss-btn');
       if (dismissBtn) {
         e.stopPropagation();
@@ -231,7 +220,6 @@ export class HomePage extends Block {
         if (movieId && state.user) {
           try {
             await markNotInterested(movieId, state.user.id);
-            // Optimistic UI update
             const newRecs = { ...this.props.recs };
             newRecs.items = newRecs.items.filter((i: any) => i.id !== movieId);
             this.setProps({ 
@@ -245,7 +233,6 @@ export class HomePage extends Block {
         return;
       }
 
-      // Carousel Navigation
       if (target.closest('#recs-prev')) {
         const carousel = this.element?.querySelector('#recs-carousel');
         if (carousel) carousel.scrollBy({ left: -300, behavior: 'smooth' });

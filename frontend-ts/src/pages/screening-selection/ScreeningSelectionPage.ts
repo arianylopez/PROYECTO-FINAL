@@ -78,7 +78,6 @@ export class ScreeningSelectionPage extends Block {
   }
 
   private processData(data: MovieScreeningsResponse, upcoming: any[]) {
-    // 1. Group by Date
     const groupedByDate: Record<string, Screening[]> = {};
     data.screenings.forEach(sc => {
       const dateObj = new Date(sc.start_time);
@@ -97,11 +96,9 @@ export class ScreeningSelectionPage extends Block {
     const availableDates = Object.keys(groupedByDate);
     const selectedDate = availableDates.length > 0 ? availableDates[0] : '';
 
-    // 2. Formats list
     const uniqueFormats = new Set(data.screenings.map(s => s.format));
     const formatsList = ['Todos', ...Array.from(uniqueFormats)];
 
-    // 3. Set basic props
     const durationMins = data.movie.duration_minutes;
     const durationString = `${Math.floor(durationMins / 60)}h ${durationMins % 60}m`;
 
@@ -117,14 +114,12 @@ export class ScreeningSelectionPage extends Block {
       selectedFormat: 'Todos'
     });
 
-    // 4. Compute rooms
     this.computeRooms(groupedByDate, selectedDate, 'Todos');
   }
 
   private computeRooms(groupedByDate: Record<string, Screening[]> | null, date: string, format: string) {
     if (!this.props.data) return;
 
-    // We must rebuild groupedByDate because we don't store it in props directly to save complex state
     const data: MovieScreeningsResponse = this.props.data;
     const grouped: Record<string, Screening[]> = {};
     data.screenings.forEach(sc => {
@@ -170,7 +165,6 @@ export class ScreeningSelectionPage extends Block {
     const sc = data.screenings.find(s => s.id === screeningId);
     if (!sc) return;
 
-    // Store active screening for later
     (this as any)._activeScreening = sc;
 
     const timeStr = new Date(sc.start_time).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
@@ -207,7 +201,6 @@ export class ScreeningSelectionPage extends Block {
     click: (e: Event) => {
       const target = e.target as HTMLElement;
 
-      // Select Date
       if (target.classList.contains('date-tab')) {
         const date = target.getAttribute('data-date');
         if (date && date !== this.props.selectedDate) {
@@ -217,7 +210,6 @@ export class ScreeningSelectionPage extends Block {
         return;
       }
 
-      // Select Format
       if (target.classList.contains('format-tab')) {
         const format = target.getAttribute('data-format');
         if (format && format !== this.props.selectedFormat) {
@@ -227,7 +219,6 @@ export class ScreeningSelectionPage extends Block {
         return;
       }
 
-      // Scroll Dates
       if (target.id === 'scroll-left-dates') {
         const c = this.element?.querySelector('#dates-container');
         if (c) c.scrollBy({ left: -200, behavior: 'smooth' });
@@ -239,7 +230,6 @@ export class ScreeningSelectionPage extends Block {
         return;
       }
 
-      // Scroll Upcoming
       if (target.closest('.upcoming-card')) {
         const nav = target.closest('.upcoming-card')?.getAttribute('data-navigate');
         if (nav) {
@@ -249,7 +239,6 @@ export class ScreeningSelectionPage extends Block {
         return;
       }
 
-      // Open Ticket Modal
       if (target.classList.contains('screening-time-btn')) {
         const id = target.getAttribute('data-id');
         if (id) {

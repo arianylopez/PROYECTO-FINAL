@@ -1,5 +1,5 @@
 import Block from '../../shared/lib/block/Block';
-import '../login/LoginPage.css'; // Reutiliza tu hoja de estilos unificada
+import '../login/LoginPage.css'; 
 import { routerInstance } from '../../shared/lib/router/Router';
 import template from './ForgotPasswordPage.hbs?raw';
 import { authApi } from '../../shared/api/authApi';
@@ -28,7 +28,6 @@ export class ForgotPasswordPage extends Block {
     click: (e: Event) => {
       const target = e.target as HTMLElement;
 
-      // Navegación SPA unificada a través del atributo data-navigate
       const navigateRoute = target.closest('[data-navigate]')?.getAttribute('data-navigate');
       if (navigateRoute) {
         e.preventDefault();
@@ -46,9 +45,6 @@ export class ForgotPasswordPage extends Block {
     }
   };
 
-  /**
-   * MOLDE INTERACTIVO: Envío de solicitud de recuperación
-   */
   private async handleForgotSubmit(form: HTMLFormElement) {
     const emailInput = form.querySelector('#forgot-email') as HTMLInputElement;
     if (!emailInput) return;

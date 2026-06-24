@@ -37,7 +37,6 @@ export class SeatSelectionPage extends Block {
 
   protected async componentDidMount() {
     const parts = window.location.pathname.split('/');
-    // Example: /booking/123/seats
     this.screeningId = parts[2];
 
     if (!this.screeningId) {
@@ -117,7 +116,7 @@ export class SeatSelectionPage extends Block {
         t = 0;
         clearInterval(this.timerInterval);
         this.setProps({ lockTimer: 0, hasActiveReservation: false, selectedSeats: [] });
-        this.loadSeatsData(); // reload completely
+        this.loadSeatsData(); 
       } else {
         this.setProps({ lockTimer: t });
         this.updateTimerFormatted();
@@ -131,7 +130,6 @@ export class SeatSelectionPage extends Block {
     const mins = Math.floor(t / 60);
     const secs = t % 60;
     const formatted = `${mins}:${secs.toString().padStart(2, '0')}`;
-    // Directly update DOM if possible for performance, but setProps is okay here.
     const timerDisplay = this.element?.querySelector('#lock-timer-display');
     if (timerDisplay) {
       timerDisplay.innerHTML = formatted;
@@ -319,7 +317,6 @@ export class SeatSelectionPage extends Block {
     click: (e: Event) => {
       const target = e.target as HTMLElement;
 
-      // Seat toggle
       const seatItem = target.closest('.seat-item');
       if (seatItem) {
         const id = seatItem.getAttribute('data-id');
@@ -329,7 +326,6 @@ export class SeatSelectionPage extends Block {
         return;
       }
 
-      // Buttons
       if (target.id === 'btn-lock-seats') {
         if (!target.hasAttribute('disabled')) {
           this.handleLockSeats();

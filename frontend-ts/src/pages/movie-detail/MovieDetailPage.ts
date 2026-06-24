@@ -174,7 +174,6 @@ export class MovieDetailPage extends Block {
     click: async (e: Event) => {
       const target = e.target as HTMLElement;
 
-      // Buy Tickets
       if (target.id === 'btn-buy-ticket') {
         if (!this.props.user) {
           routerInstance.go(`/login`);
@@ -184,7 +183,6 @@ export class MovieDetailPage extends Block {
         return;
       }
 
-      // Watchlist
       const watchlistBtn = target.closest('#btn-watchlist');
       if (watchlistBtn) {
         if (!this.props.user) {
@@ -200,7 +198,6 @@ export class MovieDetailPage extends Block {
         return;
       }
 
-      // Filters
       if (target.classList.contains('review-filter-btn')) {
         const filter = target.getAttribute('data-filter') || 'ALL';
         this.setProps({
@@ -210,7 +207,6 @@ export class MovieDetailPage extends Block {
         return;
       }
 
-      // Expand Review
       if (target.classList.contains('review-card__more-btn')) {
         const id = target.getAttribute('data-review-id');
         const newReviews = this.props.filteredReviews.map((r: any) => {
@@ -228,13 +224,11 @@ export class MovieDetailPage extends Block {
         return;
       }
 
-      // Login Prompt
       if (target.id === 'login-prompt-btn') {
         routerInstance.go('/login');
         return;
       }
 
-      // Submit Review
       if (target.id === 'submit-review-btn') {
         if (this.props.rating === 0) {
           this.setProps({ reviewErrorMsg: "Debes calificar la película antes de escribir una reseña." });
@@ -306,7 +300,7 @@ export class MovieDetailPage extends Block {
     input: (e: Event) => {
       const target = e.target as HTMLTextAreaElement;
       if (target.id === 'review-textarea') {
-        this.props.reviewText = target.value; // Store silently
+        this.props.reviewText = target.value; 
       }
     }
   };

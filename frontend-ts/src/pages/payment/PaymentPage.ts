@@ -150,7 +150,7 @@ export class PaymentPage extends Block {
         this.updateBtnState();
       }
       if (target.id === 'card-name') {
-        this.props.cardName = target.value; // silent store
+        this.props.cardName = target.value; 
       }
     },
     focusout: (e: Event) => {

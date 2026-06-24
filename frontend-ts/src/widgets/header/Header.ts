@@ -32,7 +32,6 @@ export class Header extends Block {
 
     document.addEventListener('mousedown', this.clickOutsideHandler);
 
-    // Parse query params to set initial search query
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('q')) {
       this.setProps({ searchQuery: urlParams.get('q') || '' });
@@ -120,8 +119,6 @@ export class Header extends Block {
       const target = e.target as HTMLInputElement;
       if (target.id === 'search-input') {
         const val = target.value;
-        // DO NOT update this.props.searchQuery here to prevent innerHTML re-render and focus loss!
-        // Just dispatch the route update so HomePage picks it up
         if (val.trim()) {
           routerInstance.go(`/home?q=${encodeURIComponent(val.trim())}`);
         } else {

@@ -35,7 +35,6 @@ export class RegisterPage extends Block {
     click: (e: Event) => {
       const target = e.target as HTMLElement;
 
-      // Navegación nativa con routerInstance
       const navigateRoute = target.closest('[data-navigate]')?.getAttribute('data-navigate');
       if (navigateRoute) {
         e.preventDefault();
@@ -43,20 +42,17 @@ export class RegisterPage extends Block {
         return;
       }
 
-      // Registro con Google OAuth
       if (target.closest('#reg-google-btn')) {
         e.preventDefault();
         this.registerWithGoogleMock();
         return;
       }
 
-      // Cerrar modal flotante
       if (target.closest('[data-close-modal]')) {
         this.setProps({ showBirthModal: false, modalError: '' });
         return;
       }
 
-      // Finalizar flujo desde el modal de Google
       if (target.closest('#finalizar-registro-btn')) {
         this.handleGoogleRegisterCompleteMock();
         return;
@@ -72,9 +68,6 @@ export class RegisterPage extends Block {
     }
   };
 
-  /**
-   * MOLDE: Envío del formulario tradicional de registro
-   */
   private decodeJWT(token: string) {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');

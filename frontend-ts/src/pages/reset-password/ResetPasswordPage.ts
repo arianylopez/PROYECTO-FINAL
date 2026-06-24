@@ -26,7 +26,6 @@ export class ResetPasswordPage extends Block {
     click: (e: Event) => {
       const target = e.target as HTMLElement;
 
-      // Navegación nativa SPA
       const navigateRoute = target.closest('[data-navigate]')?.getAttribute('data-navigate');
       if (navigateRoute) {
         e.preventDefault();
@@ -44,9 +43,6 @@ export class ResetPasswordPage extends Block {
     }
   };
 
-  /**
-   * MOLDE INTERACTIVO: Envío del cambio de contraseña
-   */
   private async handleResetSubmit(form: HTMLFormElement) {
     const passwordInput = form.querySelector('#reset-password') as HTMLInputElement;
     if (!passwordInput) return;

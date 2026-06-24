@@ -21,7 +21,6 @@ export class LoginPage extends Block {
   protected template = template;
 
   constructor(props: LoginPageProps = {}) {
-    // Leemos los parámetros nativos del navegador para clonar el comportamiento de React
     const searchParams = new URLSearchParams(window.location.search);
     const fromCheckout = searchParams.get('from') === 'checkout';
     
