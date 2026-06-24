@@ -57,6 +57,7 @@ export class Router {
     }
     this._currentRoute = route;
     route.render();
+    window.scrollTo(0, 0);
   }
 
   go(pathname: string) {

@@ -115,17 +115,7 @@ export class Header extends Block {
         return;
       }
     },
-    input: (e: Event) => {
-      const target = e.target as HTMLInputElement;
-      if (target.id === 'search-input') {
-        const val = target.value;
-        if (val.trim()) {
-          routerInstance.go(`/home?q=${encodeURIComponent(val.trim())}`);
-        } else {
-          routerInstance.go('/home');
-        }
-      }
-    },
+
     submit: (e: Event) => {
       const form = e.target as HTMLFormElement;
       if (form.id === 'search-form') {

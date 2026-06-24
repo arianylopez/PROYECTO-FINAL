@@ -17,6 +17,7 @@ import {
 export class MovieDetailPage extends Block {
   protected template = template;
   private movieId: string = '';
+  private _rating: number = 0;
 
   constructor(props = {}) {
     super({
@@ -31,12 +32,10 @@ export class MovieDetailPage extends Block {
       filteredReviews: [],
       reviewFilter: 'ALL',
       
-      rating: 0,
-      hoverRating: 0,
-      reviewText: '',
       isSubmitting: false,
       reviewErrorMsg: '',
-      user: null
+      user: null,
+      reviewTextLength: 0
     });
   }
 
@@ -95,6 +94,7 @@ export class MovieDetailPage extends Block {
         avg_score_formatted: '0.0',
         total_ratings: 0,
         posPct: 0, neuPct: 0, negPct: 0,
+        total_pos: 0, total_neu: 0, total_neg: 0, total_all: 0,
         sentiment_label: 'Sin Calificaciones',
         stars_html: this.generateStarsHtml(0)
       };
@@ -114,6 +114,10 @@ export class MovieDetailPage extends Block {
       avg_score_formatted: s.avg_score.toFixed(1),
       total_ratings: s.total_ratings,
       posPct, neuPct, negPct,
+      total_pos: s.positive,
+      total_neu: s.neutral,
+      total_neg: s.negative,
+      total_all: s.total_ratings,
       sentiment_label: label,
       stars_html: this.generateStarsHtml(Math.round(s.avg_score))
     };
@@ -170,9 +174,35 @@ export class MovieDetailPage extends Block {
     return html;
   }
 
+  private updateStarsDOM(rating: number, hover: number) {
+    const stars = this.element?.querySelectorAll('.star-btn');
+    if (!stars) return;
+    
+    stars.forEach((starBtn) => {
+      const i = parseInt(starBtn.getAttribute('data-star') || '0', 10);
+      const active = (hover || rating) >= i;
+      const color = active ? '#f4e951' : '#374151';
+      const fill = active ? 'currentColor' : 'none';
+      
+      (starBtn as HTMLElement).style.color = color;
+      const svg = starBtn.querySelector('svg');
+      if (svg) {
+        svg.setAttribute('fill', fill);
+      }
+    });
+  }
+
   protected events = {
     click: async (e: Event) => {
       const target = e.target as HTMLElement;
+
+      const starBtn = target.closest('.star-btn');
+      if (starBtn) {
+        const star = parseInt(starBtn.getAttribute('data-star') || '0', 10);
+        this._rating = star;
+        this.updateStarsDOM(star, 0);
+        return;
+      }
 
       if (target.id === 'btn-buy-ticket') {
         if (!this.props.user) {
@@ -228,27 +258,35 @@ export class MovieDetailPage extends Block {
         routerInstance.go('/login');
         return;
       }
+    },
 
-      if (target.id === 'submit-review-btn') {
-        if (this.props.rating === 0) {
+    submit: async (e: Event) => {
+      const form = e.target as HTMLFormElement;
+      if (form.id === 'review-form') {
+        e.preventDefault();
+        
+        if (this._rating === 0) {
           this.setProps({ reviewErrorMsg: "Debes calificar la película antes de escribir una reseña." });
           return;
         }
         this.setProps({ isSubmitting: true, reviewErrorMsg: '' });
+        
+        const textarea = this.element?.querySelector('#review-textarea') as HTMLTextAreaElement;
+        const reviewText = textarea ? textarea.value : '';
+
         try {
-          await submitMovieRating(this.movieId, this.props.user.id, this.props.user.name || 'Usuario', this.props.rating);
-          if (this.props.reviewText.trim().length > 0) {
-            await submitMovieReview(this.movieId, this.props.user.id, this.props.user.name || 'Usuario', this.props.reviewText.trim());
+          await submitMovieRating(this.movieId, this.props.user.id, this.props.user.name || 'Usuario', this._rating);
+          if (reviewText.trim().length > 0) {
+            await submitMovieReview(this.movieId, this.props.user.id, this.props.user.name || 'Usuario', reviewText.trim());
           }
           
           const updatedReviews = await fetchMovieReviews(this.movieId);
+          this._rating = 0;
           this.setProps({
             reviewsData: updatedReviews,
             reviewsStats: this.computeReviewStats(updatedReviews),
             filteredReviews: this.computeFilteredReviews(updatedReviews.reviews, this.props.reviewFilter),
-            rating: 0,
-            hoverRating: 0,
-            reviewText: '',
+            reviewTextLength: 0,
             formStarsHtml: this.generateFormStarsHtml(0, 0),
             isSubmitting: false
           });
@@ -258,7 +296,6 @@ export class MovieDetailPage extends Block {
             isSubmitting: false
           });
         }
-        return;
       }
     },
 
@@ -267,10 +304,7 @@ export class MovieDetailPage extends Block {
       const starBtn = target.closest('.star-btn');
       if (starBtn) {
         const star = parseInt(starBtn.getAttribute('data-star') || '0', 10);
-        this.setProps({ 
-          hoverRating: star,
-          formStarsHtml: this.generateFormStarsHtml(this.props.rating, star)
-        });
+        this.updateStarsDOM(this._rating, star);
       }
     },
 
@@ -278,29 +312,15 @@ export class MovieDetailPage extends Block {
       const target = e.target as HTMLElement;
       const starBtn = target.closest('.star-btn');
       if (starBtn) {
-        this.setProps({ 
-          hoverRating: 0,
-          formStarsHtml: this.generateFormStarsHtml(this.props.rating, 0)
-        });
-      }
-    },
-
-    mousedown: (e: Event) => {
-      const target = e.target as HTMLElement;
-      const starBtn = target.closest('.star-btn');
-      if (starBtn) {
-        const star = parseInt(starBtn.getAttribute('data-star') || '0', 10);
-        this.setProps({ 
-          rating: star,
-          formStarsHtml: this.generateFormStarsHtml(star, this.props.hoverRating)
-        });
+        this.updateStarsDOM(this._rating, 0);
       }
     },
 
     input: (e: Event) => {
       const target = e.target as HTMLTextAreaElement;
       if (target.id === 'review-textarea') {
-        this.props.reviewText = target.value; 
+        const countSpan = this.element?.querySelector('#review-char-count');
+        if (countSpan) countSpan.textContent = target.value.length.toString();
       }
     }
   };
