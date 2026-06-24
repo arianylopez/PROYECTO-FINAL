@@ -22,7 +22,15 @@ async def get_recommendations(user_id: Optional[str] = None, mongo_db = Depends(
     if user_id:
         cached_recs = redis_client.get(f"recs:{user_id}")
         if cached_recs:
-            return json.loads(cached_recs)
+            recs_data = json.loads(cached_recs)
+            active_check_query = text("SELECT id FROM catalog_movie WHERE is_active = true")
+            active_ids = {str(row[0]) for row in pg_db.execute(active_check_query).fetchall()}
+            
+            valid_items = [item for item in recs_data.get("items", []) if str(item["id"]) in active_ids]
+            if len(valid_items) == len(recs_data.get("items", [])):
+                return recs_data
+            else:
+                redis_client.delete(f"recs:{user_id}")
 
     movies_query = text("""
         SELECT 
