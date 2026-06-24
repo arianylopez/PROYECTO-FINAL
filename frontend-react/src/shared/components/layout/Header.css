@@ -1,4 +1,3 @@
-/* Header.css */
 .header {
   position: sticky;
   top: 1rem;
@@ -35,42 +34,15 @@
   text-transform: uppercase;
 }
 
-.header__desktop-nav {
-  display: flex;
-  gap: 1.8rem;
-}
-
-.header__nav-item {
-  background: none;
-  border: none;
-  color: #d1d5db;
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  padding: 0.5rem 0;
-  position: relative;
-  transition: color 0.2s ease;
-}
-
-.header__nav-item:hover, .header__nav-item--active {
-  color: #ffffff;
-}
-
-.header__nav-item--active::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 24px;
-  height: 3px;
-  background-color: #f4e951;
-  border-radius: 4px;
-}
-
 .header__search {
   display: flex;
   align-items: center;
+}
+
+.header__search-form {
+  overflow: hidden;
+  display: flex;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .header__icon-btn {
@@ -87,12 +59,6 @@
 
 .header__icon-btn:hover {
   color: #f4e951;
-}
-
-.header__search-form {
-  overflow: hidden;
-  display: flex;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .header__search-input {
@@ -257,6 +223,13 @@
   transform: scale(1.03);
 }
 
+.header__login-btn--mobile {
+  width: 100%;
+  justify-content: center;
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
 .header__mobile-toggle {
   display: none;
   background: none;
@@ -326,17 +299,31 @@
 }
 
 @media (max-width: 968px) {
-  .header__desktop-nav { display: none; }
-  .header__user-menu { display: none; }
-  .header__divider { display: none; }
-  .header__login-btn { display: none; }
-  .header__mobile-toggle { display: block; }
-  .header__search { margin-right: 0.5rem; }
-  .header__logo { margin-right: 0; }
+  .header__user-menu,
+  .header__divider,
+  .header__login-btn {
+    display: none;
+  }
+  .header__mobile-toggle {
+    display: block;
+  }
+  .header__search {
+    margin-right: 0.5rem;
+  }
+  .header__logo {
+    margin-right: 0;
+  }
 }
 
 @media (max-width: 480px) {
-  .header__pill { padding: 0 1rem; }
-  .header__logo { font-size: 0; } 
-  .header__logo::after { content: 'C+'; font-size: 1.4rem; }
+  .header__pill {
+    padding: 0 1rem;
+  }
+  .header__logo {
+    font-size: 0;
+  }
+  .header__logo::after {
+    content: 'C+';
+    font-size: 1.4rem;
+  }
 }

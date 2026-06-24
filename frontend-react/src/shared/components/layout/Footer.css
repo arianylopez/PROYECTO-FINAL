@@ -20,7 +20,6 @@
   font-size: 1.5rem;
   font-weight: 900;
   margin-bottom: 1rem;
-  margin-top: 0;
 }
 
 .footer__brand-desc {
@@ -32,7 +31,6 @@
   color: #ffffff;
   margin-bottom: 1.2rem;
   font-size: 1.1rem;
-  margin-top: 0;
 }
 
 .footer__links-list {
@@ -59,8 +57,4 @@
   border-top: 1px solid #1f222b;
   padding-top: 2rem;
   font-size: 0.85rem;
-}
-
-.footer__bottom p {
-  margin: 0;
 }
