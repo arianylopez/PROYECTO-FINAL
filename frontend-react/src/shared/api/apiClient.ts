@@ -20,7 +20,7 @@ apiClient.interceptors.response.use(
         useAuthStore.getState().updateToken(newToken);
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return apiClient(originalRequest);
-      } catch (refreshError) {
+      } catch {
         useAuthStore.getState().logout();
         window.location.href = '/login';
       }

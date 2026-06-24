@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../shared/store/authStore';
 import './Ticket.css';
@@ -6,17 +6,16 @@ import './Ticket.css';
 export const TicketPage = () => {
   const navigate = useNavigate();
   const { user } = useAuthStore();
-  const [purchaseData, setPurchaseData] = useState<any>(null);
+  const purchaseData = useMemo(() => {
+    const td = sessionStorage.getItem('ticketData');
+    return td ? JSON.parse(td) : null;
+  }, []);
 
   useEffect(() => {
-    const td = sessionStorage.getItem('ticketData');
-    if (!td) { 
+    if (!purchaseData) { 
       navigate('/home'); 
-      return; 
     }
-    
-    setPurchaseData(JSON.parse(td));
-  }, [navigate]);
+  }, [purchaseData, navigate]);
 
   if (!purchaseData) return <div className="ticket-page"></div>;
 

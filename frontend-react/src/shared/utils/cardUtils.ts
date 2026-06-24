@@ -1,8 +1,8 @@
 export const validateLuhn = (num: string): boolean => {
-  let arr = (num + '').replace(/\D/g, '').split('').reverse().map(x => parseInt(x, 10));
+  const arr = (num + '').replace(/\D/g, '').split('').reverse().map(x => parseInt(x, 10));
   if (arr.length < 13) return false;
-  let lastDigit = arr.shift()!;
-  let sum = arr.reduce((acc, val, i) => (i % 2 !== 0 ? acc + val : acc + ((val * 2) % 9) || 9), 0);
+  const lastDigit = arr.shift()!;
+  const sum = arr.reduce((acc, val, i) => (i % 2 !== 0 ? acc + val : acc + ((val * 2) % 9) || 9), 0);
   return (sum + lastDigit) % 10 === 0;
 };
 
