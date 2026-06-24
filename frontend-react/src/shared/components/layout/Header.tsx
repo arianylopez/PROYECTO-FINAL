@@ -75,7 +75,6 @@ export const Header = () => {
     }
   };
 
-  const isActive = (path: string) => location.pathname.startsWith(path);
 
   return (
     <>

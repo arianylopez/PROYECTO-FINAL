@@ -55,7 +55,7 @@ export const LoginForm = () => {
       email: fallbackEmail,
       role: decodedUser.role
     }, token);
-    window.location.href = '/home'; 
+    window.location.assign('/home'); 
   };
 
   const onSubmit = async (data: LoginFormData) => {
@@ -133,7 +133,7 @@ export const LoginForm = () => {
         device_fingerprint: navigator.userAgent,
         device_name: "Navegador Web"
       });
-      window.location.href = '/onboarding';
+      window.location.assign('/onboarding');
     } catch (error: any) {
       setModalError(error.response?.data?.detail || "Ocurrió un error al registrar.");
     } finally {

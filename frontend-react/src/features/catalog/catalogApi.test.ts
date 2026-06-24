@@ -35,7 +35,7 @@ describe('catalogApi', () => {
 
   it('fetchMovieScreenings', async () => {
     (apiClient.get as any).mockResolvedValue({ data: { screenings: [] } });
-    const res = await api.fetchMovieScreenings('1', '2025-01-01');
+    const res = await api.fetchMovieScreenings('1');
     expect(res).toEqual({ screenings: [] });
   });
 

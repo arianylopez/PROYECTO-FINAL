@@ -18,8 +18,7 @@ describe('Catalog Components', () => {
   });
 
   it('renders FeaturedHero', () => {
-    const movie = { id: '1', title: 'Test', synopsis: 'Syn', poster_url: 'url', release_date: '2025-01-01' };
-    const { container } = render(<BrowserRouter><FeaturedHero movie={movie as any} /></BrowserRouter>);
+    const { container } = render(<BrowserRouter><FeaturedHero /></BrowserRouter>);
     expect(container).toBeDefined();
   });
 });
