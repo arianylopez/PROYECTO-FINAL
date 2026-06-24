@@ -110,7 +110,7 @@ export class Header extends Block {
         } finally {
           authStore.logout();
           this.setProps({ isDropdownOpen: false, isMobileMenuOpen: false });
-          routerInstance.go('/login');
+          routerInstance.go('/home');
         }
         return;
       }
