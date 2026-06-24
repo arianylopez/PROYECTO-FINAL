@@ -45,8 +45,14 @@ export class Route {
 
   render() {
     if (!this._block) {
-      this._block = new this._blockClass();
+      this._block = new this._blockClass(this._props);
+      renderDOM(this._props.rootQuery, this._block!);
+      return;
     }
-    renderDOM(this._props.rootQuery, this._block!);
+    this._block.show();
+    // Allow the block to react to URL changes (like query params)
+    if (typeof (this._block as any).updateUrlParams === 'function') {
+      (this._block as any).updateUrlParams();
+    }
   }
 }

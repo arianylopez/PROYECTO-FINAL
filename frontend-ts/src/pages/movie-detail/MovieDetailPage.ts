@@ -1,29 +1,313 @@
 import Block from '../../shared/lib/block/Block';
 import template from './MovieDetailPage.hbs?raw';
 import './MovieDetailPage.css';
-import { catalogApi } from '../../shared/api/catalogApi';
-import { ReviewsList } from '../../widgets/reviews-list/ReviewsList'
+import { routerInstance } from '../../shared/lib/router/Router';
+import { authStore } from '../../shared/store/authStore';
+import {
+  fetchMovieDetail,
+  fetchMovieReviews,
+  fetchWatchlistStatus,
+  toggleWatchlist,
+  submitMovieRating,
+  submitMovieReview,
+  type ReviewsResponse,
+  type Review
+} from '../../features/catalog/catalogApi';
 
 export class MovieDetailPage extends Block {
   protected template = template;
+  private movieId: string = '';
+
+  constructor(props = {}) {
+    super({
+      ...props,
+      isMovieLoading: true,
+      error: false,
+      movie: null,
+      isWatchlisted: false,
+      
+      reviewsData: null,
+      reviewsStats: null,
+      filteredReviews: [],
+      reviewFilter: 'ALL',
+      
+      rating: 0,
+      hoverRating: 0,
+      reviewText: '',
+      isSubmitting: false,
+      reviewErrorMsg: '',
+      user: null
+    });
+  }
 
   protected async componentDidMount() {
-    const movieId = window.location.pathname.split('/').pop();
+    const parts = window.location.pathname.split('/');
+    this.movieId = parts[parts.length - 1];
 
-    if (movieId) {
-      try {
-        const movie = await catalogApi.getMovieById(movieId);
-        this.setProps({ movie });
+    if (!this.movieId) {
+      this.setProps({ isMovieLoading: false, error: true });
+      return;
+    }
 
-        const reviewsSlot = this.element?.querySelector('#reviews-slot');
-        if (reviewsSlot) {
-          const reviews = new ReviewsList({ movieId });
-          reviewsSlot.replaceWith(reviews.getContent()!);
-          reviews.dispatchComponentDidMount();
+    const state = authStore.getState();
+    this.setProps({ user: state.user });
+
+    try {
+      const movieData = await fetchMovieDetail(this.movieId);
+      const revData = await fetchMovieReviews(this.movieId);
+      
+      this.setProps({ 
+        movie: {
+          ...movieData,
+          duration_hours: Math.floor(movieData.duration_minutes / 60),
+          duration_mins: movieData.duration_minutes % 60
+        },
+        reviewsData: revData,
+        reviewsStats: this.computeReviewStats(revData),
+        filteredReviews: this.computeFilteredReviews(revData.reviews, 'ALL'),
+        formStarsHtml: this.generateFormStarsHtml(0, 0)
+      });
+
+      if (state.user) {
+        const status = await fetchWatchlistStatus(this.movieId, state.user.id);
+        this.setProps({ isWatchlisted: status });
+      }
+
+    } catch (err) {
+      this.setProps({ error: true });
+    } finally {
+      this.setProps({ isMovieLoading: false });
+    }
+
+    authStore.on('changed', (newState: any) => {
+      this.setProps({ user: newState.user });
+      if (newState.user) {
+        fetchWatchlistStatus(this.movieId, newState.user.id).then(status => {
+          this.setProps({ isWatchlisted: status });
+        });
+      }
+    });
+  }
+
+  private computeReviewStats(data: ReviewsResponse) {
+    if (!data || data.stats.total_ratings === 0) {
+      return {
+        avg_score_formatted: '0.0',
+        total_ratings: 0,
+        posPct: 0, neuPct: 0, negPct: 0,
+        sentiment_label: 'Sin Calificaciones',
+        stars_html: this.generateStarsHtml(0)
+      };
+    }
+
+    const s = data.stats;
+    const posPct = Math.round((s.positive / s.total_ratings) * 100);
+    const neuPct = Math.round((s.neutral / s.total_ratings) * 100);
+    const negPct = Math.round((s.negative / s.total_ratings) * 100);
+
+    let label = 'Desfavorable';
+    if (s.avg_score >= 4.5) label = 'Aclamación Universal';
+    else if (s.avg_score >= 3.5) label = 'Favorable';
+    else if (s.avg_score >= 2.5) label = 'Mixta';
+
+    return {
+      avg_score_formatted: s.avg_score.toFixed(1),
+      total_ratings: s.total_ratings,
+      posPct, neuPct, negPct,
+      sentiment_label: label,
+      stars_html: this.generateStarsHtml(Math.round(s.avg_score))
+    };
+  }
+
+  private computeFilteredReviews(reviews: Review[], filter: string) {
+    const filtered = reviews.filter(r => {
+      if (filter === 'ALL') return true;
+      if (filter === 'POSITIVE') return r.score >= 4;
+      if (filter === 'NEUTRAL') return r.score === 3;
+      if (filter === 'NEGATIVE') return r.score <= 2;
+      return true;
+    });
+
+    return filtered.map(r => {
+      const isLong = r.text && r.text.length > 180;
+      return {
+        ...r,
+        first_letter: r.user_name.charAt(0).toUpperCase(),
+        formatted_date: new Date(r.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }),
+        stars_html: this.generateStarsHtml(r.score, 16),
+        isLong,
+        expanded: false,
+        display_text: isLong ? `${r.text.slice(0, 180)}...` : r.text
+      };
+    });
+  }
+
+  private generateStarsHtml(score: number, size: number = 22) {
+    let html = '';
+    for (let i = 1; i <= 5; i++) {
+      const fill = i <= score ? 'currentColor' : 'none';
+      html += `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${fill}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+      </svg>`;
+    }
+    return html;
+  }
+
+  private generateFormStarsHtml(rating: number, hover: number) {
+    let html = '';
+    for (let i = 1; i <= 5; i++) {
+      const active = (hover || rating) >= i;
+      const color = active ? '#f4e951' : '#374151';
+      const fill = active ? 'currentColor' : 'none';
+      html += `
+        <button type="button" class="star-btn" data-star="${i}" style="color: ${color}">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="${fill}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+        </button>
+      `;
+    }
+    return html;
+  }
+
+  protected events = {
+    click: async (e: Event) => {
+      const target = e.target as HTMLElement;
+
+      // Buy Tickets
+      if (target.id === 'btn-buy-ticket') {
+        if (!this.props.user) {
+          routerInstance.go(`/login`);
+        } else {
+          routerInstance.go(`/movie/${this.movieId}/screenings`);
         }
-      } catch (error) {
-        this.setProps({ error: true });
+        return;
+      }
+
+      // Watchlist
+      const watchlistBtn = target.closest('#btn-watchlist');
+      if (watchlistBtn) {
+        if (!this.props.user) {
+          routerInstance.go(`/login`);
+          return;
+        }
+        try {
+          const newStatus = await toggleWatchlist(this.movieId, this.props.user.id, this.props.movie.title, this.props.movie.poster_url);
+          this.setProps({ isWatchlisted: newStatus });
+        } catch (err) {
+          alert("Error al actualizar tu lista.");
+        }
+        return;
+      }
+
+      // Filters
+      if (target.classList.contains('review-filter-btn')) {
+        const filter = target.getAttribute('data-filter') || 'ALL';
+        this.setProps({
+          reviewFilter: filter,
+          filteredReviews: this.computeFilteredReviews(this.props.reviewsData.reviews, filter)
+        });
+        return;
+      }
+
+      // Expand Review
+      if (target.classList.contains('review-card__more-btn')) {
+        const id = target.getAttribute('data-review-id');
+        const newReviews = this.props.filteredReviews.map((r: any) => {
+          if (r.id === id) {
+            const expanded = !r.expanded;
+            return {
+              ...r,
+              expanded,
+              display_text: expanded ? r.text : `${r.text.slice(0, 180)}...`
+            };
+          }
+          return r;
+        });
+        this.setProps({ filteredReviews: newReviews });
+        return;
+      }
+
+      // Login Prompt
+      if (target.id === 'login-prompt-btn') {
+        routerInstance.go('/login');
+        return;
+      }
+
+      // Submit Review
+      if (target.id === 'submit-review-btn') {
+        if (this.props.rating === 0) {
+          this.setProps({ reviewErrorMsg: "Debes calificar la película antes de escribir una reseña." });
+          return;
+        }
+        this.setProps({ isSubmitting: true, reviewErrorMsg: '' });
+        try {
+          await submitMovieRating(this.movieId, this.props.user.id, this.props.user.name || 'Usuario', this.props.rating);
+          if (this.props.reviewText.trim().length > 0) {
+            await submitMovieReview(this.movieId, this.props.user.id, this.props.user.name || 'Usuario', this.props.reviewText.trim());
+          }
+          
+          const updatedReviews = await fetchMovieReviews(this.movieId);
+          this.setProps({
+            reviewsData: updatedReviews,
+            reviewsStats: this.computeReviewStats(updatedReviews),
+            filteredReviews: this.computeFilteredReviews(updatedReviews.reviews, this.props.reviewFilter),
+            rating: 0,
+            hoverRating: 0,
+            reviewText: '',
+            formStarsHtml: this.generateFormStarsHtml(0, 0),
+            isSubmitting: false
+          });
+        } catch (err: any) {
+          this.setProps({
+            reviewErrorMsg: err?.response?.data?.detail || "Ocurrió un error al guardar tu reseña.",
+            isSubmitting: false
+          });
+        }
+        return;
+      }
+    },
+
+    mouseover: (e: Event) => {
+      const target = e.target as HTMLElement;
+      const starBtn = target.closest('.star-btn');
+      if (starBtn) {
+        const star = parseInt(starBtn.getAttribute('data-star') || '0', 10);
+        this.setProps({ 
+          hoverRating: star,
+          formStarsHtml: this.generateFormStarsHtml(this.props.rating, star)
+        });
+      }
+    },
+
+    mouseout: (e: Event) => {
+      const target = e.target as HTMLElement;
+      const starBtn = target.closest('.star-btn');
+      if (starBtn) {
+        this.setProps({ 
+          hoverRating: 0,
+          formStarsHtml: this.generateFormStarsHtml(this.props.rating, 0)
+        });
+      }
+    },
+
+    mousedown: (e: Event) => {
+      const target = e.target as HTMLElement;
+      const starBtn = target.closest('.star-btn');
+      if (starBtn) {
+        const star = parseInt(starBtn.getAttribute('data-star') || '0', 10);
+        this.setProps({ 
+          rating: star,
+          formStarsHtml: this.generateFormStarsHtml(star, this.props.hoverRating)
+        });
+      }
+    },
+
+    input: (e: Event) => {
+      const target = e.target as HTMLTextAreaElement;
+      if (target.id === 'review-textarea') {
+        this.props.reviewText = target.value; // Store silently
       }
     }
-  }
+  };
 }

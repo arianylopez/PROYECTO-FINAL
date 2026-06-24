@@ -10,9 +10,8 @@ export const MovieCatalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   
   const urlSearchQuery = searchParams.get('q') || '';
-  const initialGenre = searchParams.get('genre') || 'Todas';
+  const urlGenre = searchParams.get('genre') || 'Todas';
 
-  const [selectedGenre, setSelectedGenre] = useState(initialGenre);
   const [dynamicGenres, setDynamicGenres] = useState<string[]>(['Todas']);
 
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -73,29 +72,23 @@ export const MovieCatalog = () => {
   useEffect(() => {
     if (isFirstMount.current) {
         isFirstMount.current = false;
-        loadMovies(1, true, debouncedSearchTerm, selectedGenre);
+        loadMovies(1, true, debouncedSearchTerm, urlGenre);
         return;
     }
 
-    const newParams = new URLSearchParams();
-    if (debouncedSearchTerm) newParams.set('q', debouncedSearchTerm);
-    if (selectedGenre !== 'Todas') newParams.set('genre', selectedGenre);
-    setSearchParams(newParams, { replace: true });
-
     setPage(1);
-    loadMovies(1, true, debouncedSearchTerm, selectedGenre);
+    loadMovies(1, true, debouncedSearchTerm, urlGenre);
     
-  }, [debouncedSearchTerm, selectedGenre, setSearchParams]);
+  }, [debouncedSearchTerm, urlGenre]);
 
 
   const handleLoadMore = () => {
     const nextPage = page + 1;
     setPage(nextPage);
-    loadMovies(nextPage, false, debouncedSearchTerm, selectedGenre);
+    loadMovies(nextPage, false, debouncedSearchTerm, urlGenre);
   };
 
   const clearFilters = () => {
-    setSelectedGenre('Todas');
     setSearchParams(new URLSearchParams(), { replace: true });
   };
 
@@ -114,14 +107,23 @@ export const MovieCatalog = () => {
 
         <div style={{ position: 'relative', minWidth: '220px' }}>
           <select 
-            value={selectedGenre}
-            onChange={(e) => setSelectedGenre(e.target.value)}
+            value={urlGenre}
+            onChange={(e) => {
+              const genre = e.target.value;
+              const newParams = new URLSearchParams(searchParams);
+              if (genre === 'Todas') {
+                newParams.delete('genre');
+              } else {
+                newParams.set('genre', genre);
+              }
+              setSearchParams(newParams, { replace: true });
+            }}
             style={{
               appearance: 'none',
               width: '100%',
-              color: selectedGenre === 'Todas' ? '#d1d5db' : '#0f1115',
-              border: selectedGenre === 'Todas' ? '1px solid #374151' : '1px solid #f4e951',
-              backgroundColor: selectedGenre === 'Todas' ? '#171a21' : '#f4e951',
+              color: urlGenre === 'Todas' ? '#d1d5db' : '#0f1115',
+              border: urlGenre === 'Todas' ? '1px solid #374151' : '1px solid #f4e951',
+              backgroundColor: urlGenre === 'Todas' ? '#171a21' : '#f4e951',
               padding: '0.75rem 2.5rem 0.75rem 1.5rem',
               borderRadius: '30px',
               fontSize: '0.95rem',
@@ -141,7 +143,7 @@ export const MovieCatalog = () => {
           </select>
           
           <svg 
-            style={{ position: 'absolute', right: '18px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: selectedGenre === 'Todas' ? '#9ca3af' : '#0f1115' }} 
+            style={{ position: 'absolute', right: '18px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: urlGenre === 'Todas' ? '#9ca3af' : '#0f1115' }} 
             width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
           >
             <polyline points="6 9 12 15 18 9"></polyline>
@@ -159,7 +161,7 @@ export const MovieCatalog = () => {
         <div className="catalog-state">
           <div className="catalog-state__icon">🔌</div>
           <h2 className="catalog-state__title">{error}</h2>
-          <button className="catalog-state__btn" onClick={() => loadMovies(1, true, debouncedSearchTerm, selectedGenre)}>Reintentar</button>
+          <button className="catalog-state__btn" onClick={() => loadMovies(1, true, debouncedSearchTerm, urlGenre)}>Reintentar</button>
         </div>
       ) : 
       !isLoading && movies.length === 0 ? (

@@ -1,29 +1,167 @@
-<div class="movie-page__layout">
-  <main class="movie-page__content">
-    {{#if movie}}
-      <div class="movie-detail__hero" style="background-image: url('{{movie.backdrop_url}}');">
-        <div class="movie-detail__overlay"></div>
-        <div class="movie-detail__info">
+<div class="movie-detail-page">
+  
+  {{#if isMovieLoading}}
+    <div style="min-height: 100vh; display: flex; justify-content: center; align-items: center; color: var(--accent-color);">
+      Cargando película...
+    </div>
+  {{else}}
+    {{#if error}}
+      <div style="min-height: 100vh; color: #fff; padding: 2rem; text-align: center;">
+        Película no encontrada o error de conexión.
+      </div>
+    {{else}}
+      <div class="movie-detail__hero">
+        <div class="movie-detail__bg-blur" style="background-image: url({{movie.poster_url}})"></div>
+        <div class="movie-detail__content">
           <img src="{{movie.poster_url}}" alt="{{movie.title}}" class="movie-detail__poster" />
-          <div class="movie-detail__text">
+          
+          <div class="movie-detail__info">
             <h1 class="movie-detail__title">{{movie.title}}</h1>
+            
             <div class="movie-detail__meta">
-              <span>{{movie.genre}}</span>
-              <span>★ {{movie.rating}}</span>
-              <span>{{movie.duration_minutes}} min</span>
+              <span>{{movie.director}}</span>
+              <span class="movie-detail__meta-dot">•</span>
+              <span>{{movie.duration_hours}}h {{movie.duration_mins}}m</span>
+              <span class="movie-detail__meta-dot">•</span>
+              <span class="movie-detail__rating-badge">{{movie.rating_classification}}</span>
             </div>
-            <p class="movie-detail__description">{{movie.description}}</p>
-            <button class="movie-detail__ticket-btn">Comprar Entradas</button>
+
+            <div class="movie-detail__genres">
+              {{#each movie.genres}}
+                <span class="movie-detail__genre-tag">{{this}}</span>
+              {{/each}}
+            </div>
+
+            <p class="movie-detail__synopsis">{{movie.synopsis}}</p>
+            
+            <div class="movie-detail__actions">
+              <button class="btn-buy-ticket" id="btn-buy-ticket">Comprar entradas</button>
+
+              <button class="btn-watchlist {{#if isWatchlisted}}btn-watchlist--added{{else}}btn-watchlist--add{{/if}}" id="btn-watchlist">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="{{#if isWatchlisted}}currentColor{{else}}none{{/if}}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                </svg>
+                {{#if isWatchlisted}}En Mi Lista{{else}}Añadir a Mi Lista{{/if}}
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      <div class="movie-detail__reviews-container">
-        <div id="reviews-slot"></div>
+
+      <div class="reviews-section">
+        <h2 class="reviews-section__title">Opiniones de la Audiencia</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: 3rem;">
+          
+          <div class="reviews-stats-container">
+            <div class="reviews-score-block">
+              <div class="reviews-score-val">{{reviewsStats.avg_score_formatted}}</div>
+              <div class="reviews-score-stars">
+                {{{reviewsStats.stars_html}}}
+              </div>
+              <div class="reviews-score-label">{{reviewsStats.sentiment_label}}</div>
+              <div class="reviews-score-count">Basado en {{reviewsStats.total_ratings}} calificaciones</div>
+            </div>
+
+            <div class="reviews-bars-block">
+              <div class="review-bar-row">
+                <span class="review-bar-label">Positivas</span>
+                <div class="review-bar-track">
+                  <div class="review-bar-fill review-bar-fill--pos" style="width: {{reviewsStats.posPct}}%"></div>
+                </div>
+                <span class="review-bar-pct">{{reviewsStats.posPct}}%</span>
+              </div>
+              <div class="review-bar-row">
+                <span class="review-bar-label">Neutras</span>
+                <div class="review-bar-track">
+                  <div class="review-bar-fill review-bar-fill--neu" style="width: {{reviewsStats.neuPct}}%"></div>
+                </div>
+                <span class="review-bar-pct">{{reviewsStats.neuPct}}%</span>
+              </div>
+              <div class="review-bar-row">
+                <span class="review-bar-label">Negativas</span>
+                <div class="review-bar-track">
+                  <div class="review-bar-fill review-bar-fill--neg" style="width: {{reviewsStats.negPct}}%"></div>
+                </div>
+                <span class="review-bar-pct">{{reviewsStats.negPct}}%</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="review-filters">
+              <button class="review-filter-btn {{#if (eq reviewFilter 'ALL')}}active{{/if}}" data-filter="ALL">Todas</button>
+              <button class="review-filter-btn {{#if (eq reviewFilter 'POSITIVE')}}active{{/if}}" data-filter="POSITIVE">Positivas</button>
+              <button class="review-filter-btn {{#if (eq reviewFilter 'NEUTRAL')}}active{{/if}}" data-filter="NEUTRAL">Neutras</button>
+              <button class="review-filter-btn {{#if (eq reviewFilter 'NEGATIVE')}}active{{/if}}" data-filter="NEGATIVE">Negativas</button>
+            </div>
+
+            <div class="reviews-list">
+              {{#each filteredReviews}}
+                <div class="review-card">
+                  <div class="review-card__header">
+                    <div class="review-card__user-info">
+                      <div class="review-card__avatar">{{this.first_letter}}</div>
+                      <div>
+                        <div class="review-card__name">{{this.user_name}}</div>
+                        <div class="review-card__date">{{this.formatted_date}}</div>
+                      </div>
+                    </div>
+                    <div class="review-card__stars">
+                      {{{this.stars_html}}}
+                    </div>
+                  </div>
+                  {{#if this.text}}
+                    <p class="review-card__text">
+                      {{this.display_text}}
+                      {{#if this.isLong}}
+                        <button class="review-card__more-btn" data-review-id="{{this.id}}">
+                          {{#if this.expanded}}Ver menos{{else}}Leer más{{/if}}
+                        </button>
+                      {{/if}}
+                    </p>
+                  {{/if}}
+                </div>
+              {{else}}
+                <p style="color: var(--text-muted); grid-column: 1 / -1;">No hay reseñas en esta categoría.</p>
+              {{/each}}
+            </div>
+          </div>
+          
+          {{#if user}}
+            <div class="review-form-container">
+              <h3 class="review-form-container__title">¿Qué te pareció la película?</h3>
+              <p class="review-form-container__desc">Comparte tu opinión con la comunidad de CinemaPlus.</p>
+              
+              {{#if reviewErrorMsg}}
+                <div class="review-form-error">{{reviewErrorMsg}}</div>
+              {{/if}}
+
+              <div class="star-rating-input">
+                {{{formStarsHtml}}}
+              </div>
+
+              <textarea 
+                id="review-textarea" 
+                class="review-form__textarea" 
+                placeholder="Escribe tu reseña aquí (opcional)..."
+              >{{reviewText}}</textarea>
+
+              <div style="display: flex; justify-content: flex-end;">
+                <button class="review-form__submit" id="submit-review-btn" {{#if isSubmitting}}disabled{{/if}}>
+                  {{#if isSubmitting}}Publicando...{{else}}Publicar Reseña{{/if}}
+                </button>
+              </div>
+            </div>
+          {{else}}
+            <div class="login-prompt">
+              <p class="login-prompt__text">Inicia sesión para dejar tu reseña y calificar esta película.</p>
+              <button class="login-prompt__btn" id="login-prompt-btn">Iniciar Sesión</button>
+            </div>
+          {{/if}}
+
+        </div>
       </div>
-    {{else if error}}
-      <div class="movie-detail__error" style="padding: 4rem; text-align: center;">Película no encontrada.</div>
-    {{else}}
-      <div class="movie-detail__loading" style="padding: 4rem; text-align: center;">Cargando película...</div>
     {{/if}}
-  </main>
+  {{/if}}
 </div>

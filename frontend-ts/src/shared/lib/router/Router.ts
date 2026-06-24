@@ -32,7 +32,8 @@ export class Router {
     this._onRoute(window.location.pathname);
   }
 
-  private _onRoute(pathname: string) {
+  private _onRoute(fullPath: string) {
+    const pathname = fullPath.split('?')[0];
     const route = this.getRoute(pathname);
     if (!route) {
       return;
