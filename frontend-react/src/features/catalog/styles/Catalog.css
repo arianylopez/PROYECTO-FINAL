@@ -321,3 +321,111 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+/* --- Nuevas Clases BEM --- */
+.catalog-header__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.catalog-header__subtitle {
+  color: #9ca3af;
+  margin: 0.5rem 0 0 0;
+  font-size: 0.9rem;
+}
+
+.catalog-filters {
+  position: relative;
+  min-width: 220px;
+}
+
+.catalog-filters__select {
+  appearance: none;
+  width: 100%;
+  color: #d1d5db;
+  border: 1px solid #374151;
+  background-color: #171a21;
+  padding: 0.75rem 2.5rem 0.75rem 1.5rem;
+  border-radius: 30px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+.catalog-filters__select--active {
+  color: #0f1115;
+  border-color: #f4e951;
+  background-color: #f4e951;
+}
+
+.catalog-filters__option {
+  color: #fff;
+  background-color: #171a21;
+  text-transform: initial;
+}
+
+.catalog-filters__icon {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #9ca3af;
+}
+
+.catalog-filters__select--active + .catalog-filters__icon {
+  color: #0f1115;
+}
+
+.catalog-search-results {
+  margin-bottom: 2rem;
+  padding: 1rem 1.5rem;
+  background-color: rgba(244, 233, 81, 0.05);
+  border: 1px dashed rgba(244, 233, 81, 0.4);
+  border-radius: 8px;
+  color: #e5e7eb;
+}
+
+.catalog-search-results__query {
+  color: #f4e951;
+  font-size: 1.1rem;
+  margin-left: 0.5rem;
+}
+
+.catalog-state--empty {
+  padding: 5rem 0;
+}
+
+.catalog-state__icon--empty {
+  font-size: 4rem;
+  opacity: 0.5;
+  margin-bottom: 1rem;
+}
+
+.catalog-state__title--empty {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.catalog-state__subtitle {
+  color: #9ca3af;
+  margin: 0 0 2rem 0;
+}
+
+.catalog-state__btn--primary {
+  padding: 0.8rem 2rem;
+  background-color: #f4e951;
+  color: #000;
+  border-radius: 30px;
+  font-weight: bold;
+  border: none;
+}
+
+.catalog-state__btn--primary:hover {
+  background-color: #e2d73f;
+  color: #000;
+}

@@ -4,6 +4,7 @@ import { FeaturedHero } from '../features/catalog/components/FeaturedHero';
 import { MovieCatalog } from '../features/catalog/components/MovieCatalog';
 import { fetchRecommendations, markNotInterested, type RecommendationResponse } from '../features/catalog/catalogApi';
 import { useAuthStore } from '../shared/store/authStore';
+import './HomePage.css';
 
 export const HomePage = () => {
   const { user } = useAuthStore();
@@ -61,83 +62,28 @@ export const HomePage = () => {
   };
 
   return (
-    <div style={{ backgroundColor: '#0f1115', minHeight: '100vh', paddingBottom: '4rem' }}>
-      <style>{`
-        .recs-carousel {
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-        }
-        .recs-carousel::-webkit-scrollbar {
-          display: none;
-        }
-        .rec-card-container {
-          min-width: 260px;
-          width: 260px;
-          cursor: pointer;
-          position: relative;
-          display: flex;
-          flex-direction: column;
-          gap: 1.25rem;
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .rec-card-image-box {
-          position: relative;
-          width: 100%;
-          height: 380px;
-          border-radius: 16px;
-          overflow: hidden;
-          border: 1px solid #262932;
-          box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-          transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .rec-card-container:hover .rec-card-image-box {
-          transform: translateY(-6px);
-          border-color: #f4e951;
-        }
-        .rec-card-explanation-panel {
-          background-color: rgba(23, 26, 33, 0.65);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.05);
-          border-radius: 12px;
-          padding: 1rem;
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-          text-align: left;
-          min-height: 85px;
-          justify-content: center;
-        }
-      `}</style>
-
+    <div className="home">
       <FeaturedHero />
 
       {recs && recs.items.length > 0 && (
-        <section style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 4% 1rem', borderBottom: '1px solid #262932' }}>
+        <section className="recs">
           
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', gap: '1.5rem' }}>
+          <div className="recs__header">
             <div>
-              <h2 style={{ color: '#fff', fontSize: '1.8rem', fontWeight: '900', margin: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              <h2 className="recs__title">
                 {recs.title}
               </h2>
               {recs.subtitle && (
-                <p style={{ color: '#9ca3af', margin: '0.5rem 0 0 0', fontSize: '1rem' }}>
+                <p className="recs__subtitle">
                   {recs.subtitle}
                 </p>
               )}
             </div>
 
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <div className="recs__controls">
               <button 
                 onClick={() => scrollCarousel(-280)}
-                style={{
-                  backgroundColor: '#171a21', border: '1px solid #374151', color: '#fff',
-                  width: '44px', height: '44px', borderRadius: '50%', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s',
-                  outline: 'none'
-                }}
-                onMouseOver={e => e.currentTarget.style.borderColor = '#f4e951'}
-                onMouseOut={e => e.currentTarget.style.borderColor = '#374151'}
+                className="recs__control-btn"
               >
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="15 18 9 12 15 6"></polyline>
@@ -146,14 +92,7 @@ export const HomePage = () => {
               
               <button 
                 onClick={() => scrollCarousel(280)}
-                style={{
-                  backgroundColor: '#171a21', border: '1px solid #374151', color: '#fff',
-                  width: '44px', height: '44px', borderRadius: '50%', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s',
-                  outline: 'none'
-                }}
-                onMouseOver={e => e.currentTarget.style.borderColor = '#f4e951'}
-                onMouseOut={e => e.currentTarget.style.borderColor = '#374151'}
+                className="recs__control-btn"
               >
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="9 18 15 12 9 6"></polyline>
@@ -164,14 +103,7 @@ export const HomePage = () => {
 
           <div 
             ref={carouselRef}
-            className="recs-carousel"
-            style={{ 
-              display: 'flex', 
-              gap: '1.75rem', 
-              overflowX: 'auto', 
-              paddingBottom: '2.5rem',
-              paddingTop: '0.5rem'
-            }}
+            className="recs__carousel"
           >
             {recs.items.map(item => {
               const isDismissed = dismissedIds.has(item.id);
@@ -180,7 +112,7 @@ export const HomePage = () => {
                 <div 
                   key={`rec-${item.id}`} 
                   onClick={() => navigate(`/movie/${item.id}`)} 
-                  className="rec-card-container"
+                  className="recs__card"
                   style={{ 
                     minWidth: isDismissed ? '0px' : '260px', 
                     width: isDismissed ? '0px' : '260px', 
@@ -191,20 +123,11 @@ export const HomePage = () => {
                   }}
                 >
                   
-                  <div className="rec-card-image-box">
+                  <div className="recs__card-image-box">
                     {user && (
                       <button 
                         onClick={(e) => handleDismiss(e, item.id)}
-                        style={{
-                          position: 'absolute', top: '12px', right: '10px', zIndex: 10,
-                          backgroundColor: 'rgba(0,0,0,0.65)', color: '#fff', border: 'none', 
-                          borderRadius: '50%', width: '32px', height: '32px', 
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.2s',
-                          backdropFilter: 'blur(4px)', outline: 'none'
-                        }}
-                        onMouseOver={e => { e.currentTarget.style.backgroundColor = '#ef4444'; }}
-                        onMouseOut={e => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.65)'; }}
+                        className="recs__card-dismiss-btn"
                       >
                         ✕
                       </button>
@@ -213,27 +136,15 @@ export const HomePage = () => {
                     <img 
                       src={item.poster_url} 
                       alt={item.title} 
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                      className="recs__card-img"
                     />
                   </div>
                   
-                  <div className="rec-card-explanation-panel">
-                    <span style={{ 
-                      color: recs.is_personalized ? '#f4e951' : '#fff', 
-                      fontSize: '0.8rem', 
-                      fontWeight: '800', 
-                      textTransform: 'uppercase', 
-                      letterSpacing: '0.5px' 
-                    }}>
+                  <div className="recs__card-panel">
+                    <span className={`recs__card-reason-short ${recs.is_personalized ? 'recs__card-reason-short--personalized' : 'recs__card-reason-short--generic'}`}>
                       {getShortReason(item.reason)}
                     </span>
-                    <p style={{ 
-                      margin: 0, 
-                      color: '#9ca3af', 
-                      fontSize: '0.82rem', 
-                      lineHeight: '1.4', 
-                      fontWeight: '500' 
-                    }}>
+                    <p className="recs__card-reason-long">
                       {item.reason}
                     </p>
                   </div>
@@ -245,7 +156,7 @@ export const HomePage = () => {
         </section>
       )}
 
-      <div style={{ paddingTop: '2rem' }}>
+      <div className="home__catalog">
         <MovieCatalog />
       </div>
     </div>

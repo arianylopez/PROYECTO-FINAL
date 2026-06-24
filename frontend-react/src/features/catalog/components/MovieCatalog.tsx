@@ -95,17 +95,17 @@ export const MovieCatalog = () => {
   return (
     <section className="catalog-section" id="cartelera">
       
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem', gap: '1rem' }}>
-        <div>
-          <h2 className="catalog-header__title" style={{ margin: 0 }}>Explorar Cartelera</h2>
+      <div className="catalog-header">
+        <div className="catalog-header__info">
+          <h2 className="catalog-header__title">Explorar Cartelera</h2>
           {!isLoading && !error && (
-            <p style={{ color: '#9ca3af', margin: '0.5rem 0 0 0', fontSize: '0.9rem' }}>
+            <p className="catalog-header__subtitle">
               Mostrando {totalMovies} {totalMovies === 1 ? 'película' : 'películas'}
             </p>
           )}
         </div>
 
-        <div style={{ position: 'relative', minWidth: '220px' }}>
+        <div className="catalog-filters">
           <select 
             value={urlGenre}
             onChange={(e) => {
@@ -118,32 +118,17 @@ export const MovieCatalog = () => {
               }
               setSearchParams(newParams, { replace: true });
             }}
-            style={{
-              appearance: 'none',
-              width: '100%',
-              color: urlGenre === 'Todas' ? '#d1d5db' : '#0f1115',
-              border: urlGenre === 'Todas' ? '1px solid #374151' : '1px solid #f4e951',
-              backgroundColor: urlGenre === 'Todas' ? '#171a21' : '#f4e951',
-              padding: '0.75rem 2.5rem 0.75rem 1.5rem',
-              borderRadius: '30px',
-              fontSize: '0.95rem',
-              fontWeight: '800',
-              cursor: 'pointer',
-              outline: 'none',
-              boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
-              transition: 'all 0.2s ease',
-              textTransform: 'uppercase'
-            }}
+            className={`catalog-filters__select ${urlGenre !== 'Todas' ? 'catalog-filters__select--active' : ''}`}
           >
             {dynamicGenres.map(genre => (
-              <option key={genre} value={genre} style={{ color: '#fff', backgroundColor: '#171a21', textTransform: 'initial' }}>
+              <option key={genre} value={genre} className="catalog-filters__option">
                 {genre === 'Todas' ? 'Todos los Géneros' : genre}
               </option>
             ))}
           </select>
           
           <svg 
-            style={{ position: 'absolute', right: '18px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: urlGenre === 'Todas' ? '#9ca3af' : '#0f1115' }} 
+            className="catalog-filters__icon"
             width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
           >
             <polyline points="6 9 12 15 18 9"></polyline>
@@ -152,8 +137,8 @@ export const MovieCatalog = () => {
       </div>
 
       {urlSearchQuery && (
-        <div style={{ marginBottom: '2rem', padding: '1rem 1.5rem', backgroundColor: 'rgba(244, 233, 81, 0.05)', border: '1px dashed rgba(244, 233, 81, 0.4)', borderRadius: '8px', color: '#e5e7eb' }}>
-          Resultados para la búsqueda: <strong style={{ color: '#f4e951', fontSize: '1.1rem', marginLeft: '0.5rem' }}>"{urlSearchQuery}"</strong>
+        <div className="catalog-search-results">
+          Resultados para la búsqueda: <strong className="catalog-search-results__query">"{urlSearchQuery}"</strong>
         </div>
       )}
 
@@ -165,11 +150,11 @@ export const MovieCatalog = () => {
         </div>
       ) : 
       !isLoading && movies.length === 0 ? (
-        <div className="catalog-state" style={{ padding: '5rem 0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div className="catalog-state__icon" style={{ fontSize: '4rem', opacity: 0.5, marginBottom: '1rem' }}>🔍</div>
-          <h2 className="catalog-state__title" style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>No encontramos películas para tu búsqueda.</h2>
-          <p style={{ color: '#9ca3af', margin: '0 0 2rem 0' }}>Intenta probar con otros términos o limpia los filtros activos.</p>
-          <button className="catalog-state__btn" onClick={clearFilters} style={{ padding: '0.8rem 2rem', backgroundColor: '#f4e951', color: '#000', borderRadius: '30px', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}>Ver toda la cartelera</button>
+        <div className="catalog-state catalog-state--empty">
+          <div className="catalog-state__icon catalog-state__icon--empty">🔍</div>
+          <h2 className="catalog-state__title catalog-state__title--empty">No encontramos películas para tu búsqueda.</h2>
+          <p className="catalog-state__subtitle">Intenta probar con otros términos o limpia los filtros activos.</p>
+          <button className="catalog-state__btn catalog-state__btn--primary" onClick={clearFilters}>Ver toda la cartelera</button>
         </div>
       ) : (
         <>
@@ -186,12 +171,11 @@ export const MovieCatalog = () => {
           </div>
 
           {hasMore && !isLoading && (
-            <div className="catalog-footer" style={{ marginTop: '4rem', textAlign: 'center' }}>
+            <div className="catalog-footer">
               <button 
                 className="catalog-footer__btn" 
                 onClick={handleLoadMore} 
                 disabled={isFetchingMore}
-                style={{ backgroundColor: '#171a21', border: '1px solid #374151', color: '#fff', padding: '1rem 3rem', borderRadius: '30px', fontWeight: 'bold', cursor: isFetchingMore ? 'not-allowed' : 'pointer' }}
               >
                 {isFetchingMore ? 'Cargando...' : 'Ver Más Películas'}
               </button>

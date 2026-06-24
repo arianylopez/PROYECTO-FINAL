@@ -328,82 +328,13 @@
   cursor: pointer;
 }
 
-/* Home Recommendations CSS */
-.recs-carousel {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  display: flex;
-  gap: 1.5rem;
-  overflow-x: auto;
-  padding: 1rem 0 2rem;
-}
-.recs-carousel::-webkit-scrollbar {
-  display: none;
-}
-.rec-card-container {
-  min-width: 260px;
-  width: 260px;
-  cursor: pointer;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.rec-card-image-box {
-  position: relative;
-  width: 100%;
-  height: 380px;
-  border-radius: 16px;
-  overflow: hidden;
-  border: 1px solid #262932;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.rec-card-container:hover .rec-card-image-box {
-  transform: translateY(-6px);
-  border-color: #f4e951;
-}
-.rec-card-explanation-panel {
-  background-color: rgba(23, 26, 33, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 12px;
-  padding: 0.85rem;
-  border: 1px solid rgba(255,255,255,0.06);
-  transition: all 0.3s;
-}
-.rec-card-container:hover .rec-card-explanation-panel {
-  background-color: rgba(30, 34, 43, 0.85);
-  border-color: rgba(244, 233, 81, 0.2);
-}
-.dismiss-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(0,0,0,0.6);
-  border: none;
-  color: #fff;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.2s, background 0.2s;
-  z-index: 10;
-}
-.rec-card-container:hover .dismiss-btn {
-  opacity: 1;
-}
-.dismiss-btn:hover {
-  background: #ef4444;
+/* Featured Hero CSS */
+.hero__skeleton {
+  height: 500px;
+  background-color: #0f1115;
 }
 
-/* Featured Hero CSS */
-.featured-hero {
+.hero {
   width: 100%;
   height: 550px;
   display: flex;
@@ -411,7 +342,10 @@
   justify-content: flex-end;
   padding: 0 6% 5rem;
 }
-.featured-hero__badge {
+.hero__content {
+  max-width: 650px;
+}
+.hero__badge {
   background-color: #ff3333;
   color: white;
   padding: 0.3rem 0.8rem;
@@ -422,7 +356,7 @@
   display: inline-block;
   margin-bottom: 1rem;
 }
-.featured-hero__title {
+.hero__title {
   font-size: 4rem;
   font-weight: 900;
   margin: 0 0 0.75rem 0;
@@ -430,7 +364,7 @@
   line-height: 1.1;
   text-shadow: 3px 6px 15px rgba(0,0,0,0.9);
 }
-.featured-hero__desc {
+.hero__synopsis {
   color: #e5e7eb;
   margin: 0 0 2rem 0;
   font-size: 1.05rem;
@@ -441,11 +375,11 @@
   overflow: hidden;
   text-shadow: 1px 2px 4px rgba(0,0,0,0.8);
 }
-.featured-hero__buttons {
+.hero__actions {
   display: flex;
   gap: 1.25rem;
 }
-.featured-hero__btn-primary {
+.hero__btn {
   background: #f4e951;
   color: #0f1115;
   border: none;
@@ -457,7 +391,11 @@
   box-shadow: 0 5px 25px rgba(244,233,81,0.35);
   transition: all 0.2s;
 }
-.featured-hero__btn-secondary {
+.hero__btn:hover {
+  transform: scale(1.03);
+  background: #e2d73f;
+}
+.hero__btn--trailer {
   background: rgba(255,255,255,0.1);
   color: #ffffff;
   border: 1px solid rgba(255,255,255,0.2);
@@ -470,7 +408,277 @@
   align-items: center;
   gap: 0.5rem;
   transition: all 0.2s;
+  backdrop-filter: blur(8px);
 }
-.featured-hero__btn-secondary:hover {
+.hero__btn--trailer:hover {
   background: rgba(255,255,255,0.2);
+  transform: scale(1.03);
+}
+
+/* Home Recommendations CSS */
+.home {
+  background-color: #0f1115;
+  min-height: 100vh;
+  padding-bottom: 4rem;
+}
+.home__catalog {
+  padding-top: 2rem;
+}
+
+.recs {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 4% 1rem;
+  border-bottom: 1px solid #262932;
+}
+.recs__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1.5rem;
+}
+.recs__title {
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 900;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.recs__subtitle {
+  color: #9ca3af;
+  margin: 0.5rem 0 0 0;
+  font-size: 1rem;
+}
+.recs__controls {
+  display: flex;
+  gap: 0.75rem;
+}
+.recs__control-btn {
+  background-color: #171a21;
+  border: 1px solid #374151;
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  outline: none;
+}
+.recs__control-btn:hover {
+  border-color: #f4e951;
+}
+
+.recs__carousel {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  display: flex;
+  gap: 1.75rem;
+  overflow-x: auto;
+  padding-bottom: 2.5rem;
+  padding-top: 0.5rem;
+}
+.recs__carousel::-webkit-scrollbar {
+  display: none;
+}
+.recs__card {
+  min-width: 260px;
+  width: 260px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.recs__card-image-box {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #262932;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.recs__card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.recs__card:hover .recs__card-image-box {
+  transform: translateY(-6px);
+  border-color: #f4e951;
+}
+.recs__card-panel {
+  background-color: rgba(23, 26, 33, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+  min-height: 85px;
+  justify-content: center;
+}
+.recs__card-reason-short {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.recs__card-reason-short--personalized {
+  color: #f4e951;
+}
+.recs__card-reason-short--generic {
+  color: #fff;
+}
+.recs__card-reason-long {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  font-weight: 500;
+}
+.recs__card-dismiss-btn {
+  position: absolute;
+  top: 12px;
+  right: 10px;
+  background: rgba(0,0,0,0.65);
+  border: none;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s;
+  backdrop-filter: blur(4px);
+  outline: none;
+  z-index: 10;
+}
+.recs__card:hover .recs__card-dismiss-btn {
+  opacity: 1;
+}
+.recs__card-dismiss-btn:hover {
+  background: #ef4444;
+}
+
+/* --- Nuevas Clases BEM de Catalog --- */
+.catalog-header__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.catalog-header__subtitle {
+  color: #9ca3af;
+  margin: 0.5rem 0 0 0;
+  font-size: 0.9rem;
+}
+
+.catalog-filters {
+  position: relative;
+  min-width: 220px;
+}
+
+.catalog-filters__select {
+  appearance: none;
+  width: 100%;
+  color: #d1d5db;
+  border: 1px solid #374151;
+  background-color: #171a21;
+  padding: 0.75rem 2.5rem 0.75rem 1.5rem;
+  border-radius: 30px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+.catalog-filters__select--active {
+  color: #0f1115;
+  border-color: #f4e951;
+  background-color: #f4e951;
+}
+
+.catalog-filters__option {
+  color: #fff;
+  background-color: #171a21;
+  text-transform: initial;
+}
+
+.catalog-filters__icon {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #9ca3af;
+}
+
+.catalog-filters__select--active + .catalog-filters__icon {
+  color: #0f1115;
+}
+
+.catalog-search-results {
+  margin-bottom: 2rem;
+  padding: 1rem 1.5rem;
+  background-color: rgba(244, 233, 81, 0.05);
+  border: 1px dashed rgba(244, 233, 81, 0.4);
+  border-radius: 8px;
+  color: #e5e7eb;
+}
+
+.catalog-search-results__query {
+  color: #f4e951;
+  font-size: 1.1rem;
+  margin-left: 0.5rem;
+}
+
+.catalog-state--empty {
+  padding: 5rem 0;
+}
+
+.catalog-state__icon--empty {
+  font-size: 4rem;
+  opacity: 0.5;
+  margin-bottom: 1rem;
+}
+
+.catalog-state__title--empty {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.catalog-state__subtitle {
+  color: #9ca3af;
+  margin: 0 0 2rem 0;
+}
+
+.catalog-state__btn--primary {
+  padding: 0.8rem 2rem;
+  background-color: #f4e951;
+  color: #000;
+  border-radius: 30px;
+  font-weight: bold;
+  border: none;
+}
+
+.catalog-state__btn--primary:hover {
+  background-color: #e2d73f;
+  color: #000;
 }
