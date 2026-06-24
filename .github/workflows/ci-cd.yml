@@ -118,7 +118,7 @@ jobs:
 
       REDIS_HOST: localhost
       REDIS_PORT: 6379
-      MONGO_URL: mongodb://localhost:27017  # Reemplazamos el antiguo MONGO_URI
+      MONGO_URL: mongodb://localhost:27017  
       MONGO_DB: ci_ugc_test
       KAFKA_BOOTSTRAP_SERVERS: localhost:9092
 

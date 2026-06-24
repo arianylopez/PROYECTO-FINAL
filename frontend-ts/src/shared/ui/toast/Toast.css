@@ -1,0 +1,40 @@
+.toast-container {
+  position: fixed;
+  z-index: 9999;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  min-width: 250px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 50%);
+  color: #fff;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toast--info {
+  background-color: #3b82f6;
+}
+
+.toast--success {
+  background-color: #10b981;
+}
+
+.toast--error {
+  background-color: #ef4444;
+}
+
+.toast--hiding {
+  opacity: 0;
+  transform: translateY(20px);
+}

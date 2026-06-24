@@ -1,5 +1,6 @@
 import Block from '../block/Block';
 import { renderDOM } from '../block/renderDOM';
+import { authStore } from '../../store/authStore';
 
 export class Route {
   private _pathname: string;
@@ -12,6 +13,10 @@ export class Route {
     this._blockClass = viewClass;
     this._block = null;
     this._props = props;
+  }
+
+  getProps() {
+    return this._props;
   }
 
   navigate(pathname: string) {

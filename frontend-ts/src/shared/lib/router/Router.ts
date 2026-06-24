@@ -1,4 +1,5 @@
 import { Route } from './Route';
+import { authStore } from '../../store/authStore';
 
 export class Router {
   private routes: Route[] = [];
@@ -18,8 +19,8 @@ export class Router {
     Router.__instance = this;
   }
 
-  use(pathname: string, blockClass: any) {
-    const route = new Route(pathname, blockClass, { rootQuery: this._rootQuery });
+  use(pathname: string, blockClass: any, meta: { requireAuth?: boolean; requireGuest?: boolean } = {}) {
+    const route = new Route(pathname, blockClass, { rootQuery: this._rootQuery, ...meta });
     this.routes.push(route);
     return this;
   }
@@ -36,6 +37,20 @@ export class Router {
     if (!route) {
       return;
     }
+
+    const { requireAuth, requireGuest } = route.getProps();
+    const state = authStore.getState();
+
+    if (requireAuth && !state.isAuthenticated) {
+      this.go('/login');
+      return;
+    }
+    
+    if (requireGuest && state.isAuthenticated) {
+      this.go('/home');
+      return;
+    }
+
     if (this._currentRoute && this._currentRoute !== route) {
       this._currentRoute.leave();
     }
