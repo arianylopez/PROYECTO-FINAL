@@ -2,7 +2,7 @@
   --bg-primary: #0f1115; /* Fondo ultra oscuro cinematográfico */
   --bg-secondary: #171a21; /* Fondo de tarjetas y elementos */
   --accent-color: #f4e951; /* Amarillo Cinemark Accent */
-  --text-main: #ffffff;
+  --text-main: #fff;
   --text-muted: #9ca3af;
   --border-color: #262932;
   --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -13,7 +13,7 @@
   background-color: var(--bg-primary);
   color: var(--text-main);
   font-family:
-    'Inter',
+    Inter,
     system-ui,
     -apple-system,
     sans-serif;
@@ -34,14 +34,16 @@
   letter-spacing: -0.5px;
   margin: 0;
   text-transform: uppercase;
-  background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
-  -webkit-background-clip: text;
+  background: linear-gradient(180deg, #fff 0%, #cbd5e1 100%);
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .catalog-filters {
   display: flex;
   gap: 2rem;
+  position: relative;
+  min-width: 220px;
 }
 
 .catalog-filters__tab {
@@ -73,7 +75,7 @@
   height: 3px;
   background-color: var(--accent-color);
   border-radius: 3px 3px 0 0;
-  box-shadow: 0 -2px 10px rgba(244, 233, 81, 0.4);
+  box-shadow: 0 -2px 10px rgb(244, 233, 81, 0.4);
 }
 
 .catalog-grid {
@@ -86,7 +88,7 @@
   background-color: var(--bg-secondary);
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 30px rgb(0, 0, 0, 0.3);
   transition: var(--transition-smooth);
   display: flex;
   flex-direction: column;
@@ -95,10 +97,10 @@
 
 .movie-card:hover {
   transform: translateY(-8px);
-  border-color: rgba(254, 240, 138, 0.15);
+  border-color: rgb(254, 240, 138, 0.15);
   box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.6),
-    0 0 15px rgba(244, 233, 81, 0.05);
+    0 20px 40px rgb(0, 0, 0, 0.6),
+    0 0 15px rgb(244, 233, 81, 0.05);
 }
 
 .movie-card__image-wrapper {
@@ -124,9 +126,9 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgb(0, 0, 0, 0.75);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgb(255, 255, 255, 0.15);
   color: var(--text-main);
   padding: 0.25rem 0.6rem;
   border-radius: 6px;
@@ -137,11 +139,8 @@
 
 .movie-card__overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(15, 17, 21, 0.95) 10%, rgba(15, 17, 21, 0.4) 100%);
+  inset: 0;
+  background: linear-gradient(to top, rgb(15, 17, 21, 0.95) 10%, rgb(15, 17, 21, 0.4) 100%);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -167,8 +166,8 @@
 }
 
 .movie-card__btn-trailer {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgb(255, 255, 255, 0.15);
+  border: 1px solid rgb(255, 255, 255, 0.3);
   color: var(--text-main);
   padding: 0.6rem;
   border-radius: 8px;
@@ -246,9 +245,11 @@
   0% {
     background-color: #1a1d24;
   }
+
   50% {
     background-color: #282d3a;
   }
+
   100% {
     background-color: #1a1d24;
   }
@@ -269,10 +270,12 @@
   height: 1.2rem;
   margin-bottom: 0.4rem;
 }
+
 .skeleton-card__genres {
   width: 45%;
   height: 0.85rem;
 }
+
 .skeleton-card__meta {
   width: 90%;
   height: 0.85rem;
@@ -316,7 +319,7 @@
 .catalog-state__btn:hover {
   background-color: var(--accent-color);
   color: var(--bg-primary);
-  box-shadow: 0 5px 20px rgba(244, 233, 81, 0.3);
+  box-shadow: 0 5px 20px rgb(244, 233, 81, 0.3);
 }
 
 .catalog-footer {
@@ -340,7 +343,7 @@
 .catalog-footer__btn:hover:not(:disabled) {
   border-color: var(--accent-color);
   color: var(--accent-color);
-  box-shadow: 0 0 15px rgba(244, 233, 81, 0.1);
+  box-shadow: 0 0 15px rgb(244, 233, 81, 0.1);
 }
 
 .catalog-footer__btn:disabled {
@@ -356,14 +359,11 @@
 
 .catalog-header__subtitle {
   color: #9ca3af;
-  margin: 0.5rem 0 0 0;
+  margin: 0.5rem 0 0;
   font-size: 0.9rem;
 }
 
-.catalog-filters {
-  position: relative;
-  min-width: 220px;
-}
+
 
 .catalog-filters__select {
   appearance: none;
@@ -377,7 +377,7 @@
   font-weight: 800;
   cursor: pointer;
   outline: none;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 20px rgb(0, 0, 0, 0.3);
   transition: all 0.2s ease;
   text-transform: uppercase;
 }
@@ -410,8 +410,8 @@
 .catalog-search-results {
   margin-bottom: 2rem;
   padding: 1rem 1.5rem;
-  background-color: rgba(244, 233, 81, 0.05);
-  border: 1px dashed rgba(244, 233, 81, 0.4);
+  background-color: rgb(244, 233, 81, 0.05);
+  border: 1px dashed rgb(244, 233, 81, 0.4);
   border-radius: 8px;
   color: #e5e7eb;
 }
@@ -439,7 +439,7 @@
 
 .catalog-state__subtitle {
   color: #9ca3af;
-  margin: 0 0 2rem 0;
+  margin: 0 0 2rem;
 }
 
 .catalog-state__btn--primary {

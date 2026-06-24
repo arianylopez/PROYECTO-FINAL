@@ -1,11 +1,11 @@
 /* ScreeningSelection.css */
 .screening-page {
-  color: #ffffff;
+  color: #fff;
   min-height: 100vh;
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: Inter, system-ui, sans-serif;
 }
 
 .screening-page__loading,
@@ -15,12 +15,14 @@
   justify-content: center;
   align-items: center;
 }
+
 .screening-page__loading {
   color: #f4e951;
   font-weight: bold;
 }
+
 .screening-page__error {
-  color: #ffffff;
+  color: #fff;
 }
 
 /* Movie Info Card */
@@ -38,11 +40,11 @@
 .movie-banner__poster {
   width: 90px;
   border-radius: 8px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 16px rgb(0, 0, 0, 0.4);
 }
 
 .movie-banner__title {
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.5rem;
   font-size: 2rem;
   font-weight: 900;
   text-transform: uppercase;
@@ -89,6 +91,7 @@
   overflow-x: auto;
   scrollbar-width: none; /* Firefox */
 }
+
 .date-slider__list::-webkit-scrollbar {
   display: none; /* Chrome/Safari/Edge */
 }
@@ -101,7 +104,7 @@
   cursor: pointer;
   white-space: nowrap;
   background-color: #171a21;
-  color: #ffffff;
+  color: #fff;
   border: 1px solid #374151;
 }
 
@@ -130,7 +133,7 @@
 }
 
 .formats-filter__btn--active {
-  background-color: rgba(244, 233, 81, 0.1);
+  background-color: rgb(244, 233, 81, 0.1);
   border: 1px solid #f4e951;
   color: #f4e951;
 }
@@ -209,7 +212,7 @@
 .time-btn {
   background-color: #0f1115;
   border: 1px solid #4b5563;
-  color: #ffffff;
+  color: #fff;
   padding: 0.75rem 1.75rem;
   border-radius: 8px;
   font-size: 1.1rem;
@@ -276,12 +279,12 @@
   height: 310px;
   object-fit: cover;
   border-radius: 12px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 10px 20px rgb(0, 0, 0, 0.6);
   margin-bottom: 0.8rem;
 }
 
 .upcoming-card__title {
-  margin: 0 0 0.3rem 0;
+  margin: 0 0 0.3rem;
   font-size: 1.05rem;
   white-space: nowrap;
   overflow: hidden;
@@ -289,7 +292,7 @@
 }
 
 .upcoming-card__genres {
-  margin: 0 0 0.2rem 0;
+  margin: 0 0 0.2rem;
   font-size: 0.8rem;
   color: #9ca3af;
 }

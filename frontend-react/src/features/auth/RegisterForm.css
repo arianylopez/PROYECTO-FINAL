@@ -24,7 +24,7 @@
   position: relative;
 }
 
-@media (min-width: 900px) {
+@media (width >= 900px) {
   .auth-layout__cover {
     display: block;
   }
@@ -93,7 +93,7 @@
   border: 1px solid #2a2c36;
   border-radius: 6px;
   padding: 0.875rem 1rem;
-  color: #ffffff;
+  color: #fff;
   font-size: 0.95rem;
   outline: none;
   transition: border-color 0.2s ease;
@@ -167,7 +167,7 @@
   gap: 0.75rem;
   background-color: transparent;
   border: 1px solid #2a2c36;
-  color: #ffffff;
+  color: #fff;
   padding: 0.875rem;
   border-radius: 6px;
   cursor: pointer;
@@ -215,24 +215,21 @@
 }
 
 .register-form__alert--error {
-  background-color: rgba(255, 77, 77, 0.1);
+  background-color: rgb(255, 77, 77, 0.1);
   color: #ff4d4d;
-  border: 1px solid rgba(255, 77, 77, 0.3);
+  border: 1px solid rgb(255, 77, 77, 0.3);
 }
 
 .register-form__alert--success {
-  background-color: rgba(244, 233, 81, 0.1);
+  background-color: rgb(244, 233, 81, 0.1);
   color: #f4e951;
-  border: 1px solid rgba(244, 233, 81, 0.3);
+  border: 1px solid rgb(244, 233, 81, 0.3);
 }
 
 .auth-modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(5, 5, 5, 0.85);
+  inset: 0;
+  background-color: rgb(5, 5, 5, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -246,9 +243,9 @@
   border-radius: 12px;
   max-width: 420px;
   width: 90%;
-  color: #ffffff;
+  color: #fff;
   border: 1px solid #2a2c36;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 40px rgb(0, 0, 0, 0.5);
 }
 
 .auth-modal__title {

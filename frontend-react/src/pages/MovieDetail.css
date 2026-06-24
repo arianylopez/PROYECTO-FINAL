@@ -3,8 +3,8 @@
 .movie-detail {
   background-color: #0f1115;
   min-height: 100vh;
-  color: #ffffff;
-  font-family: 'Inter', system-ui, sans-serif;
+  color: #fff;
+  font-family: Inter, system-ui, sans-serif;
 }
 
 .movie-detail__loading {
@@ -53,7 +53,7 @@
 .movie-detail__poster {
   width: 320px;
   border-radius: 16px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 25px 50px rgb(0, 0, 0, 0.8);
 }
 
 .movie-detail__info {
@@ -65,9 +65,9 @@
   font-size: 3.5rem;
   font-weight: 900;
   text-transform: uppercase;
-  margin: 0 0 1rem 0;
+  margin: 0 0 1rem;
   line-height: 1.1;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 10px rgb(0, 0, 0, 0.5);
 }
 
 .movie-detail__meta {
@@ -99,8 +99,8 @@
 }
 
 .movie-detail__genre {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgb(255, 255, 255, 0.1);
+  border: 1px solid rgb(255, 255, 255, 0.1);
   padding: 0.4rem 1.2rem;
   border-radius: 20px;
   font-size: 0.85rem;
@@ -136,7 +136,7 @@
   letter-spacing: 1px;
   cursor: pointer;
   transition: background-color 0.2s;
-  box-shadow: 0 10px 20px rgba(244, 233, 81, 0.2);
+  box-shadow: 0 10px 20px rgb(244, 233, 81, 0.2);
 }
 
 .movie-detail__btn:hover {
@@ -146,7 +146,7 @@
 .movie-detail__btn--secondary {
   flex: 1;
   background-color: transparent;
-  color: #ffffff;
+  color: #fff;
   padding: 1.2rem;
   border-radius: 8px;
   border: 1px solid #4b5563;
@@ -199,7 +199,7 @@
   padding: 2.5rem;
   border-radius: 16px;
   border: 1px solid #262932;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 30px rgb(0, 0, 0, 0.3);
 }
 
 .reviews-section__stats {
@@ -212,7 +212,7 @@
   padding-right: 3rem;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .reviews-section__stats {
     border-right: none;
     padding-right: 0;
@@ -226,7 +226,7 @@
   font-weight: 900;
   color: #fff;
   line-height: 1;
-  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 4px 10px rgb(0, 0, 0, 0.5);
 }
 
 .reviews-section__stats-stars {
@@ -289,9 +289,11 @@
 .reviews-section__bar-fill--pos {
   background-color: #4ade80;
 }
+
 .reviews-section__bar-fill--neu {
   background-color: #facc15;
 }
+
 .reviews-section__bar-fill--neg {
   background-color: #f87171;
 }
@@ -336,7 +338,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1.5rem;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgb(0, 0, 0, 0.2);
   padding: 1.5rem;
   border-radius: 12px;
 }
@@ -366,16 +368,14 @@
 }
 
 .reviews-section__form-error {
-  background-color: rgba(239, 68, 68, 0.1);
+  background-color: rgb(239, 68, 68, 0.1);
   color: #ef4444;
   padding: 1rem 1.5rem;
   border-radius: 8px;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border: 1px solid rgb(239, 68, 68, 0.3);
   font-weight: bold;
 }
 
-.reviews-section__form-group {
-}
 
 .reviews-section__form-label {
   display: block;
@@ -397,7 +397,7 @@
 
 .reviews-section__form-textarea {
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgb(0, 0, 0, 0.2);
   border: 1px solid #374151;
   border-radius: 12px;
   color: #fff;
@@ -454,6 +454,7 @@
   margin-bottom: 2rem;
   scrollbar-width: none;
 }
+
 .reviews-section__filters::-webkit-scrollbar {
   display: none;
 }
@@ -499,7 +500,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgb(0, 0, 0, 0.1);
 }
 
 .review-card__header {
@@ -564,6 +565,7 @@
   display: flex;
   gap: 0.4rem;
 }
+
 .star-rating__btn {
   background: none;
   border: none;
@@ -572,9 +574,11 @@
   transition: color 0.2s;
   outline: none;
 }
+
 .star-rating__btn--active {
   color: #f4e951;
 }
+
 .star-rating__btn--inactive {
   color: #374151;
 }

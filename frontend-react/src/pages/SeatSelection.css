@@ -2,8 +2,8 @@
 .seat-page {
   position: relative;
   min-height: 100vh;
-  color: #ffffff;
-  font-family: 'Inter', system-ui, sans-serif;
+  color: #fff;
+  font-family: Inter, system-ui, sans-serif;
   overflow: hidden;
 }
 
@@ -41,7 +41,7 @@
 .seat-page__bg-overlay {
   position: absolute;
   inset: 0;
-  background-color: rgba(15, 17, 21, 0.75);
+  background-color: rgb(15, 17, 21, 0.75);
 }
 
 .seat-page__content {
@@ -52,7 +52,7 @@
 
 /* Reservation Alert */
 .reservation-alert {
-  background-color: rgba(244, 233, 81, 0.1);
+  background-color: rgb(244, 233, 81, 0.1);
   border: 1px solid #f4e951;
   color: #fff;
   padding: 1rem 2rem;
@@ -63,7 +63,7 @@
   gap: 1.5rem;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 10px 30px rgba(244, 233, 81, 0.1);
+  box-shadow: 0 10px 30px rgb(244, 233, 81, 0.1);
 }
 
 .reservation-alert__title {
@@ -105,7 +105,7 @@
 }
 
 .reservation-alert__btn-cancel:hover {
-  background-color: rgba(239, 68, 68, 0.1);
+  background-color: rgb(239, 68, 68, 0.1);
 }
 
 /* Booking Steps */
@@ -174,7 +174,7 @@
 .movie-poster-card__img {
   width: 100%;
   border-radius: 12px;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 15px 30px rgb(0, 0, 0, 0.5);
   border: 1px solid #262932;
   margin-bottom: 1rem;
 }
@@ -206,7 +206,7 @@
 .movie-poster-card__session {
   margin-top: 1.5rem;
   padding: 1.5rem;
-  background-color: rgba(23, 26, 33, 0.6);
+  background-color: rgb(23, 26, 33, 0.6);
   border-radius: 12px;
   border: 1px solid #262932;
 }
@@ -238,18 +238,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: rgba(15, 17, 21, 0.8);
+  background-color: rgb(15, 17, 21, 0.8);
   padding: 3rem 2rem;
   border-radius: 16px;
   border: 1px solid #262932;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 40px rgb(0, 0, 0, 0.5);
 }
 
 .seat-map-section__screen {
   width: 80%;
   max-width: 400px;
   height: 40px;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgb(255, 255, 255, 0.05);
   clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%);
   display: flex;
   justify-content: center;
@@ -259,7 +259,7 @@
   font-weight: 900;
   font-size: 0.85rem;
   margin-bottom: 4rem;
-  box-shadow: 0 10px 20px rgba(255, 255, 255, 0.02);
+  box-shadow: 0 10px 20px rgb(255, 255, 255, 0.02);
 }
 
 .seat-grid {
@@ -280,9 +280,11 @@
   color: #6b7280;
   font-size: 0.9rem;
 }
+
 .seat-row__label--left {
   text-align: right;
 }
+
 .seat-row__label--right {
   text-align: left;
 }
@@ -302,7 +304,7 @@
   font-weight: 800;
   font-size: 0.75rem;
   transition: all 0.15s;
-  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 -3px 0 rgb(0, 0, 0, 0.15);
 }
 
 .seat-item--corridor {
@@ -314,22 +316,25 @@
    Let's create classes for seat states to make React code cleaner */
 .seat-item--available {
   background-color: #e5e7eb;
-  color: #000000;
+  color: #000;
   cursor: pointer;
 }
+
 .seat-item--locked {
   background-color: #14532d;
-  color: #ffffff;
+  color: #fff;
   cursor: not-allowed;
 }
+
 .seat-item--sold {
   background-color: #374151;
   color: #9ca3af;
   cursor: not-allowed;
 }
+
 .seat-item--selected {
   background-color: #f4e951;
-  color: #000000;
+  color: #000;
   border: 2px solid #ca8a04;
 }
 
@@ -356,15 +361,19 @@
   height: 14px;
   border-radius: 3px;
 }
+
 .seat-legend__box--available {
   background-color: #e5e7eb;
 }
+
 .seat-legend__box--locked {
   background-color: #14532d;
 }
+
 .seat-legend__box--selected {
   background-color: #f4e951;
 }
+
 .seat-legend__box--sold {
   background-color: #374151;
 }
@@ -373,7 +382,7 @@
 .booking-summary {
   flex: 1 1 300px;
   max-width: 380px;
-  background-color: rgba(23, 26, 33, 0.8);
+  background-color: rgb(23, 26, 33, 0.8);
   border: 1px solid #262932;
   padding: 2.5rem 2rem;
   border-radius: 16px;
@@ -381,13 +390,13 @@
 }
 
 .booking-summary__error {
-  background-color: rgba(239, 68, 68, 0.1);
+  background-color: rgb(239, 68, 68, 0.1);
   color: #ef4444;
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
   font-size: 0.9rem;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border: 1px solid rgb(239, 68, 68, 0.3);
 }
 
 .booking-summary__title {
@@ -462,7 +471,7 @@
 .booking-summary__total-val {
   font-size: 1.8rem;
   font-weight: 900;
-  color: #ffffff;
+  color: #fff;
 }
 
 .booking-summary__actions {
@@ -481,7 +490,7 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   background-color: #f4e951;
-  color: #000000;
+  color: #000;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -498,7 +507,7 @@
   border-radius: 8px;
   background-color: transparent;
   border: 1px solid #4b5563;
-  color: #ffffff;
+  color: #fff;
   font-weight: 700;
   font-size: 1rem;
   text-transform: uppercase;
