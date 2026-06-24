@@ -48,8 +48,8 @@ export const ResetPasswordForm = () => {
           {errorMsg && <div className="register-form__alert register-form__alert--error">{errorMsg}</div>}
 
           <div className="register-form__field">
-            <label className="register-form__label">Nueva Contraseña</label>
-            <input className="register-form__input" type="password" {...register('password')} />
+            <label className="register-form__label" htmlFor="password">Nueva Contraseña</label>
+            <input id="password" className="register-form__input" type="password" {...register('password')} />
             {errors.password && <span className="register-form__error">{errors.password?.message as string}</span>}
           </div>
 

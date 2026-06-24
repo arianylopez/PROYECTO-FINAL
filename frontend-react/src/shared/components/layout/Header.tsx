@@ -82,9 +82,9 @@ export const Header = () => {
       <header className="header">
         
         <div className="header__pill">
-          <div className="header__logo" onClick={() => navigate('/home')} title="Ir al Inicio">
+          <Link to="/home" className="header__logo" title="Ir al Inicio">
             CINEMAPLUS
-          </div>
+          </Link>
         </div>
 
         <div className="header__pill">

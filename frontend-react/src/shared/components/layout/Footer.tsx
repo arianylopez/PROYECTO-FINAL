@@ -11,8 +11,8 @@ export const Footer = () => {
         <div>
           <h3 className="footer__links-title">Explorar</h3>
           <ul className="footer__links-list">
-            <li><a href="#" className="footer__link">Cartelera</a></li>
-            <li><a href="#" className="footer__link">Próximos Estrenos</a></li>
+            <li><a href="/home" className="footer__link">Cartelera</a></li>
+            <li><a href="/home" className="footer__link">Próximos Estrenos</a></li>
           </ul>
         </div>
       </div>

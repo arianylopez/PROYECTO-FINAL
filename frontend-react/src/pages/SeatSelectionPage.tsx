@@ -248,6 +248,9 @@ export const SeatSelectionPage = () => {
                         <div
                           key={seat.id}
                           onClick={() => toggleSeat(seat)}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') toggleSeat(seat); }}
+                          role="button"
+                          tabIndex={0}
                           title={`${row}-${seat.col}`}
                           className={`seat-item ${stateClass}`}
                           style={dimStyle}

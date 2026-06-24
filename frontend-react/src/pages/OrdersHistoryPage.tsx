@@ -157,7 +157,7 @@ export const OrdersHistoryPage = () => {
                           <h3 className="tickets__section-title">Próximas Funciones</h3>
                           <div className="tickets__list">
                             {upcomingOrders.map(order => (
-                              <div key={order.id} onClick={() => setSelectedOrder(order)} className={`ticket-card ${selectedOrder?.id === order.id ? 'ticket-card--active' : ''}`}>
+                              <div key={order.id} onClick={() => setSelectedOrder(order)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setSelectedOrder(order); }} role="button" tabIndex={0} className={`ticket-card ${selectedOrder?.id === order.id ? 'ticket-card--active' : ''}`}>
                                 <img src={order.poster_url} className="ticket-card__poster" alt="Poster" />
                                 <div className="ticket-card__info">
                                   <div className="ticket-card__header">
@@ -178,7 +178,7 @@ export const OrdersHistoryPage = () => {
                           <h3 className="tickets__section-title">Historial</h3>
                           <div className="tickets__list">
                             {pastOrders.map(order => (
-                              <div key={order.id} onClick={() => setSelectedOrder(order)} className={`ticket-card ticket-card--past ${selectedOrder?.id === order.id ? 'ticket-card--active' : ''}`}>
+                              <div key={order.id} onClick={() => setSelectedOrder(order)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setSelectedOrder(order); }} role="button" tabIndex={0} className={`ticket-card ticket-card--past ${selectedOrder?.id === order.id ? 'ticket-card--active' : ''}`}>
                                 <img src={order.poster_url} className="ticket-card__poster ticket-card__poster--past" alt="Poster" />
                                 <div className="ticket-card__info">
                                   <div className="ticket-card__header">
@@ -240,7 +240,7 @@ export const OrdersHistoryPage = () => {
                   ) : (
                     <div className="watchlist-grid">
                       {watchlist.map(item => (
-                        <div key={item.id} onClick={() => navigate(`/movie/${item.movie_id}`)} className="watchlist-card">
+                        <div key={item.id} onClick={() => navigate(`/movie/${item.movie_id}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/movie/${item.movie_id}`); }} role="button" tabIndex={0} className="watchlist-card">
                           <img src={item.poster_url} alt={item.movie_title} className="watchlist-card__poster" />
                           <div className="watchlist-card__body"><h3 className="watchlist-card__title">{item.movie_title}</h3></div>
                           <button onClick={(e) => handleRemoveFromWatchlist(item.movie_id, e)} className="watchlist-card__remove">✕</button>

@@ -203,7 +203,7 @@ export const ScreeningSelectionPage = () => {
         <div className="upcoming-slider">
           <div ref={sliderRef} className="upcoming-slider__track">
             {upcomingMovies.map(upMovie => (
-              <div key={upMovie.id} onClick={() => { navigate(`/movie/${upMovie.id}`); window.scrollTo(0,0); }} className="upcoming-card">
+              <div key={upMovie.id} onClick={() => { navigate(`/movie/${upMovie.id}`); window.scrollTo(0,0); }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { navigate(`/movie/${upMovie.id}`); window.scrollTo(0,0); } }} role="button" tabIndex={0} className="upcoming-card">
                 <img src={upMovie.poster_url} alt={upMovie.title} className="upcoming-card__poster" />
                 <h4 className="upcoming-card__title">{upMovie.title}</h4>
                 <p className="upcoming-card__genres">{upMovie.genres.slice(0, 2).join(', ')}</p>

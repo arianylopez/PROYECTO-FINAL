@@ -171,15 +171,15 @@ export const LoginForm = () => {
           {serverError && <div className="register-form__alert register-form__alert--error">{serverError}</div>}
 
           <div className="register-form__field">
-            <label className="register-form__label">Email</label>
-            <input className="register-form__input" type="email" placeholder="name@example.com" {...register('email')} disabled={isLoading} />
+            <label className="register-form__label" htmlFor="email">Email</label>
+            <input id="email" className="register-form__input" type="email" placeholder="name@example.com" {...register('email')} disabled={isLoading} />
             {errors.email && <span className="register-form__error">{errors.email.message}</span>}
           </div>
 
           <div className="register-form__field">
-            <label className="register-form__label">Password</label>
+            <label className="register-form__label" htmlFor="password">Password</label>
             <div className="register-form__input-wrapper">
-              <input className="register-form__input" type="password" placeholder="Enter your password" {...register('password')} disabled={isLoading} />
+              <input id="password" className="register-form__input" type="password" placeholder="Enter your password" {...register('password')} disabled={isLoading} />
             </div>
             {errors.password && <span className="register-form__error">{errors.password.message}</span>}
           </div>
@@ -239,8 +239,8 @@ export const LoginForm = () => {
             {modalError && <div className="register-form__alert register-form__alert--error" style={{marginBottom: '1rem'}}>{modalError}</div>}
             
             <div className="register-form__field" style={{marginBottom: '1.5rem'}}>
-              <label className="register-form__label">Fecha de nacimiento</label>
-              <input type="date" className="register-form__input" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} disabled={isGoogleLoading} />
+              <label className="register-form__label" htmlFor="birthDate">Fecha de nacimiento</label>
+              <input id="birthDate" type="date" className="register-form__input" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} disabled={isGoogleLoading} />
             </div>
 
             <button type="button" className="register-form__submit" onClick={handleGoogleRegisterComplete} disabled={isGoogleLoading} style={{width: '100%'}}>

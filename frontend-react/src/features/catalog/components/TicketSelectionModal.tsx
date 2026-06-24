@@ -126,7 +126,9 @@ export const TicketSelectionModal: React.FC<TicketSelectionModalProps> = ({
             onClick={onClose}
             style={{ flex: 1, padding: '1rem', backgroundColor: 'transparent', color: '#9ca3af', border: '1px solid #4b5563', borderRadius: '8px', fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s' }}
             onMouseOver={(e) => e.currentTarget.style.color = '#fff'}
+            onFocus={(e) => e.currentTarget.style.color = '#fff'}
             onMouseOut={(e) => e.currentTarget.style.color = '#9ca3af'}
+            onBlur={(e) => e.currentTarget.style.color = '#9ca3af'}
           >
             Cancelar
           </button>

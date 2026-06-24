@@ -112,6 +112,9 @@ export const HomePage = () => {
                 <div 
                   key={`rec-${item.id}`} 
                   onClick={() => navigate(`/movie/${item.id}`)} 
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/movie/${item.id}`); }}
+                  role="button"
+                  tabIndex={0}
                   className="recs__card"
                   style={{ 
                     minWidth: isDismissed ? '0px' : '260px', 

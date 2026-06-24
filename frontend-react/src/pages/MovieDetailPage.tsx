@@ -335,13 +335,14 @@ export const MovieDetailPage = () => {
                 )}
                 
                 <div className="reviews-section__form-group">
-                  <label className="reviews-section__form-label">Tu Calificación <span>*</span></label>
+                  <p className="reviews-section__form-label">Tu Calificación <span>*</span></p>
                   <StarRatingInput value={rating} hover={hoverRating} onRate={setRating} onHover={setHoverRating} />
                 </div>
 
                 <div className="reviews-section__form-group">
-                  <label className="reviews-section__form-label">Tu Reseña <span className="optional">(Opcional)</span></label>
+                  <label className="reviews-section__form-label" htmlFor="reviewText">Tu Reseña <span className="optional">(Opcional)</span></label>
                   <textarea 
+                    id="reviewText"
                     value={reviewText}
                     onChange={(e) => setReviewText(e.target.value)}
                     placeholder="¿Qué te pareció la película? Escribe tu opinión aquí..."

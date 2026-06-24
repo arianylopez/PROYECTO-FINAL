@@ -46,8 +46,8 @@ export const ForgotPasswordForm = () => {
           {message && <div className="register-form__alert register-form__alert--success">{message}</div>}
 
           <div className="register-form__field">
-            <label className="register-form__label">Email</label>
-            <input className="register-form__input" type="email" placeholder="name@example.com" {...register('email')} disabled={isLoading} />
+            <label className="register-form__label" htmlFor="email">Email</label>
+            <input id="email" className="register-form__input" type="email" placeholder="name@example.com" {...register('email')} disabled={isLoading} />
             {errors.email && <span className="register-form__error">{errors.email?.message as string}</span>}
           </div>
 

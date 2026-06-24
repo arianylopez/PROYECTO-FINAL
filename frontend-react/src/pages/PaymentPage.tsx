@@ -196,9 +196,9 @@ export const PaymentPage = () => {
             {paymentMethod === 'card' && (
               <div className="card-form">
                 <div className="card-form__group">
-                  <label className="card-form__label">Número de Tarjeta</label>
+                  <label className="card-form__label" htmlFor="cardNumber">Número de Tarjeta</label>
                   <div className="card-form__input-wrapper">
-                    <input type="text" value={cardNumber} onChange={handleCardChange} onBlur={handleCardBlur} placeholder="0000 0000 0000 0000" className={`card-form__input ${luhnError ? 'card-form__input--error' : ''}`} />
+                    <input id="cardNumber" type="text" value={cardNumber} onChange={handleCardChange} onBlur={handleCardBlur} placeholder="0000 0000 0000 0000" className={`card-form__input ${luhnError ? 'card-form__input--error' : ''}`} />
                     <span className="card-form__brand">{cardBrand !== 'Unknown' ? cardBrand : '💳'}</span>
                   </div>
                   {luhnError && <span className="card-form__error-text">Número de tarjeta inválido</span>}
@@ -206,22 +206,22 @@ export const PaymentPage = () => {
 
                 <div className="card-form__row">
                   <div className="card-form__group">
-                    <label className="card-form__label">Vencimiento (MM / AA)</label>
-                    <div className="card-form__date-group">
-                      <input type="text" placeholder="MM" value={cardMonth} onChange={(e) => setCardMonth(e.target.value.replace(/\D/g,'').slice(0,2))} className="card-form__input card-form__input--center" />
-                      <input type="text" placeholder="AA" value={cardYear} onChange={(e) => setCardYear(e.target.value.replace(/\D/g,'').slice(0,2))} className="card-form__input card-form__input--center" />
+                    <p className="card-form__label" id="expiryLabel">Vencimiento (MM / AA)</p>
+                    <div className="card-form__date-group" role="group" aria-labelledby="expiryLabel">
+                      <input aria-label="Mes de Vencimiento" type="text" placeholder="MM" value={cardMonth} onChange={(e) => setCardMonth(e.target.value.replace(/\D/g,'').slice(0,2))} className="card-form__input card-form__input--center" />
+                      <input aria-label="Año de Vencimiento" type="text" placeholder="AA" value={cardYear} onChange={(e) => setCardYear(e.target.value.replace(/\D/g,'').slice(0,2))} className="card-form__input card-form__input--center" />
                     </div>
                     {expired && <span className="card-form__error-text">La tarjeta está vencida</span>}
                   </div>
                   <div className="card-form__group">
-                    <label className="card-form__label">CVV</label>
-                    <input type="password" value={cardCvv} onChange={(e) => setCardCvv(e.target.value.replace(/\D/g,'').slice(0, cardBrand === 'Amex' ? 4 : 3))} placeholder={cardBrand === 'Amex' ? '1234' : '123'} className="card-form__input" />
+                    <label className="card-form__label" htmlFor="cardCvv">CVV</label>
+                    <input id="cardCvv" type="password" value={cardCvv} onChange={(e) => setCardCvv(e.target.value.replace(/\D/g,'').slice(0, cardBrand === 'Amex' ? 4 : 3))} placeholder={cardBrand === 'Amex' ? '1234' : '123'} className="card-form__input" />
                   </div>
                 </div>
 
                 <div className="card-form__group">
-                  <label className="card-form__label">Nombre del Titular</label>
-                  <input type="text" value={cardName} onChange={(e) => setCardName(e.target.value)} placeholder="COMO APARECE EN LA TARJETA" className="card-form__input card-form__input--uppercase" />
+                  <label className="card-form__label" htmlFor="cardName">Nombre del Titular</label>
+                  <input id="cardName" type="text" value={cardName} onChange={(e) => setCardName(e.target.value)} placeholder="COMO APARECE EN LA TARJETA" className="card-form__input card-form__input--uppercase" />
                 </div>
               </div>
             )}

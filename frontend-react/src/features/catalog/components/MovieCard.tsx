@@ -12,7 +12,14 @@ export const MovieCard = ({ movie }: MovieCardProps) => {
   const friendlyDuration = `${hours}h ${minutes}m`;
 
   return (
-    <div className="movie-card" onClick={() => navigate(`/movie/${movie.id}`)} style={{ cursor: 'pointer' }}>
+    <div 
+      className="movie-card" 
+      onClick={() => navigate(`/movie/${movie.id}`)} 
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/movie/${movie.id}`); }}
+      role="button"
+      tabIndex={0}
+      style={{ cursor: 'pointer' }}
+    >
       <div className="movie-card__image-wrapper">
         <div className="movie-card__badge-rating">
           {movie.rating_classification}
