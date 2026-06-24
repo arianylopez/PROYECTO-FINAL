@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
-import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
@@ -8,7 +8,7 @@ export default defineConfig({
     headers: {
       'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
       'Cross-Origin-Embedder-Policy': 'unsafe-none',
-    }
+    },
   },
   test: {
     environment: 'jsdom',
@@ -18,7 +18,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html'],
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/tests/**', 'src/**/*.d.ts', 'src/**/main.tsx', 'src/vite-env.d.ts']
-    }
-  }
-})
+      exclude: ['src/tests/**', 'src/**/*.d.ts', 'src/**/main.tsx', 'src/vite-env.d.ts'],
+    },
+  },
+});
