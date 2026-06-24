@@ -10,6 +10,16 @@
     "alpha-value-notation": null,
     "color-function-alias-notation": null,
     "declaration-block-no-redundant-longhand-properties": null,
-    "shorthand-property-no-redundant-values": null
+    "shorthand-property-no-redundant-values": null,
+    "order/properties-order": null,
+    "color-hex-length": null,
+    "font-family-name-quotes": null,
+    "rule-empty-line-before": null,
+    "property-no-vendor-prefix": null,
+    "media-feature-range-notation": null,
+    "block-no-empty": null,
+    "no-duplicate-selectors": null,
+    "declaration-block-single-line-max-declarations": null,
+    "declaration-block-no-shorthand-property-overrides": null
   }
 }
