@@ -27,14 +27,6 @@ export const TicketPage = () => {
     return s ? `${s.row}${s.col}` : '';
   }).filter(Boolean);
 
-  const handleDownloadTicket = () => {
-    alert(`Generando Entradas Digitales (PDF) para la orden ${res.order_id}...\n\n(Simulación académica completada)`);
-  };
-
-  const handleDownloadReceipt = () => {
-    alert(`Descargando Comprobante Fiscal (PDF) por Bs. ${invoice.total.toFixed(2)}...\n\n(Simulación académica completada)`);
-  };
-
   const handleGoHome = () => {
     sessionStorage.removeItem('ticketData');
     navigate('/home');
@@ -169,14 +161,6 @@ export const TicketPage = () => {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ display: 'flex', gap: '1rem' }}>
-                <button onClick={handleDownloadTicket} style={{ flex: 1, backgroundColor: '#f4e951', color: '#000', padding: '1rem', borderRadius: '8px', border: 'none', fontWeight: '900', textTransform: 'uppercase', fontSize: '0.9rem', cursor: 'pointer', transition: 'background-color 0.2s' }}>
-                  Descargar Entrada
-                </button>
-                <button onClick={handleDownloadReceipt} style={{ flex: 1, backgroundColor: 'transparent', color: '#fff', padding: '1rem', borderRadius: '8px', border: '1px solid #4b5563', fontWeight: '700', textTransform: 'uppercase', fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.2s' }} onMouseOver={(e) => e.currentTarget.style.borderColor = '#fff'} onMouseOut={(e) => e.currentTarget.style.borderColor = '#4b5563'}>
-                  Comprobante
-                </button>
-              </div>
               <button onClick={handleGoHome} style={{ width: '100%', backgroundColor: '#262932', color: '#fff', padding: '1rem', borderRadius: '8px', border: '1px solid #374151', fontWeight: '700', textTransform: 'uppercase', fontSize: '0.9rem', cursor: 'pointer', marginTop: '0.5rem' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#374151'} onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#262932'}>
                 Volver al Catálogo
               </button>

@@ -406,18 +406,6 @@ export const Header = () => {
           <div className="logo" onClick={() => navigate('/home')} title="Ir al Inicio">
             CINEMAPLUS
           </div>
-          
-          <nav className="desktop-nav">
-            <button className={`nav-item ${isActive('/home') ? 'active' : ''}`} onClick={() => navigate('/home')}>
-              Cartelera
-            </button>
-            <button className="nav-item" onClick={() => navigate('/home')}>
-              Próximamente
-            </button>
-            <button className="nav-item" onClick={() => alert('Próximamente: Cines Disponibles')}>
-              Cines
-            </button>
-          </nav>
         </div>
 
         <div className="header-pill">

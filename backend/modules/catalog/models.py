@@ -71,7 +71,6 @@ class Room(models.Model):
 class Seat(models.Model):
     SEAT_TYPES = [
         ('normal', 'Normal'),
-        ('vip', 'VIP / Preferencial'),
         ('wheelchair', 'Silla de Ruedas'),
         ('corridor', 'Pasillo (Vacío)'), 
     ]
