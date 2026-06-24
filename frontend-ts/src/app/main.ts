@@ -4,12 +4,16 @@ import { RegisterPage } from '../pages/register/RegisterPage';
 import { MovieDetailPage } from '../pages/movie-detail/MovieDetailPage'
 import { routerInstance } from '../shared/lib/router/Router';
 import { withMainLayout } from '../shared/ui/layout/MainLayout';
+import { ForgotPasswordPage } from '../pages/forgot-password/ForgotPasswordPage';
+import { ResetPasswordPage } from '../pages/reset-password/ResetPasswordPage';
 import './styles/global.css';
 
 routerInstance
   .use('/home', withMainLayout(HomePage))
   .use('/login', LoginPage, { requireGuest: true })
   .use('/register', RegisterPage, { requireGuest: true })
+  .use('/forgot-password', ForgotPasswordPage, { requireGuest: true })
+  .use('/reset-password', ResetPasswordPage, { requireGuest: true })
   .use('/movie/:id', withMainLayout(MovieDetailPage))
   .start();
 

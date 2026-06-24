@@ -1,4 +1,4 @@
-import Block from '../../../lib/block/Block';
+import Block from '../../lib/block/Block';
 import './Loader.css';
 
 export class Loader extends Block {

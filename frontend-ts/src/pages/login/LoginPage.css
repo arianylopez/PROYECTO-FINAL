@@ -1,76 +1,96 @@
 .auth-layout {
   display: flex;
+  width: 100%;
   min-height: 100vh;
-  background-color: #0b0c10;
+  background-color: #050505;
   color: #fff;
 }
 
 .auth-layout__sidebar {
+  z-index: 2;
   display: flex;
   flex: 1;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 2rem;
 }
 
 .auth-layout__cover { 
+  position: relative;
   display: none;
   flex: 1.2;
-  background-color: #1a1c23;
+  background-image: url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070&auto=format&fit=crop');
+  background-position: center;
+  background-size: cover;
 }
 
-@media (width >= 992px) {
+@media (width >= 900px) {
   .auth-layout__cover {
     display: block;
   }
 }
 
+.auth-layout__cover::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -2px;
+  width: 50%;
+  background: linear-gradient(to right, #050505 0%, transparent 100%);
+  content: '';
+}
+
 .auth-form {
+  display: flex;
   width: 100%;
-  max-width: 400px;
+  max-width: 380px;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 .auth-form__header {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .auth-form__logo {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   gap: 0.5rem;
 }
 
 .auth-form__logo-icon {
-  color: #4285F4;
+  color: #f4e951;
 }
 
 .auth-form__logo-text {
-  font-size: 1.25rem;
+  font-size: 1.75rem;
   font-weight: bold;
 }
 
 .auth-form__title {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .auth-form__subtitle {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   color: #a0a0a0;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 
 /* Campos de entrada */
 .auth-form__field {
-  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
 .auth-form__label {
-  display: block;
-  margin-bottom: 0.5rem;
   color: #e0e0e0;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
 }
 
 .auth-form__password-wrapper {
@@ -80,17 +100,18 @@
 .auth-form__input {
   width: 100%;
   box-sizing: border-box;
-  padding: 0.75rem 1rem;
-  border: 1px solid #2e313c;
+  padding: 0.875rem 1rem;
+  border: 1px solid #2a2c36;
   border-radius: 6px;
-  background-color: #1f2128;
+  background-color: #16181f;
   color: #fff;
   font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s ease;
 }
 
 .auth-form__input:focus {
-  border-color: #4285F4;
-  outline: none;
+  border-color: #f4e951;
 }
 
 .auth-form__input--password {
@@ -107,7 +128,8 @@
 
 .auth-form__link {
   color: #f4e951;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
+  font-weight: 500;
   text-decoration: none;
 }
 
@@ -122,23 +144,24 @@
 /* Botones */
 .auth-form__submit {
   width: 100%;
-  padding: 0.75rem;
+  padding: 1rem;
   border: none;
   border-radius: 6px;
-  background-color: #4285F4;
-  color: #fff;
+  margin-top: 0.5rem;
+  background-color: #f4e951;
+  color: #0b0d14;
   cursor: pointer;
   font-size: 1rem;
-  font-weight: bold;
-  transition: background-color 0.2s;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
 }
 
-.auth-form__submit:hover {
-  background-color: #357ae8;
+.auth-form__submit:hover:not(:disabled) {
+  background-color: #e0d540;
 }
 
 .auth-form__submit:disabled {
-  background-color: #2e313c;
+  background-color: #706d33;
   cursor: not-allowed;
 }
 
@@ -167,19 +190,20 @@
   width: 100%;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem;
-  border: 1px solid #2e313c;
+  padding: 0.875rem;
+  border: 1px solid #2a2c36;
   border-radius: 6px;
   background-color: transparent;
   color: #fff;
   cursor: pointer;
   font-size: 0.95rem;
+  font-weight: 500;
   gap: 0.75rem;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
 }
 
 .auth-form__google-btn:hover {
-  background-color: #1f2128;
+  background-color: #16181f;
 }
 
 .auth-form__footer {

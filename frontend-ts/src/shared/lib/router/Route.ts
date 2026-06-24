@@ -1,7 +1,5 @@
 import Block from '../block/Block';
 import { renderDOM } from '../block/renderDOM';
-import { authStore } from '../../store/authStore';
-
 export class Route {
   private _pathname: string;
   private _blockClass: any;

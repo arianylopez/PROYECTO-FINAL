@@ -4,6 +4,8 @@ import './Header.css';
 import { routerInstance } from '../../shared/lib/router/Router';
 import { authApi } from '../../shared/api/authApi';
 
+import { authStore } from '../../shared/store/authStore';
+
 export class Header extends Block {
   protected template = template;
 
@@ -11,13 +13,14 @@ export class Header extends Block {
     super({ isAuthenticated: false, user: null });
   }
 
-  protected async componentDidMount() {
-    try {
-      const user = await authApi.getMe();
-      this.setProps({ isAuthenticated: true, user });
-    } catch (error) {
-      this.setProps({ isAuthenticated: false, user: null });
-    }
+  protected componentDidMount() {
+    const state = authStore.getState();
+    this.setProps({ isAuthenticated: state.isAuthenticated, user: state.user });
+    
+    // Opcional: escuchar cambios en el authStore si el usuario se desloguea desde otra pestaña
+    authStore.on('changed', (newState: any) => {
+      this.setProps({ isAuthenticated: newState.isAuthenticated, user: newState.user });
+    });
   }
 
   protected events = {
