@@ -172,8 +172,8 @@ export class RegisterPage extends Block {
     
     try {
       const response = await authApi.register({
-        name: pendingGoogleData?.name,
-        email: pendingGoogleData?.email,
+        name: pendingGoogleData?.name || '',
+        email: pendingGoogleData?.email || '',
         password: "GAuth_Secure123!",
         birth_date: birthDateValue,
         device_fingerprint: navigator.userAgent,

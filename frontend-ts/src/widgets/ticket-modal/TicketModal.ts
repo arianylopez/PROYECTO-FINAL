@@ -1,7 +1,7 @@
 import Block from '../../shared/lib/block/Block';
 import template from './TicketModal.hbs?raw';
 import './TicketModal.css';
-import Handlebars from 'handlebars';
+
 
 export interface TicketType {
   id: string;

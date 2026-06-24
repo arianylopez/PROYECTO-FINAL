@@ -1,21 +1,26 @@
 import { apiClient } from './apiClient';
+import type { components } from './schema';
+
+export type Movie = components['schemas']['MovieResponse'];
+export type CatalogResponse = components['schemas']['CatalogResponse'];
+export type GenreResponse = components['schemas']['GenreResponse'];
+export type MovieDetail = components['schemas']['MovieDetailResponse'];
 
 export const catalogApi = {
-  getMovies: async (page = 1, size = 12) => {
-    const response = await apiClient.get(`/catalog/movies?page=${page}&size=${size}`);
-    return response.data.items || response.data.results || response.data.data || response.data;
+  getMovies: async (page = 1, size = 12): Promise<Movie[]> => {
+    const response = await apiClient.get<CatalogResponse>(`/catalog/movies?page=${page}&size=${size}`);
+    return response.data.items;
   },
-  getFeatured: async () => {
-    const response = await apiClient.get(`/catalog/movies?page=1&size=1`);
-    const movies = response.data.items || response.data.results || response.data.data || response.data;
-    return movies[0];
+  getFeatured: async (): Promise<Movie> => {
+    const response = await apiClient.get<CatalogResponse>(`/catalog/movies?page=1&size=1`);
+    return response.data.items[0];
   },
-  getGenres: async () => {
-    const response = await apiClient.get('/catalog/genres');
+  getGenres: async (): Promise<GenreResponse> => {
+    const response = await apiClient.get<GenreResponse>('/catalog/genres');
     return response.data;
   },
-  getMovieById: async (id: string) => {
-    const response = await apiClient.get(`/catalog/movies/${id}`);
+  getMovieById: async (id: string): Promise<MovieDetail> => {
+    const response = await apiClient.get<MovieDetail>(`/catalog/movies/${id}`);
     return response.data;
   }
 };

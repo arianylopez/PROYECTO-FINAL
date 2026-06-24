@@ -3,7 +3,7 @@ import template from './PaymentPage.hbs?raw';
 import './PaymentPage.css';
 import { routerInstance } from '../../shared/lib/router/Router';
 import { authStore } from '../../shared/store/authStore';
-import { fetchScreeningSeats, processScreeningPurchase, type ScreeningSeatsResponse } from '../../features/catalog/catalogApi';
+import { fetchScreeningSeats, processScreeningPurchase } from '../../features/catalog/catalogApi';
 import { validateLuhn, detectCardBrand, isCardExpired } from '../../shared/utils/cardUtils';
 
 export class PaymentPage extends Block {

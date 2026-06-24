@@ -114,10 +114,10 @@ export class ScreeningSelectionPage extends Block {
       selectedFormat: 'Todos'
     });
 
-    this.computeRooms(groupedByDate, selectedDate, 'Todos');
+    this.computeRooms(selectedDate, 'Todos');
   }
 
-  private computeRooms(groupedByDate: Record<string, Screening[]> | null, date: string, format: string) {
+  private computeRooms(date: string, format: string) {
     if (!this.props.data) return;
 
     const data: MovieScreeningsResponse = this.props.data;
@@ -205,7 +205,7 @@ export class ScreeningSelectionPage extends Block {
         const date = target.getAttribute('data-date');
         if (date && date !== this.props.selectedDate) {
           this.setProps({ selectedDate: date });
-          this.computeRooms(null, date, this.props.selectedFormat);
+          this.computeRooms(date, this.props.selectedFormat);
         }
         return;
       }
@@ -214,7 +214,7 @@ export class ScreeningSelectionPage extends Block {
         const format = target.getAttribute('data-format');
         if (format && format !== this.props.selectedFormat) {
           this.setProps({ selectedFormat: format });
-          this.computeRooms(null, this.props.selectedDate, format);
+          this.computeRooms(this.props.selectedDate, format);
         }
         return;
       }

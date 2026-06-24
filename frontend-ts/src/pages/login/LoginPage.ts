@@ -203,8 +203,8 @@ export class LoginPage extends Block {
     this.setProps({ isGoogleLoading: true });
     try {
       await authApi.register({
-        name: pendingGoogleData?.name,
-        email: pendingGoogleData?.email,
+        name: pendingGoogleData?.name || '',
+        email: pendingGoogleData?.email || '',
         password: "GAuth_Secure123!",
         birth_date: birthDate,
         device_fingerprint: navigator.userAgent,
