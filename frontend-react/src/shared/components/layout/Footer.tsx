@@ -11,15 +11,6 @@ export const Footer = () => {
           <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
             <li><a href="#" style={{ color: '#9ca3af', textDecoration: 'none', transition: 'color 0.2s' }}>Cartelera</a></li>
             <li><a href="#" style={{ color: '#9ca3af', textDecoration: 'none' }}>Próximos Estrenos</a></li>
-            <li><a href="#" style={{ color: '#9ca3af', textDecoration: 'none' }}>Formatos IMAX y 3D</a></li>
-          </ul>
-        </div>
-        <div>
-          <h3 style={{ color: '#ffffff', marginBottom: '1.2rem', fontSize: '1.1rem' }}>Soporte</h3>
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-            <li><a href="#" style={{ color: '#9ca3af', textDecoration: 'none' }}>Preguntas Frecuentes</a></li>
-            <li><a href="#" style={{ color: '#9ca3af', textDecoration: 'none' }}>Términos y Condiciones</a></li>
-            <li><a href="#" style={{ color: '#9ca3af', textDecoration: 'none' }}>Contacto</a></li>
           </ul>
         </div>
       </div>
