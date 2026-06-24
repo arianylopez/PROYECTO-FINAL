@@ -46,10 +46,11 @@ export class Header extends Block {
       if (target.id === 'nav-logout') {
         try {
           await authApi.logout();
-          this.setProps({ isAuthenticated: false, user: null });
-          routerInstance.go('/home');
         } catch (error) {
-          this.setProps({ isAuthenticated: false, user: null });
+          console.error("Logout error", error);
+        } finally {
+          authStore.logout();
+          routerInstance.go('/login');
         }
       }
     },
