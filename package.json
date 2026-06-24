@@ -1,0 +1,27 @@
+{
+  "name": "proyecto-final",
+  "version": "1.0.0",
+  "description": "Proyecto Final de Aplicaciones Web — Plataforma de Servicios",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arianylopez/PROYECTO-FINAL.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arianylopez/PROYECTO-FINAL/issues"
+  },
+  "homepage": "https://github.com/arianylopez/PROYECTO-FINAL#readme",
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}

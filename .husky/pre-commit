@@ -1,0 +1,3 @@
+
+
+cd frontend-react && npx lint-staged
