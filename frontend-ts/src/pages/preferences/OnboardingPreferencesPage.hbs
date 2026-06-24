@@ -1,0 +1,47 @@
+{{#if isLoading}}
+  <div style="min-height: 100vh; background-color: #0f1115; display: flex; justify-content: center; align-items: center; color: #f4e951;">Cargando géneros...</div>
+{{else}}
+  <div style="min-height: 100vh; background-color: #0f1115; display: flex; justify-content: center; align-items: center; padding: 2rem; font-family: 'Inter', system-ui, sans-serif;">
+    <div style="background-color: #171a21; padding: 3rem; border-radius: 24px; border: 1px solid #262932; max-width: 600px; width: 100%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+      
+      <h1 style="color: #fff; font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem;">¿Qué géneros te gustan?</h1>
+      <p style="color: #9ca3af; margin-bottom: 2rem;">Elige hasta 5 géneros para personalizar tu cartelera.</p>
+
+      {{#if errorMsg}}
+        <div style="background-color: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 1rem; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3); font-weight: bold; margin-bottom: 1.5rem;">
+          {{errorMsg}}
+        </div>
+      {{/if}}
+
+      <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-bottom: 3rem;">
+        {{#each renderedGenres}}
+          <button
+            class="btn-genre"
+            data-genre="{{this.genre}}"
+            style="background-color: {{#if this.isSelected}}#f4e951{{else}}transparent{{/if}}; color: {{#if this.isSelected}}#000{{else}}#d1d5db{{/if}}; border: {{#if this.isSelected}}1px solid #f4e951{{else}}1px solid #374151{{/if}}; padding: 0.8rem 1.5rem; border-radius: 30px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; transform: {{#if this.isSelected}}scale(1.05){{else}}scale(1){/if}};"
+          >
+            {{this.genre}}
+          </button>
+        {{/each}}
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <button 
+          id="btn-save"
+          {{#if isSaveDisabled}}disabled{{/if}}
+          style="background-color: {{#if isSaveDisabled}}#374151{{else}}#f4e951{{/if}}; color: {{#if isSaveDisabled}}#9ca3af{{else}}#000{{/if}}; border: none; padding: 1.2rem; border-radius: 30px; font-weight: 900; text-transform: uppercase; cursor: {{#if isSaveDisabled}}not-allowed{{else}}pointer{{/if}}; transition: all 0.2s;"
+        >
+          Guardar y Continuar
+        </button>
+        
+        <button 
+          id="btn-skip"
+          style="background-color: transparent; color: #9ca3af; border: none; font-weight: 600; cursor: pointer; padding: 0.5rem;"
+        >
+          Saltar por ahora
+        </button>
+      </div>
+
+    </div>
+  </div>
+{{/if}}

@@ -26,6 +26,11 @@ Handlebars.registerHelper('formatPrice', function (price: number) {
 });
 
 import { ScreeningSelectionPage } from '../pages/screening-selection/ScreeningSelectionPage';
+import { SeatSelectionPage } from '../pages/seat-selection/SeatSelectionPage';
+import { PaymentPage } from '../pages/payment/PaymentPage';
+import { TicketPage } from '../pages/ticket/TicketPage';
+import { OrdersHistoryPage } from '../pages/orders/OrdersHistoryPage';
+import { OnboardingPreferencesPage } from '../pages/preferences/OnboardingPreferencesPage';
 
 routerInstance
   .use('/home', withMainLayout(HomePage))
@@ -33,8 +38,13 @@ routerInstance
   .use('/register', RegisterPage, { requireGuest: true })
   .use('/forgot-password', ForgotPasswordPage, { requireGuest: true })
   .use('/reset-password', ResetPasswordPage, { requireGuest: true })
+  .use('/preferences', OnboardingPreferencesPage, { requireAuth: true })
   .use('/movie/:id', withMainLayout(MovieDetailPage))
   .use('/booking/:id/screenings', withMainLayout(ScreeningSelectionPage))
+  .use('/booking/:id/seats', SeatSelectionPage, { requireAuth: true })
+  .use('/booking/:id/payment', PaymentPage, { requireAuth: true })
+  .use('/booking/:id/ticket', TicketPage, { requireAuth: true })
+  .use('/me/orders', withMainLayout(OrdersHistoryPage), { requireAuth: true })
   .start();
 
 if (window.location.pathname === '/') {

@@ -1,0 +1,4 @@
+/* Seat Selection styles are mostly inline in the template */
+.seat-item:hover {
+  filter: brightness(1.1);
+}
