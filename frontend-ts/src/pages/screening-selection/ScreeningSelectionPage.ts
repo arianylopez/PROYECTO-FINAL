@@ -40,7 +40,7 @@ export class ScreeningSelectionPage extends Block {
   }
 
   protected async componentDidMount() {
-    const match = window.location.pathname.match(/\/booking\/([^/]+)\/screenings/);
+    const match = window.location.pathname.match(/\/movie\/([^/]+)\/screenings/);
     let id = '';
     if (match && match[1]) {
       id = match[1];

@@ -37,7 +37,7 @@ export const OnboardingPreferencesPage = () => {
   const handleSave = async () => {
     if (!user) return;
     try {
-      await apiClient.put(`/api/v1/auth/users/${user.id}/preferences`, { genres: selected });
+      await apiClient.put(`/auth/users/${user.id}/preferences`, { genres: selected });
       navigate('/home');
     } catch (error: any) {
       const backendError = error.response?.data?.detail?.[0]?.msg || "Error al guardar preferencias";

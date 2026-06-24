@@ -77,7 +77,7 @@ export class OnboardingPreferencesPage extends Block {
     if (!state.user) return;
 
     try {
-      await apiClient.put(`/api/v1/auth/users/${state.user.id}/preferences`, { genres: this.props.selected });
+      await apiClient.put(`/auth/users/${state.user.id}/preferences`, { genres: this.props.selected });
       routerInstance.go('/home');
     } catch (error: any) {
       const backendError = error.response?.data?.detail?.[0]?.msg || "Error al guardar preferencias";

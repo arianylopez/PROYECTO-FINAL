@@ -40,7 +40,7 @@ routerInstance
   .use('/reset-password', ResetPasswordPage, { requireGuest: true })
   .use('/preferences', OnboardingPreferencesPage, { requireAuth: true })
   .use('/movie/:id', withMainLayout(MovieDetailPage))
-  .use('/booking/:id/screenings', withMainLayout(ScreeningSelectionPage))
+  .use('/movie/:id/screenings', withMainLayout(ScreeningSelectionPage))
   .use('/booking/:id/seats', SeatSelectionPage, { requireAuth: true })
   .use('/booking/:id/payment', PaymentPage, { requireAuth: true })
   .use('/booking/:id/ticket', TicketPage, { requireAuth: true })

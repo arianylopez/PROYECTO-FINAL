@@ -83,7 +83,7 @@ export class RegisterPage extends Block {
       email: fallbackEmail,
       role: decodedUser.role
     }, token);
-    routerInstance.go('/onboarding');
+    routerInstance.go('/preferences');
   }
 
   private async handleRegisterSubmit(form: HTMLFormElement) {

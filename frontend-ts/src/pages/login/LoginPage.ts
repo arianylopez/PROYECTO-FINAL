@@ -210,7 +210,7 @@ export class LoginPage extends Block {
         device_fingerprint: navigator.userAgent,
         device_name: "Navegador Web"
       });
-      window.location.assign('/onboarding');
+      routerInstance.go('/preferences');
     } catch (error: any) {
       this.setProps({ modalError: error.response?.data?.detail || "Ocurrió un error al registrar." });
     } finally {
