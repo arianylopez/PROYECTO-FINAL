@@ -133,26 +133,27 @@ export class HomePage extends Block {
       
       let newMovies = isInitial ? data.items : [...this.props.movies, ...data.items];
       
-      newMovies = newMovies.map(m => ({
-        ...m,
-        genreString: m.genres.join(', ')
-      }));
+      newMovies = newMovies.map(m => {
+        const hours = Math.floor(m.duration_minutes / 60);
+        const mins = m.duration_minutes % 60;
+        return {
+          ...m,
+          genreString: m.genres && m.genres.length > 0 ? m.genres.slice(0, 2).join(' / ') : 'General',
+          durationString: `${hours}h ${mins}m`
+        };
+      });
 
       this.setProps({
         movies: newMovies,
         totalMovies: data.total,
-        hasMore: data.page < data.pages,
         hasMovies: newMovies.length > 0,
-        page: pageNumber,
-        isLoadingCatalog: false,
-        isFetchingMore: false
+        hasMore: data.page < data.pages,
+        page: pageNumber
       });
-    } catch (err) {
-      this.setProps({ 
-        fetchError: "Error al conectar con la cartelera. Por favor intenta de nuevo.",
-        isLoadingCatalog: false,
-        isFetchingMore: false
-      });
+    } catch (err: any) {
+      this.setProps({ fetchError: 'Error al conectar con la cartelera. Por favor intenta de nuevo.' });
+    } finally {
+      this.setProps({ isLoadingCatalog: false, isFetchingMore: false });
     }
   }
 
@@ -169,20 +170,10 @@ export class HomePage extends Block {
   }
 
   protected events = {
-    click: async (e: Event) => {
-      const target = e.target as HTMLElement;
-
-      // Handle navigate links inside cards
-      const navigateElement = target.closest('[data-navigate]');
-      if (navigateElement) {
-        const path = navigateElement.getAttribute('data-navigate');
-        if (path) routerInstance.go(path);
-        return;
-      }
-
-      // Handle Genre Tabs
-      if (target.classList.contains('catalog-filters__tab')) {
-        const genre = target.getAttribute('data-genre') || 'Todas';
+    change: (e: Event) => {
+      const target = e.target as HTMLSelectElement;
+      if (target.id === 'genre-select') {
+        const genre = target.value;
         this.setProps({ selectedGenre: genre, page: 1 });
         
         // Update URL
@@ -194,6 +185,16 @@ export class HomePage extends Block {
         window.history.pushState({}, '', newUrl);
         
         this.loadMoviesDebounced(1, true, this.props.searchQuery, genre);
+      }
+    },
+    click: async (e: Event) => {
+      const target = e.target as HTMLElement;
+
+      // Handle navigate links inside cards
+      const navigateElement = target.closest('[data-navigate]');
+      if (navigateElement) {
+        const path = navigateElement.getAttribute('data-navigate');
+        if (path) routerInstance.go(path);
         return;
       }
 

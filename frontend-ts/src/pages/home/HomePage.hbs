@@ -13,7 +13,6 @@
             <button class="featured-hero__btn-primary" data-navigate="/movie/{{featuredMovie.id}}">Ver Funciones Disponibles</button>
             {{#if featuredMovie.trailer_url}}
               <a href="{{featuredMovie.trailer_url}}" target="_blank" rel="noreferrer" class="featured-hero__btn-secondary">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Ver Tráiler
               </a>
             {{/if}}
@@ -23,128 +22,142 @@
     {{/if}}
   {{/if}}
 
-  <main style="padding: 0 6%; margin-top: -3rem; position: relative; z-index: 10;">
-    
-    {{#if showRecommendations}}
-      <section style="margin-bottom: 4rem;">
-        <div style="display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1.5rem;">
-          <h3 style="font-size: 1.75rem; font-weight: 800; margin: 0; color: #fff;">{{recs.title}}</h3>
+  {{#if showRecommendations}}
+    <section style="max-width: 1200px; margin: 0 auto; padding: 3rem 4% 1rem; border-bottom: 1px solid #262932;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; gap: 1.5rem;">
+        <div>
+          <h2 style="color: #fff; font-size: 1.8rem; font-weight: 900; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">{{recs.title}}</h2>
           {{#if recs.subtitle}}
-            <span style="color: #9ca3af; font-size: 1rem;">{{recs.subtitle}}</span>
+            <p style="color: #9ca3af; margin: 0.5rem 0 0 0; font-size: 1rem;">{{recs.subtitle}}</p>
           {{/if}}
         </div>
 
-        <div style="position: relative;">
-          <div class="recs-carousel" id="recs-carousel">
-            {{#each recs.items}}
-              <div class="rec-card-container" data-navigate="/movie/{{this.id}}">
-                <button class="dismiss-btn" data-dismiss="{{this.id}}" title="No me interesa">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-                <div class="rec-card-image-box">
-                  <img src="{{this.poster_url}}" alt="{{this.title}}" style="width: 100%; height: 100%; object-fit: cover;" />
-                </div>
-                <div class="rec-card-explanation-panel">
-                  <h4 style="color: #fff; margin: 0 0 0.4rem 0; font-size: 1.05rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{this.title}}</h4>
-                  <p style="color: #9ca3af; margin: 0; font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem;">
-                    {{this.shortReason}}
-                  </p>
-                </div>
-              </div>
-            {{/each}}
-          </div>
-          
-          <button class="carousel-nav-btn prev" id="recs-prev" style="position: absolute; left: -20px; top: 190px; transform: translateY(-50%); background: rgba(0,0,0,0.7); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 20; display: flex; align-items: center; justify-content: center;">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" /></svg>
+        <div style="display: flex; gap: 0.75rem;">
+          <button class="carousel-nav-btn" id="recs-prev">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </button>
-          
-          <button class="carousel-nav-btn next" id="recs-next" style="position: absolute; right: -20px; top: 190px; transform: translateY(-50%); background: rgba(0,0,0,0.7); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 20; display: flex; align-items: center; justify-content: center;">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+          <button class="carousel-nav-btn" id="recs-next">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
           </button>
-        </div>
-      </section>
-    {{/if}}
-
-    <section class="catalog-section" style="padding: 0;">
-      <div class="catalog-header">
-        <div>
-          <h2 class="catalog-header__title">Cartelera</h2>
-          <p style="color: #9ca3af; margin: 0.5rem 0 0 0;">{{totalMovies}} películas en exhibición</p>
-        </div>
-        
-        <div class="catalog-filters">
-          {{#each dynamicGenres}}
-            <button class="catalog-filters__tab {{#if (eq this ../selectedGenre)}}active{{/if}}" data-genre="{{this}}">
-              {{this}}
-            </button>
-          {{/each}}
         </div>
       </div>
 
+      <div class="recs-carousel" id="recs-carousel">
+        {{#each recs.items}}
+          <div class="rec-card-container" data-navigate="/movie/{{this.id}}">
+            <div class="rec-card-image-box">
+              <button class="dismiss-btn" data-dismiss="{{this.id}}">&#10005;</button>
+              <img src="{{this.poster_url}}" alt="{{this.title}}" style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
+            
+            <div class="rec-card-explanation-panel">
+              <span style="color: #f4e951; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">{{this.shortReason}}</span>
+              <p style="margin: 0; color: #9ca3af; font-size: 0.82rem; line-height: 1.4; font-weight: 500;">{{this.reason}}</p>
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    </section>
+  {{/if}}
+
+  <div style="padding-top: 2rem;">
+    <section class="catalog-section" id="cartelera">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; gap: 1rem;">
+        <div>
+          <h2 class="catalog-header__title" style="margin: 0;">Explorar Cartelera</h2>
+          {{#unless isLoadingCatalog}}
+            {{#unless fetchError}}
+              <p style="color: #9ca3af; margin: 0.5rem 0 0 0; font-size: 0.9rem;">
+                Mostrando {{totalMovies}} {{#if (eq totalMovies 1)}}película{{else}}películas{{/if}}
+              </p>
+            {{/unless}}
+          {{/unless}}
+        </div>
+        
+        <div style="position: relative; min-width: 220px;">
+          <select id="genre-select" style="appearance: none; width: 100%; color: {{#if (eq selectedGenre 'Todas')}}#d1d5db{{else}}#0f1115{{/if}}; border: 1px solid {{#if (eq selectedGenre 'Todas')}}#374151{{else}}#f4e951{{/if}}; background-color: {{#if (eq selectedGenre 'Todas')}}#171a21{{else}}#f4e951{{/if}}; padding: 0.75rem 2.5rem 0.75rem 1.5rem; border-radius: 30px; font-size: 0.95rem; font-weight: 800; cursor: pointer; outline: none; box-shadow: 0 10px 20px rgba(0,0,0,0.3); transition: all 0.2s ease; text-transform: uppercase;">
+            {{#each dynamicGenres}}
+              <option value="{{this}}" style="color: #fff; background-color: #171a21; text-transform: initial;" {{#if (eq this ../selectedGenre)}}selected{{/if}}>
+                {{#if (eq this 'Todas')}}Todos los Géneros{{else}}{{this}}{{/if}}
+              </option>
+            {{/each}}
+          </select>
+          <svg style="position: absolute; right: 18px; top: 50%; transform: translateY(-50%); pointer-events: none; color: {{#if (eq selectedGenre 'Todas')}}#9ca3af{{else}}#0f1115{{/if}};" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+      </div>
+
+      {{#if searchQuery}}
+        <div style="margin-bottom: 2rem; padding: 1rem 1.5rem; background-color: rgba(244, 233, 81, 0.05); border: 1px dashed rgba(244, 233, 81, 0.4); border-radius: 8px; color: #e5e7eb;">
+          Resultados para la búsqueda: <strong style="color: #f4e951; font-size: 1.1rem; margin-left: 0.5rem;">"{{searchQuery}}"</strong>
+        </div>
+      {{/if}}
+
       {{#if fetchError}}
-        <div class="empty-state">
-          <div class="empty-state__icon">⚠️</div>
-          <div class="empty-state__text">{{fetchError}}</div>
-          <button class="empty-state__btn" id="retry-btn">Intentar de Nuevo</button>
+        <div class="catalog-state">
+          <div class="catalog-state__icon">🔌</div>
+          <h2 class="catalog-state__title">{{fetchError}}</h2>
+          <button class="catalog-state__btn" id="retry-btn">Reintentar</button>
         </div>
       {{else}}
-        <div class="catalog-grid">
-          {{#if isLoadingCatalog}}
-            {{#each skeletons}}
-              <div class="skeleton">
-                <div class="skeleton-img"></div>
-                <div class="skeleton-content">
-                  <div class="skeleton-text medium"></div>
-                  <div class="skeleton-text short"></div>
+        {{#if (and (not isLoadingCatalog) (not hasMovies))}}
+          <div class="catalog-state" style="padding: 5rem 0; display: flex; flex-direction: column; align-items: center;">
+            <div class="catalog-state__icon" style="font-size: 4rem; opacity: 0.5; margin-bottom: 1rem;">🔍</div>
+            <h2 class="catalog-state__title" style="font-size: 1.5rem; margin-bottom: 0.5rem;">No encontramos películas para tu búsqueda.</h2>
+            <p style="color: #9ca3af; margin: 0 0 2rem 0;">Intenta probar con otros términos o limpia los filtros activos.</p>
+            <button class="catalog-state__btn" id="clear-filters-btn" style="padding: 0.8rem 2rem; background-color: #f4e951; color: #000; border-radius: 30px; font-weight: bold; border: none; cursor: pointer;">Ver toda la cartelera</button>
+          </div>
+        {{else}}
+          <div class="catalog-grid">
+            {{#each movies}}
+              <div class="movie-card" data-navigate="/movie/{{this.id}}" style="cursor: pointer;">
+                <div class="movie-card__image-wrapper">
+                  <div class="movie-card__badge-rating">{{this.rating_classification}}</div>
+                  <img src="{{this.poster_url}}" alt="{{this.title}}" class="movie-card__image" loading="lazy" />
+                  <div class="movie-card__overlay">
+                    <p class="movie-card__overlay-synopsis">{{this.synopsis}}</p>
+                  </div>
+                </div>
+                
+                <div class="movie-card__info">
+                  <h3 class="movie-card__title" title="{{this.title}}">{{this.title}}</h3>
+                  <span class="movie-card__genres">{{this.genreString}}</span>
+                  
+                  <div class="movie-card__footer-meta">
+                    <div class="movie-card__duration">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                      {{this.durationString}}
+                    </div>
+                    <div class="movie-card__formats-tags">
+                      <span class="movie-card__tag">2D</span>
+                      <span class="movie-card__tag">DUB</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             {{/each}}
-          {{else}}
-            {{#if hasMovies}}
-              {{#each movies}}
-                <div class="movie-card" data-navigate="/movie/{{this.id}}">
-                  <div class="movie-card__image-wrapper">
-                    <img src="{{this.poster_url}}" alt="{{this.title}}" class="movie-card__image" loading="lazy" />
-                    <div class="movie-card__overlay">
-                      <button class="movie-card__btn">Ver Horarios</button>
-                    </div>
-                  </div>
-                  <div class="movie-card__content">
-                    <div class="movie-card__meta">
-                      <span class="movie-card__rating">{{this.rating_classification}}</span>
-                      <span class="movie-card__duration">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        {{this.duration_minutes}} min
-                      </span>
-                    </div>
-                    <h3 class="movie-card__title" title="{{this.title}}">{{this.title}}</h3>
-                    <p class="movie-card__genres">{{this.genreString}}</p>
+            
+            {{#if isLoadingCatalog}}
+              {{#each skeletons}}
+                <div class="skeleton">
+                  <div class="skeleton-img"></div>
+                  <div class="skeleton-content">
+                    <div class="skeleton-text medium"></div>
+                    <div class="skeleton-text short"></div>
                   </div>
                 </div>
               {{/each}}
-            {{else}}
-              <div class="empty-state" style="grid-column: 1 / -1;">
-                <div class="empty-state__icon">🎬</div>
-                <div class="empty-state__text">No encontramos películas que coincidan con tu búsqueda.</div>
-                <button class="empty-state__btn" id="clear-filters-btn">Limpiar Filtros</button>
-              </div>
             {{/if}}
-          {{/if}}
-        </div>
-
-        {{#if hasMore}}
-          <div class="load-more-container">
-            <button class="load-more-btn" id="load-more-btn">
-              {{#if isFetchingMore}}
-                Cargando...
-              {{else}}
-                Cargar Más Películas
-              {{/if}}
-            </button>
           </div>
+          
+          {{#if hasMore}}
+            <div class="catalog-footer" style="margin-top: 4rem; text-align: center;">
+              <button class="catalog-footer__btn" id="load-more-btn" {{#if isFetchingMore}}disabled{{/if}} style="background-color: #171a21; border: 1px solid #374151; color: #fff; padding: 1rem 3rem; border-radius: 30px; font-weight: bold; cursor: {{#if isFetchingMore}}not-allowed{{else}}pointer{{/if}};">
+                {{#if isFetchingMore}}Cargando...{{else}}Ver Más Películas{{/if}}
+              </button>
+            </div>
+          {{/if}}
         {{/if}}
       {{/if}}
     </section>
-
-  </main>
+  </div>
 </div>

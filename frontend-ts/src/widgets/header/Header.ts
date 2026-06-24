@@ -120,7 +120,8 @@ export class Header extends Block {
       const target = e.target as HTMLInputElement;
       if (target.id === 'search-input') {
         const val = target.value;
-        this.props.searchQuery = val; // Store silently so it doesn't re-render and lose focus
+        // DO NOT update this.props.searchQuery here to prevent innerHTML re-render and focus loss!
+        // Just dispatch the route update so HomePage picks it up
         if (val.trim()) {
           routerInstance.go(`/home?q=${encodeURIComponent(val.trim())}`);
         } else {
@@ -132,8 +133,9 @@ export class Header extends Block {
       const form = e.target as HTMLFormElement;
       if (form.id === 'search-form') {
         e.preventDefault();
-        const query = this.props.searchQuery.trim();
-        this.setProps({ isSearchOpen: false });
+        const input = this.element?.querySelector('#search-input') as HTMLInputElement;
+        const query = input ? input.value.trim() : '';
+        this.setProps({ isSearchOpen: false, searchQuery: query });
         if (query) {
           routerInstance.go(`/home?q=${encodeURIComponent(query)}`);
         } else {

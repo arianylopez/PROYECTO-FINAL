@@ -7,6 +7,23 @@ import { withMainLayout } from '../shared/ui/layout/MainLayout';
 import { ForgotPasswordPage } from '../pages/forgot-password/ForgotPasswordPage';
 import { ResetPasswordPage } from '../pages/reset-password/ResetPasswordPage';
 import './styles/global.css';
+import Handlebars from 'handlebars';
+
+Handlebars.registerHelper('eq', function (a, b) {
+  return a === b;
+});
+
+Handlebars.registerHelper('not', function (a) {
+  return !a;
+});
+
+Handlebars.registerHelper('and', function (a, b) {
+  return a && b;
+});
+
+Handlebars.registerHelper('formatPrice', function (price: number) {
+  return price ? price.toFixed(2) : '0.00';
+});
 
 import { ScreeningSelectionPage } from '../pages/screening-selection/ScreeningSelectionPage';
 

@@ -35,14 +35,6 @@ export class TicketModal extends Block<TicketModalProps> {
       totalPrice: 0,
       ...props
     });
-
-    Handlebars.registerHelper('eq', function (a, b) {
-      return a === b;
-    });
-
-    Handlebars.registerHelper('formatPrice', function (price: number) {
-      return price ? price.toFixed(2) : '0.00';
-    });
   }
 
   public open(time: string, room: string, types: TicketType[]) {
