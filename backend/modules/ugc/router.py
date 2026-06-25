@@ -74,9 +74,27 @@ async def submit_review(movie_id: str, req: ReviewRequest, db = Depends(get_mong
 
 @router.get("/movies/{movie_id}/reviews")
 async def get_reviews(movie_id: str, db = Depends(get_mongo_db)):
-    cursor = db.reviews.find({"movie_id": movie_id}).sort("updated_at", -1)
-    reviews_docs = await cursor.to_list(length=50)
-    reviews = [{"id": str(r["_id"]), "user_id": r["user_id"], "user_name": r["user_name"], "score": r["score"], "text": r["text"], "date": r["updated_at"].isoformat()} for r in reviews_docs]
+    cursor = db.ratings.find({"movie_id": movie_id}).sort("updated_at", -1)
+    ratings_docs = await cursor.to_list(length=50)
+    
+    user_ids = [r["user_id"] for r in ratings_docs]
+    reviews_cursor = db.reviews.find({
+        "movie_id": movie_id, 
+        "user_id": {"$in": user_ids}})
+    reviews_list = await reviews_cursor.to_list(length=50)
+    reviews_dict = {r["user_id"]: r.get("text", "") for r in reviews_list}
+    
+    reviews = [
+        {
+            "id": str(r["_id"]), 
+            "user_id": r["user_id"], 
+            "user_name": r.get("user_name", "Usuario"), 
+            "score": r["score"], 
+            "text": reviews_dict.get(r["user_id"], ""), 
+            "date": r["updated_at"].isoformat()
+        } 
+        for r in ratings_docs
+    ]
         
     pipeline = [
         {"$match": {"movie_id": movie_id}},

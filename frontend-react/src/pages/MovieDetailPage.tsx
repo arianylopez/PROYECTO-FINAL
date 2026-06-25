@@ -7,6 +7,8 @@ import {
   submitMovieReview,
   fetchWatchlistStatus,
   toggleWatchlist,
+  fetchMovies,
+  type Movie,
   type MovieDetail,
   type Review,
   type ReviewsResponse,
@@ -127,6 +129,8 @@ export const MovieDetailPage = () => {
   const [errorMsg, setErrorMsg] = useState('');
 
   const [isWatchlisted, setIsWatchlisted] = useState(false);
+  const [inlineRecommendations, setInlineRecommendations] = useState<Movie[]>([]);
+  const [recommendationTitle, setRecommendationTitle] = useState('');
 
   useEffect(() => {
     const loadData = async () => {
@@ -154,6 +158,38 @@ export const MovieDetailPage = () => {
         .catch(console.error);
     }
   }, [user, id]);
+
+  useEffect(() => {
+    if (user && reviewsData && movie) {
+      const myReview = reviewsData.reviews.find(r => r.user_id === user.id);
+      if (myReview && inlineRecommendations.length === 0) {
+        const fetchContextual = async () => {
+          try {
+            const publicMovies = await fetchMovies(1, 30);
+            const currentGenres = movie.genres || [];
+            
+            let recs: Movie[] = [];
+            let recTitle = '';
+            const userScore = myReview.score;
+            
+            if (userScore >= 4) {
+              recTitle = 'Recomendadas para vos:';
+              recs = publicMovies.items.filter(m => m.id !== id && m.genres?.some(g => currentGenres.includes(g)));
+            } else if (userScore <= 3 && userScore > 0) {
+              recTitle = 'Quizas te guste algo diferente:';
+              recs = publicMovies.items.filter(m => m.id !== id && !m.genres?.some(g => currentGenres.includes(g)));
+            }
+            
+            setInlineRecommendations(recs.slice(0, 5));
+            setRecommendationTitle(recTitle);
+          } catch (err) {
+            console.error('Error fetching contextual recs', err);
+          }
+        };
+        fetchContextual();
+      }
+    }
+  }, [user, reviewsData, movie, id]);
 
   const handleBuyTicket = () => {
     if (!user) {
@@ -226,6 +262,32 @@ export const MovieDetailPage = () => {
       setReviewText('');
       const updatedReviews = await fetchMovieReviews(id);
       setReviewsData(updatedReviews);
+
+      try {
+        const publicMovies = await fetchMovies(1, 30);
+        const currentGenres = movie?.genres || [];
+        
+        let recs: Movie[] = [];
+        let recTitle = '';
+        
+        if (rating >= 4) {
+          recTitle = 'Recomendadas para vos:';
+          recs = publicMovies.items.filter(m => m.id !== id && m.genres?.some(g => currentGenres.includes(g)));
+        } else if (rating <= 3) {
+          recTitle = 'Quizas te guste algo diferente:';
+          recs = publicMovies.items.filter(m => m.id !== id && !m.genres?.some(g => currentGenres.includes(g)));
+        }
+
+        if(rating >= 4) {
+          recTitle = 'Recomendadas para vos:';
+          recs = publicMovies.items.filter(m => m.id)
+        }
+        
+        setInlineRecommendations(recs.slice(0, 4));
+        setRecommendationTitle(recTitle);
+      } catch (err) {
+        console.error('Error fetching inline recs', err);
+      }
     } catch (err: unknown) {
       const errorResponse = err as { response?: { data?: { detail?: string } } };
       setErrorMsg(errorResponse.response?.data?.detail || 'Ocurrió un error al guardar tu reseña.');
@@ -451,6 +513,60 @@ export const MovieDetailPage = () => {
               </div>
             )}
           </div>
+
+        {inlineRecommendations.length > 0 && (
+            <div className="reviews-section__inline-recs" style={{ 
+              marginTop: '2rem', 
+              padding: '1rem', 
+              backgroundColor: 'var(--surface-color, #1a1a1a)', 
+              borderRadius: '12px' 
+              }}>
+              <h3 className="reviews-section__inline-title" style={{ 
+                fontSize: '1.2rem', 
+                marginBottom: '1rem', 
+                color: 'var(--primary-color, #ffb400)' 
+                }}>{recommendationTitle}</h3>
+              <div className="movie-grid" style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', 
+                gap: '1rem' 
+                }}>
+                {inlineRecommendations.map((recMovie) => (
+                  <div 
+                    key={recMovie.id} 
+                    className="movie-card" 
+                    onClick={() => {
+                      setInlineRecommendations([]);
+                      window.scrollTo(0, 0);
+                      navigate(`/movie/${recMovie.id}`);
+                    }}
+                    style={{ 
+                      cursor: 'pointer', 
+                      backgroundColor: 'var(--bg-color, #0a0a0a)', 
+                      borderRadius: '8px', 
+                      overflow: 'hidden', 
+                      display: 'flex', flexDirection: 'column' 
+                    }}
+                  >
+                    <img src={recMovie.poster_url} alt={recMovie.title} style={{ 
+                      width: '100%', 
+                      aspectRatio: '2/3', 
+                      objectFit: 'cover' 
+                      }} />
+                    <div style={{ padding: '0.5rem' }}>
+                      <h4 style={{ 
+                        fontSize: '0.9rem', 
+                        margin: 0, 
+                        overflow: 'hidden', 
+                        textOverflow: 'ellipsis', 
+                        whiteSpace: 'nowrap' 
+                        }}>{recMovie.title}</h4>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
